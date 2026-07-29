@@ -9,7 +9,7 @@ A responsive, dependency-free Shiraz Metro Line 1 journey planner built with sem
 3. **Journey result** — next departure, estimated arrival, duration, route stops, and upcoming trains.
 4. **From–To matrix** — all 20×20 station pairs with a travel-time and next-arrival mode.
 5. **Station directory** — first/last service windows in both directions.
-6. **Operational disclaimer** — links to the supplied source timetable.
+6. **Operational disclaimer** — links to an accessible Markdown version of the supplied source timetable.
 
 ## Timetable model
 
@@ -38,4 +38,4 @@ Then visit `http://localhost:8080`.
 - `index.html` — semantic page structure
 - `styles.css` — responsive design system and component styles
 - `app.js` — timetable engine and interaction logic
-- `assets/shiraz-subway-timetable.pdf` — supplied source timetable
+- `assets/shiraz-subway-timetable.md` — accessible, mobile-friendly timetable converted from the supplied PDF
