@@ -1,16 +1,18 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" dir="ltr" data-theme="light" data-line="line1" data-language="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="ShirazGo — plan Shiraz Metro Line 1 journeys, check upcoming trains, and compare station-to-station travel times.">
+  <meta name="description" content="ShirazGo — plan journeys on Shiraz Metro Lines 1 and 2, check upcoming trains, and compare station-to-station travel times.">
   <meta name="theme-color" content="#123f35">
   <title>ShirazGo — Shiraz Metro Journey Planner</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#planner">Skip to journey planner</a>
+  <a class="skip-link" href="#planner" data-i18n="skipLink">Skip to journey planner</a>
 
   <header class="site-header" id="top">
     <div class="shell header-inner">
@@ -23,19 +25,23 @@
         </span>
         <span>
           <strong>ShirazGo</strong>
-          <small>Metro, made simple</small>
+          <small data-i18n="brandTagline">Metro, made simple</small>
         </span>
       </a>
 
-      <nav class="desktop-nav" aria-label="Primary navigation">
-        <a href="#planner">Plan a trip</a>
-        <a href="#matrix">From–To matrix</a>
-        <a href="#stations">Stations</a>
+      <nav class="desktop-nav" aria-label="Primary navigation" data-i18n-aria-label="primaryNavLabel">
+        <a href="#planner" data-i18n="navPlan">Plan a trip</a>
+        <a href="#matrix" data-i18n="navMatrix">From–To matrix</a>
+        <a href="#stations" data-i18n="navStations">Stations</a>
       </nav>
 
       <div class="header-actions">
-        <a class="source-link" href="assets/shiraz-subway-timetable.md" target="_blank" rel="noopener">Accessible timetable</a>
-        <button class="icon-button" id="themeToggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <a class="source-link" href="assets/shiraz-subway-timetable.md" target="_blank" rel="noopener" data-i18n="readableTimetable">Readable timetable</a>
+        <button class="language-button" id="languageToggle" type="button" aria-label="Change language to Persian">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+          <span id="languageToggleLabel" lang="fa" dir="rtl">فارسی</span>
+        </button>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Switch color theme" data-i18n-aria-label="themeToggleLabel" aria-pressed="false">
           <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
           <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.4A8.3 8.3 0 0 1 9.6 3.5 8.7 8.7 0 1 0 20.5 14.4Z"/></svg>
         </button>
@@ -49,31 +55,28 @@
       <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow"><span></span> Shiraz Metro Line 1</p>
-          <h1 id="hero-title">Move through Shiraz<br><em>with confidence.</em></h1>
-          <p class="hero-lead">Choose two stations, see your next train, and get a clear station-by-station journey estimate in seconds.</p>
-          <div class="hero-facts" aria-label="Service overview">
-            <div><strong>20</strong><span>stations</span></div>
-            <div><strong>≈ 2 min</strong><span>between stations</span></div>
-            <div><strong>15 min</strong><span>scheduled frequency</span></div>
+          <h1 id="hero-title" data-i18n-html="heroTitle"><span class="hero-title-line hero-title-main">Move through Shiraz</span><br><em class="hero-title-confidence">with confidence.</em></h1>
+          <p class="hero-lead" data-i18n="heroLead">Choose a metro line and two stations to see the next scheduled train and a clear station-by-station journey estimate.</p>
+
+          <div class="network-switch" role="group" aria-label="Choose metro line" data-i18n-aria-label="chooseLineLabel">
+            <button type="button" class="active" data-line-switch="line1"><i class="line-swatch line-one"></i><span data-line-label="line1">Line 1</span></button>
+            <button type="button" data-line-switch="line2"><i class="line-swatch line-two"></i><span data-line-label="line2">Line 2</span></button>
+          </div>
+
+          <div class="hero-facts" aria-label="Service overview" data-i18n-aria-label="serviceOverviewLabel">
+            <div><strong id="heroStationCount">20</strong><span data-i18n="stationsFact">stations</span></div>
+            <div><strong id="heroTravelTime">≈ 2 min</strong><span data-i18n="betweenStationsFact">between stations</span></div>
+            <div><strong id="heroFrequency">15 min</strong><span data-i18n="frequencyFact">scheduled frequency</span></div>
           </div>
         </div>
 
-        <div class="line-preview" aria-label="Illustration of Shiraz Metro Line 1">
+        <div class="line-preview" id="linePreview" aria-label="Metro line preview" data-i18n-aria-label="linePreviewLabel">
           <div class="line-preview-head">
-            <span>Line 1</span>
-            <span class="status-pill"><i></i> Service scheduled</span>
+            <span id="previewLineName">Line 1</span>
+            <span class="status-pill" id="previewStatus"><i></i> Full service</span>
           </div>
-          <div class="mini-map">
-            <div class="mini-station"><span class="dot terminal"></span><div><strong>Shahid Dastgheyb</strong><small>Airport side</small></div></div>
-            <div class="mini-station faint"><span class="dot"></span><div><strong>Valiasr</strong><small>Central interchange</small></div></div>
-            <div class="mini-station faint"><span class="dot"></span><div><strong>Namazi</strong><small>City centre</small></div></div>
-            <div class="mini-station"><span class="dot terminal"></span><div><strong>Ehsan</strong><small>North-west terminus</small></div></div>
-            <div class="train-chip" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="16" rx="4"/><path d="M8 7h8M8 12h3M13 12h3M8 22l2-3M16 22l-2-3"/></svg>
-            </div>
-          </div>
-          <p class="line-note">Timetable-based planning with direction-aware arrival estimates.</p>
+          <div class="mini-map" id="heroMiniMap"></div>
+          <p class="line-note" id="previewNote">Timetable-based planning with direction-aware arrival estimates.</p>
         </div>
       </div>
     </section>
@@ -82,33 +85,43 @@
       <div class="shell">
         <div class="section-heading compact-heading">
           <div>
-            <p class="eyebrow"><span></span> Journey planner</p>
-            <h2 id="planner-title">Where are you going?</h2>
+            <p class="eyebrow"><span></span><b data-i18n="plannerEyebrow">Journey planner</b></p>
+            <h2 id="planner-title" data-i18n="plannerTitle">Where are you going?</h2>
           </div>
           <button class="text-button" id="leaveNowButton" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-            Leave now
+            <span data-i18n="leaveNow">Leave now</span>
           </button>
         </div>
 
         <div class="planner-layout">
           <form class="planner-card" id="routeForm">
+            <label class="field-group line-field">
+              <span data-i18n="metroLineLabel">Metro line</span>
+              <span class="select-wrap">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v14H6zM9 8h6M9 12h2M13 12h2M8 21l2-3M16 21l-2-3"/></svg>
+                <select id="metroLine" name="metroLine" required></select>
+              </span>
+            </label>
+
+            <div class="line-service-banner" id="lineServiceBanner"></div>
+
             <div class="station-fields">
               <div class="route-rail" aria-hidden="true">
                 <span></span><i></i><span></span>
               </div>
               <label class="field-group">
-                <span>Starting station</span>
+                <span data-i18n="startingStationLabel">Starting station</span>
                 <span class="select-wrap">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/></svg>
                   <select id="fromStation" name="fromStation" required></select>
                 </span>
               </label>
-              <button class="swap-button" id="swapStations" type="button" aria-label="Swap starting point and destination">
+              <button class="swap-button" id="swapStations" type="button" aria-label="Swap starting point and destination" data-i18n-aria-label="swapStationsLabel">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3M18 7l-3 3M6 17l3-3"/></svg>
               </button>
               <label class="field-group">
-                <span>Destination</span>
+                <span data-i18n="destinationLabel">Destination</span>
                 <span class="select-wrap">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11Z"/><circle cx="12" cy="10" r="2"/></svg>
                   <select id="toStation" name="toStation" required></select>
@@ -118,25 +131,25 @@
 
             <div class="planner-options">
               <label class="field-group small-field">
-                <span>Date</span>
+                <span data-i18n="dateLabel">Date</span>
                 <input id="travelDate" name="travelDate" type="date" required>
               </label>
               <label class="field-group small-field">
-                <span>Time</span>
+                <span data-i18n="timeLabel">Time</span>
                 <input id="travelTime" name="travelTime" type="time" required>
               </label>
               <fieldset class="service-type" id="serviceTypeGroup">
-                <legend>Service type</legend>
-                <label><input type="radio" name="serviceType" value="weekday" checked><span>Working day</span></label>
-                <label><input type="radio" name="serviceType" value="weekend"><span>Weekend / holiday</span></label>
+                <legend data-i18n="serviceTypeLabel">Service type</legend>
+                <label><input type="radio" name="serviceType" value="weekday" checked><span data-i18n="weekdayLabel">Working day</span></label>
+                <label><input type="radio" name="serviceType" value="weekend"><span data-i18n="weekendLabel">Weekend / holiday</span></label>
               </fieldset>
             </div>
 
             <button class="primary-button" type="submit">
-              <span>Plan my journey</span>
+              <span data-i18n="planJourney">Plan my journey</span>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
             </button>
-            <p class="form-note">Service times use the supplied timetable. Travel duration follows the published station offsets, averaging about two minutes per stop.</p>
+            <p class="form-note" id="formNote">Line 1 uses the supplied station timetable. Travel duration follows published station offsets.</p>
           </form>
 
           <aside class="result-card" id="resultCard" aria-live="polite">
@@ -144,8 +157,8 @@
               <div class="result-empty-icon">
                 <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M13 35c8-1 14-8 16-23 8 6 10 14 6 23-7 3-15 3-22 0Z"/><path d="M16 34c7-5 12-11 16-18"/></svg>
               </div>
-              <h3>Your route will appear here</h3>
-              <p>Select a starting station and destination to view departures, arrival time, and every stop on the way.</p>
+              <h3 data-i18n="emptyResultTitle">Your route will appear here</h3>
+              <p data-i18n="emptyResultText">Select a line, starting station, and destination to view departures, arrival time, and every stop on the way.</p>
             </div>
 
             <div class="result-content" id="resultContent" hidden>
@@ -154,28 +167,27 @@
                   <p id="resultDirection">Toward Ehsan</p>
                   <h3><span id="resultFrom">—</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg> <span id="resultTo">—</span></h3>
                 </div>
-                <span class="result-badge" id="resultServiceBadge">Working day</span>
+                <span class="result-badge" id="resultServiceBadge">Line 1 · Working day</span>
               </div>
 
               <div class="journey-metrics">
                 <div class="metric-primary">
-                  <span>Estimated journey</span>
+                  <span data-i18n="estimatedJourneyLabel">Estimated journey</span>
                   <strong id="journeyDuration">—</strong>
                   <small id="journeyStops">— stops</small>
                 </div>
                 <div class="metric-times">
-                  <div><span>Next departure</span><strong id="nextDeparture">—</strong></div>
-                  <div><span>Estimated arrival</span><strong id="estimatedArrival">—</strong></div>
+                  <div><span data-i18n="nextDepartureLabel">Next departure</span><strong id="nextDeparture">—</strong></div>
+                  <div><span data-i18n="estimatedArrivalLabel">Estimated arrival</span><strong id="estimatedArrival">—</strong></div>
                 </div>
               </div>
 
               <div class="service-message" id="serviceMessage" hidden></div>
-
               <div class="route-progress" id="routeProgress"></div>
 
               <div class="upcoming-block">
                 <div class="subhead-row">
-                  <h4>Upcoming trains</h4>
+                  <h4 data-i18n="upcomingTrains">Upcoming trains</h4>
                   <span id="frequencyLabel">Every 15 minutes</span>
                 </div>
                 <div class="departure-list" id="departureList"></div>
@@ -190,34 +202,39 @@
       <div class="shell">
         <div class="section-heading matrix-heading">
           <div>
-            <p class="eyebrow"><span></span> Network explorer</p>
-            <h2 id="matrix-title">From–To matrix</h2>
-            <p>Compare travel duration or the next scheduled arrival for every station pair.</p>
+            <p class="eyebrow"><span></span><b data-i18n="networkExplorer">Network explorer</b></p>
+            <h2 id="matrix-title" data-i18n="matrixTitle">From–To matrix</h2>
+            <p data-i18n="matrixDescription">Compare estimated travel duration or the next scheduled arrival for every station pair.</p>
           </div>
           <div class="matrix-controls">
             <label>
-              <span>Display</span>
+              <span data-i18n="metroLineLabel">Metro line</span>
+              <select id="matrixLine"></select>
+            </label>
+            <label>
+              <span data-i18n="displayLabel">Display</span>
               <select id="matrixMode">
-                <option value="duration">Travel time</option>
-                <option value="arrival">Next arrival</option>
+                <option value="duration" data-i18n="travelTimeOption">Travel time</option>
+                <option value="arrival" data-i18n="nextArrivalOption">Next arrival</option>
               </select>
             </label>
             <label>
-              <span>Lookup time</span>
+              <span data-i18n="lookupTimeLabel">Lookup time</span>
               <input type="time" id="matrixTime">
             </label>
           </div>
         </div>
 
         <div class="matrix-legend">
-          <span><i class="legend-dot short"></i> 2–12 min</span>
-          <span><i class="legend-dot medium"></i> 13–26 min</span>
-          <span><i class="legend-dot long"></i> 27+ min</span>
-          <span class="matrix-hint">Select a cell to load that route in the planner.</span>
+          <span><i class="legend-dot short"></i> <b data-i18n="legendShort">2–12 min</b></span>
+          <span><i class="legend-dot medium"></i> <b data-i18n="legendMedium">13–26 min</b></span>
+          <span><i class="legend-dot long"></i> <b data-i18n="legendLong">27+ min</b></span>
+          <span><i class="legend-dot planned"></i> <b data-i18n="legendPlanned">Planned / no timetable</b></span>
+          <span class="matrix-hint" data-i18n="matrixHint">Select a cell to load that route in the planner.</span>
         </div>
 
         <div class="matrix-shell">
-          <div class="matrix-scroll" role="region" aria-label="Station-to-station travel matrix" tabindex="0">
+          <div class="matrix-scroll" role="region" aria-label="Station-to-station travel matrix" data-i18n-aria-label="matrixRegionLabel" tabindex="0">
             <table class="matrix-table" id="matrixTable"></table>
           </div>
         </div>
@@ -228,13 +245,13 @@
       <div class="shell">
         <div class="section-heading">
           <div>
-            <p class="eyebrow"><span></span> All stations</p>
+            <p class="eyebrow"><span></span><b data-i18n="allStations">All stations</b></p>
             <h2 id="stations-title">Line 1 at a glance</h2>
-            <p>First and last scheduled train times for the selected service type.</p>
+            <p id="stationsDescription">First and last scheduled train times for the selected service type.</p>
           </div>
-          <div class="station-list-toggle" role="group" aria-label="Station list timetable type">
-            <button type="button" data-station-service="weekday" class="active">Working day</button>
-            <button type="button" data-station-service="weekend">Weekend / holiday</button>
+          <div class="station-list-toggle" role="group" aria-label="Station list timetable type" data-i18n-aria-label="stationListToggleLabel">
+            <button type="button" data-station-service="weekday" class="active" data-i18n="weekdayLabel">Working day</button>
+            <button type="button" data-station-service="weekend" data-i18n="weekendLabel">Weekend / holiday</button>
           </div>
         </div>
 
@@ -248,10 +265,10 @@
           <svg viewBox="0 0 24 24"><path d="M12 3 2.8 19h18.4L12 3Z"/><path d="M12 9v4M12 16.5v.2"/></svg>
         </div>
         <div>
-          <h2>Plan with a small buffer</h2>
-          <p>Published timetables can change because of maintenance, special events, or operational conditions. Arrive several minutes early and verify local station notices.</p>
+          <h2 data-i18n="bufferTitle">Plan with a small buffer</h2>
+          <p data-i18n="bufferText">Published timetables can change because of maintenance, special events, or operational conditions. Line 2 is partially operational, so planned stations do not show departure times.</p>
         </div>
-        <a href="assets/shiraz-subway-timetable.md" target="_blank" rel="noopener">Open readable timetable <span aria-hidden="true">↗</span></a>
+        <a href="assets/shiraz-subway-timetable.md" target="_blank" rel="noopener"><span data-i18n="openReadableTimetable">Open readable timetable</span> <span aria-hidden="true">↗</span></a>
       </div>
     </section>
   </main>
@@ -262,10 +279,10 @@
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 40 40"><path d="M7 28c8-1 13-7 15-18 7 4 11 10 11 18-6 4-18 5-26 0Z" fill="currentColor" opacity=".22"/><path d="M10 28c8-3 14-8 19-15M18 24c-1-4-1-7 0-10M22 21c3 0 6 1 8 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
-        <div><strong>ShirazGo</strong><span>Independent journey-planning interface</span></div>
+        <div><strong>ShirazGo</strong><span data-i18n="footerTagline">Independent journey-planning interface</span></div>
       </div>
-      <p>Built for clear, fast access to Shiraz Metro Line 1 schedules.</p>
-      <a href="#top">Back to top ↑</a>
+      <p data-i18n="footerText">Built for clear access to Shiraz Metro Lines 1 and 2.</p>
+      <a href="#top" data-i18n="backToTop">Back to top ↑</a>
     </div>
   </footer>
 
