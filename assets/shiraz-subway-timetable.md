@@ -1,6 +1,17 @@
-# Shiraz Metro Line 1 — Accessible Timetable
+# Shiraz Metro — Accessible Timetable for Lines 1 and 2
 
-> A readable Markdown conversion of the supplied 20-page station timetable for Shiraz Metro Line 1.
+> A responsive, text-first timetable reference for Shiraz Metro Lines 1 and 2. Line 1 is converted from the supplied 20-page station timetable; Line 2 is based on published operating information and the current partial-service network.
+
+
+## Quick navigation
+
+- [Line 1 timetable](#line-1-timetable)
+- [Line 2 timetable and station status](#line-2-timetable-and-station-status)
+- [Important service notes](#important-service-notes)
+
+<a id="line-1-timetable"></a>
+
+# Line 1 timetable
 
 ## How to read this timetable
 
@@ -2192,3 +2203,91 @@
 - For route-duration estimates, adjacent stations average approximately two minutes, while the published station offsets are used where available.
 
 Last document revision: 29 July 2026.
+
+---
+
+<a id="line-2-timetable-and-station-status"></a>
+
+# Line 2 timetable and station status
+
+> **Partial-service line:** The complete planned route contains 13 stations, but only the Ghahremanan–Imam Hossein section currently has a modeled regular passenger timetable. Planned stations remain listed for network completeness.
+
+## Line 2 service summary
+
+| Item | Published planning information |
+|:---|:---|
+| Complete planned route | Shokoufeh ↔ Fazilat |
+| Current modeled service section | Ghahremanan ↔ Imam Hossein |
+| First departure toward Imam Hossein | 06:00 from Ghahremanan |
+| First departure toward Ghahremanan | 06:20 from Imam Hossein |
+| Approximate headway | Every 40 minutes |
+| Approximate operating window | 06:00–18:00 on working days |
+| Weekend / official-holiday service | No regular service in the current model |
+| Approximate time between stations | 2 minutes |
+| Approximate active-section travel time | 12 minutes |
+
+The final terminal departures used by the website are **17:20 from Ghahremanan** and **17:40 from Imam Hossein**. Line 2 times are a planning model; local station notices take precedence.
+
+## Line 2 station order and status
+
+| No. | English name | نام فارسی | Current timetable status | Notes |
+|---:|:---|:---|:---|:---|
+| 1 | Shokoufeh | شکوفه | No regular timetable | Planned terminus |
+| 2 | Ghahremanan | قهرمانان | Operational | Current service terminus |
+| 3 | Edalat | عدالت | Operational | — |
+| 4 | Dowlat | دولت | Operational | — |
+| 5 | Rahmat | رحمت | Operational | Future interchange with Line 6 |
+| 6 | Basij | بسیج | Operational | — |
+| 7 | Esteghlal | استقلال | Operational | Future interchange with Line 4 |
+| 8 | Imam Hossein | امام حسین | Operational | Current service terminus and interchange with Line 1 |
+| 9 | Azadi | آزادی | No regular timetable | Future phase |
+| 10 | Atlasi | اطلسی | No regular timetable | Future phase |
+| 11 | Hafezieh | حافظیه | No regular timetable | Future phase |
+| 12 | Saadieh | سعدیه | No regular timetable | Future phase |
+| 13 | Fazilat | فضیلت | No regular timetable | Future terminus |
+
+## Quick reference — toward Imam Hossein
+
+| Station | First train | Last modeled train | Frequency |
+|:---|:---:|:---:|:---:|
+| Ghahremanan | 06:00 | 17:20 | 40 min |
+| Edalat | 06:02 | 17:22 | 40 min |
+| Dowlat | 06:04 | 17:24 | 40 min |
+| Rahmat | 06:06 | 17:26 | 40 min |
+| Basij | 06:08 | 17:28 | 40 min |
+| Esteghlal | 06:10 | 17:30 | 40 min |
+| Imam Hossein | 06:12 | 17:32 | Arrival / terminus |
+
+## Quick reference — toward Ghahremanan
+
+| Station | First train | Last modeled train | Frequency |
+|:---|:---:|:---:|:---:|
+| Imam Hossein | 06:20 | 17:40 | 40 min |
+| Esteghlal | 06:22 | 17:42 | 40 min |
+| Basij | 06:24 | 17:44 | 40 min |
+| Rahmat | 06:26 | 17:46 | 40 min |
+| Dowlat | 06:28 | 17:48 | 40 min |
+| Edalat | 06:30 | 17:50 | 40 min |
+| Ghahremanan | 06:32 | 17:52 | Arrival / terminus |
+
+## Terminal departure sequences
+
+### Ghahremanan → Imam Hossein
+
+`06:00, 06:40, 07:20, 08:00, 08:40, 09:20, 10:00, 10:40, 11:20, 12:00, 12:40, 13:20, 14:00, 14:40, 15:20, 16:00, 16:40, 17:20`
+
+### Imam Hossein → Ghahremanan
+
+`06:20, 07:00, 07:40, 08:20, 09:00, 09:40, 10:20, 11:00, 11:40, 12:20, 13:00, 13:40, 14:20, 15:00, 15:40, 16:20, 17:00, 17:40`
+
+---
+
+<a id="important-service-notes"></a>
+
+# Important service notes
+
+- Times use the **24-hour clock** and local Shiraz time.
+- Line 1 data is reconstructed from the supplied station timetable.
+- Line 2 data is a practical planning model based on the available start times, headway, operating window, and current active section.
+- The website supports English and Persian; Persian mode uses RTL layout and Persian numerals.
+- Maintenance, events, fleet availability, and station openings can change service. Arrive early and check station notices.
