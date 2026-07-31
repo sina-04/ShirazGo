@@ -8,8 +8,8 @@ const UI = {
     brandTagline: 'Metro, made simple',
     primaryNavLabel: 'Primary navigation',
     navPlan: 'Plan a trip', navMatrix: 'From–To matrix', navStations: 'Stations',
-    readableTimetable: 'Readable timetable', themeToggleLabel: 'Switch color theme',
-    heroTitle: '<span class="hero-title-line hero-title-main">Move through Shiraz</span><br><em class="hero-title-confidence">with confidence.</em>',
+    readableTimetable: 'PDF timetable', themeToggleLabel: 'Switch color theme',
+    heroTitle: '<span class="hero-title-line hero-title-move">Move through</span><br><span class="hero-title-line hero-title-main">Shiraz</span><br><em class="hero-title-line hero-title-confidence">with</em><br><em class="hero-title-line hero-title-confidence">confidence.</em>',
     heroLead: 'Choose a metro line and two stations to see the next scheduled train and a clear station-by-station journey estimate.',
     chooseLineLabel: 'Choose metro line', serviceOverviewLabel: 'Service overview',
     stationsFact: 'stations', betweenStationsFact: 'between stations', frequencyFact: 'scheduled frequency',
@@ -29,7 +29,10 @@ const UI = {
     allStations: 'All stations', stationListToggleLabel: 'Station list timetable type',
     bufferTitle: 'Plan with a small buffer',
     bufferText: 'Published timetables can change because of maintenance, special events, or operational conditions. Line 2 is partially operational, so planned stations do not show departure times.',
-    openReadableTimetable: 'Open readable timetable', footerTagline: 'Independent journey-planning interface',
+    timetableEyebrow: 'Published schedule', timetableTitle: 'Read the full timetable',
+    timetableDescription: 'Browse the complete Shiraz Metro timetable here without downloading a file.',
+    timetableViewerLabel: 'Shiraz Metro timetable PDF',
+    openReadableTimetable: 'View PDF timetable', footerTagline: 'Independent journey-planning interface',
     footerText: 'Built for clear access to Shiraz Metro Lines 1 and 2.', backToTop: 'Back to top ↑',
     languageTarget: 'فارسی', languageToggleLabel: 'Change language to Persian',
     lineAtGlance: line => `${line} at a glance`,
@@ -65,7 +68,7 @@ const UI = {
     brandTagline: 'مترو، ساده و روشن',
     primaryNavLabel: 'پیمایش اصلی',
     navPlan: 'برنامه‌ریزی سفر', navMatrix: 'ماتریس مبدأ–مقصد', navStations: 'ایستگاه‌ها',
-    readableTimetable: 'جدول زمانی خوانا', themeToggleLabel: 'تغییر حالت رنگی',
+    readableTimetable: 'جدول زمانی PDF', themeToggleLabel: 'تغییر حالت رنگی',
     heroTitle: '<span class="hero-title-line hero-title-main">در شیراز حرکت کنید؛</span><br><em class="hero-title-confidence">با اطمینان.</em>',
     heroLead: 'خط مترو، ایستگاه مبدأ و مقصد را انتخاب کنید تا نزدیک‌ترین قطار و برآورد مرحله‌به‌مرحله سفر را ببینید.',
     chooseLineLabel: 'انتخاب خط مترو', serviceOverviewLabel: 'نمای کلی خدمات',
@@ -86,7 +89,10 @@ const UI = {
     allStations: 'همه ایستگاه‌ها', stationListToggleLabel: 'نوع جدول زمانی فهرست ایستگاه‌ها',
     bufferTitle: 'زمان احتیاطی کوتاهی در نظر بگیرید',
     bufferText: 'جدول‌های زمانی ممکن است به‌دلیل تعمیرات، رویدادهای ویژه یا شرایط بهره‌برداری تغییر کنند. خط ۲ به‌صورت بخشی فعال است؛ بنابراین برای ایستگاه‌های برنامه‌ریزی‌شده زمان حرکت نمایش داده نمی‌شود.',
-    openReadableTimetable: 'باز کردن جدول زمانی خوانا', footerTagline: 'رابط مستقل برنامه‌ریزی سفر',
+    timetableEyebrow: 'برنامه منتشرشده', timetableTitle: 'جدول زمانی کامل را بخوانید',
+    timetableDescription: 'جدول زمانی کامل متروی شیراز را بدون دانلود فایل در همین صفحه مرور کنید.',
+    timetableViewerLabel: 'فایل PDF جدول زمانی متروی شیراز',
+    openReadableTimetable: 'مشاهده جدول زمانی PDF', footerTagline: 'رابط مستقل برنامه‌ریزی سفر',
     footerText: 'برای دسترسی روشن به خطوط ۱ و ۲ متروی شیراز ساخته شده است.', backToTop: 'بازگشت به بالا ↑',
     languageTarget: 'English', languageToggleLabel: 'تغییر زبان به انگلیسی',
     lineAtGlance: line => `نمای کلی ${line}`, line1StationDescription: 'زمان نخستین و آخرین قطار برای نوع سرویس انتخاب‌شده.',
@@ -200,7 +206,8 @@ const dom = {
   languageToggle: document.querySelector('#languageToggle'), languageToggleLabel: document.querySelector('#languageToggleLabel'), toast: document.querySelector('#toast'),
   heroStationCount: document.querySelector('#heroStationCount'), heroTravelTime: document.querySelector('#heroTravelTime'), heroFrequency: document.querySelector('#heroFrequency'),
   previewLineName: document.querySelector('#previewLineName'), previewStatus: document.querySelector('#previewStatus'), previewNote: document.querySelector('#previewNote'),
-  heroMiniMap: document.querySelector('#heroMiniMap')
+  heroMiniMap: document.querySelector('#heroMiniMap'), backToTop: document.querySelector('#backToTop'),
+  timetableViewer: document.querySelector('#timetableViewer')
 };
 
 let activeLineId = 'line1';
@@ -219,6 +226,11 @@ function t(key, ...args) {
   return typeof value === 'function' ? value(...args) : value;
 }
 function local(value) { return typeof value === 'object' && value ? (value[currentLanguage] ?? value.en) : value; }
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g,character=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[character]);
+}
 function localizeDigits(value) {
   const string = String(value);
   if (currentLanguage !== 'fa') return string;
@@ -227,9 +239,21 @@ function localizeDigits(value) {
 function formatNumber(value, padding = 0) { return localizeDigits(String(value).padStart(padding, '0')); }
 function lineData(lineId = activeLineId) { return LINES[lineId] || LINES.line1; }
 function stationName(line, index) { return local(line.stations[index].name); }
+function normalizeTimeValue(value) {
+  if (!value) return '';
+  const latinDigits=String(value).trim()
+    .replace(/[۰-۹]/g,digit=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+    .replace(/[٠-٩]/g,digit=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)));
+  const match=latinDigits.match(/^(\d{1,2}):(\d{1,2})$/);
+  if (!match) return '';
+  const hours=Number(match[1]),minutes=Number(match[2]);
+  if (hours>23||minutes>59) return '';
+  return `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}`;
+}
 function minutesFromTime(timeString) {
-  if (!timeString) return 0;
-  const [hours, minutes] = timeString.split(':').map(Number);
+  const normalized=normalizeTimeValue(timeString);
+  if (!normalized) return 0;
+  const [hours, minutes] = normalized.split(':').map(Number);
   return (hours * 60) + minutes;
 }
 function timeFromMinutes(totalMinutes) {
@@ -330,8 +354,10 @@ function renderLineControls() {
     const active = button.dataset.lineSwitch === activeLineId;
     button.classList.toggle('active',active); button.setAttribute('aria-pressed',String(active));
   });
-  dom.lineServiceBanner.className = `line-service-banner ${line.statusTone}`;
-  dom.lineServiceBanner.innerHTML = `<strong>${local(line.name)}: ${local(line.status)}</strong><span>${local(line.banner)}</span>`;
+  dom.lineServiceBanner.className = `line-service-banner ${line.statusTone} banner-${line.id}`;
+  dom.lineServiceBanner.innerHTML = line.id === 'line1'
+    ? `<strong>${local(line.name)}: ${local(line.status)}</strong><span>${local(line.banner)}</span>`
+    : `<strong>${local(line.name)}: ${local(line.status)}</strong>`;
   dom.formNote.textContent = local(line.formNote);
   dom.stationsTitle.textContent = t('lineAtGlance',local(line.name));
   dom.stationsDescription.textContent = line.id==='line1' ? t('line1StationDescription') : t('line2StationDescription');
@@ -352,7 +378,7 @@ function syncDateAndTimeToNow() {
   if (!serviceTypeManuallyChanged) setServiceType(isFriday(dom.date.value)?'weekend':'weekday');
 }
 function persistRoute() {
-  storage.set('shirazgo-route-v3',JSON.stringify({line:activeLineId,from:dom.from.value,to:dom.to.value,date:dom.date.value,time:dom.time.value,serviceType:getSelectedServiceType()}));
+  storage.set('shirazgo-route-v3',JSON.stringify({line:activeLineId,from:dom.from.value,to:dom.to.value,time:dom.time.value,serviceType:getSelectedServiceType()}));
 }
 function restoreRoute() {
   try {
@@ -362,7 +388,7 @@ function restoreRoute() {
     const line=lineData();
     if (line.stations[Number(saved.from)]) dom.from.value=saved.from;
     if (line.stations[Number(saved.to)]) dom.to.value=saved.to;
-    if (saved.date) dom.date.value=saved.date;
+    dom.date.value=formatDateInput(new Date());
     if (saved.time) { dom.time.value=saved.time; dom.matrixTime.value=saved.time; }
     if (line.services[saved.serviceType]) { setServiceType(saved.serviceType); stationListService=saved.serviceType; }
     return true;
@@ -371,13 +397,39 @@ function restoreRoute() {
 function renderRouteProgress(line,fromIndex,toIndex) {
   const step=fromIndex<toIndex?1:-1, indices=[];
   for (let index=fromIndex; index!==toIndex+step; index+=step) indices.push(index);
-  const maxVisibleLabels=6;
-  dom.routeProgress.innerHTML=indices.map((stationIndex,visualIndex) => {
-    const station=line.stations[stationIndex], terminal=visualIndex===0||visualIndex===indices.length-1;
-    const showLabel=indices.length<=maxVisibleLabels||terminal||visualIndex===Math.floor(indices.length/2);
-    const title=station.active?local(station.name):t('stationPlannedTitle',local(station.name));
-    return `<div class="progress-stop ${terminal?'terminal':''} ${station.active?'':'planned'} ${showLabel?'':'hidden-label'}" title="${title}"><i></i><span>${local(station.name)}</span></div>`;
+  const lastVisualIndex=indices.length-1,cycles=indices.length>12?2:1.5;
+  const stops=indices.map((stationIndex,visualIndex) => {
+    const station=line.stations[stationIndex],terminal=visualIndex===0||visualIndex===lastVisualIndex;
+    const progress=lastVisualIndex?visualIndex/lastVisualIndex:0;
+    const waveY=Math.sin(progress*Math.PI*2*cycles)*46;
+    const name=escapeHtml(local(station.name));
+    const title=escapeHtml(station.active?local(station.name):t('stationPlannedTitle',local(station.name)));
+    return `<div class="progress-stop ${waveY>8?'label-above':''} ${terminal?'terminal':''} ${station.active?'':'planned'}" style="--wave-x:${(4+progress*92).toFixed(3)}%;--wave-y:${waveY.toFixed(2)}px" title="${title}" aria-label="${title}" tabindex="0" role="group">
+      <i aria-hidden="true"></i><span>${name}</span>
+    </div>`;
   }).join('');
+  dom.routeProgress.innerHTML=`<div class="route-wave-track" data-stop-count="${indices.length}" data-wave-cycles="${cycles}" style="--stop-count:${indices.length}">
+    <canvas class="route-wave-canvas" aria-hidden="true"></canvas>${stops}
+  </div>`;
+  window.requestAnimationFrame(drawRouteWave);
+}
+function drawRouteWave() {
+  const track=dom.routeProgress.querySelector('.route-wave-track'),canvas=dom.routeProgress.querySelector('.route-wave-canvas');
+  if (!track||!canvas) return;
+  const width=track.clientWidth,height=track.clientHeight,dpr=Math.min(window.devicePixelRatio||1,2);
+  if (!width||!height) return;
+  canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
+  canvas.style.width=`${width}px`;canvas.style.height=`${height}px`;
+  const context=canvas.getContext('2d');
+  context.setTransform(dpr,0,0,dpr,0,0);context.clearRect(0,0,width,height);
+  const cycles=Number(track.dataset.waveCycles)||1.5,amplitude=46,center=height/2;
+  context.beginPath();
+  for(let sample=0;sample<=240;sample+=1){
+    const progress=sample/240,x=width*(.04+progress*.92),y=center+Math.sin(progress*Math.PI*2*cycles)*amplitude;
+    if(sample===0)context.moveTo(x,y);else context.lineTo(x,y);
+  }
+  context.strokeStyle=getComputedStyle(track).getPropertyValue('--route-line').trim()||'#d49a37';
+  context.lineWidth=4;context.lineCap='round';context.lineJoin='round';context.stroke();
 }
 function showUnavailableResult(line,fromIndex,toIndex,serviceType) {
   const service=line.services[serviceType], fromStation=line.stations[fromIndex], toStation=line.stations[toIndex];
@@ -483,6 +535,7 @@ function translateStaticContent() {
   document.querySelectorAll('[data-i18n]').forEach(element=>{ const key=element.dataset.i18n; if (key) element.textContent=t(key); });
   document.querySelectorAll('[data-i18n-html]').forEach(element=>{ const key=element.dataset.i18nHtml; if (key) element.innerHTML=t(key); });
   document.querySelectorAll('[data-i18n-aria-label]').forEach(element=>{ const key=element.dataset.i18nAriaLabel; if (key) element.setAttribute('aria-label',t(key)); });
+  document.querySelectorAll('[data-i18n-title]').forEach(element=>{ const key=element.dataset.i18nTitle; if (key) element.setAttribute('title',t(key)); });
   document.title=t('pageTitle');
   const meta=document.querySelector('meta[name="description"]'); if (meta) meta.content=t('pageDescription');
   dom.languageToggleLabel.textContent=t('languageTarget');
@@ -494,6 +547,9 @@ function translateStaticContent() {
 function applyLanguage(language,{persist=true}={}) {
   currentLanguage=language==='fa'?'fa':'en';
   dom.html.lang=currentLanguage; dom.html.dir=currentLanguage==='fa'?'rtl':'ltr'; dom.html.dataset.language=currentLanguage;
+  const timetableFile=currentLanguage==='fa'?'shiraz-subway-timetable-fa.pdf':'shiraz-subway-timetable.pdf';
+  const timetableSource=`assets/${timetableFile}#view=FitH&toolbar=0&navpanes=0`;
+  if (dom.timetableViewer?.getAttribute('src')!==timetableSource) dom.timetableViewer?.setAttribute('src',timetableSource);
   translateStaticContent(); renderLineOptions(); populateStationSelects({preserve:true}); renderLineControls(); renderHero(); renderMatrix(); renderStationList();
   if (!dom.resultContent.hidden && dom.from.value!==dom.to.value) showRouteResult();
   if (persist) storage.set('shirazgo-language',currentLanguage);
@@ -505,7 +561,13 @@ function bindEvents() {
   document.querySelectorAll('[data-line-switch]').forEach(button=>button.addEventListener('click',()=>setActiveLine(button.dataset.lineSwitch)));
   dom.swap.addEventListener('click',()=>{const currentFrom=dom.from.value;dom.from.value=dom.to.value;dom.to.value=currentFrom;showRouteResult();});
   dom.leaveNow.addEventListener('click',()=>{syncDateAndTimeToNow();showRouteResult({scroll:window.innerWidth<700});});
-  dom.date.addEventListener('change',()=>{if(!serviceTypeManuallyChanged)setServiceType(isFriday(dom.date.value)?'weekend':'weekday');renderMatrix();renderStationList();});
+  [dom.time,dom.matrixTime].forEach(input=>{
+    input.addEventListener('input',()=>input.setCustomValidity(''));
+    input.addEventListener('change',()=>{
+      const normalized=normalizeTimeValue(input.value);
+      if (normalized) input.value=normalized;
+    });
+  });
   document.querySelectorAll('input[name="serviceType"]').forEach(input=>input.addEventListener('change',()=>{
     serviceTypeManuallyChanged=true;stationListService=input.value;
     document.querySelectorAll('[data-station-service]').forEach(button=>button.classList.toggle('active',button.dataset.stationService===stationListService));
@@ -524,6 +586,12 @@ function bindEvents() {
   }));
   dom.themeToggle.addEventListener('click',()=>applyTheme(dom.html.dataset.theme==='dark'?'light':'dark'));
   dom.languageToggle.addEventListener('click',()=>applyLanguage(currentLanguage==='en'?'fa':'en'));
+  dom.backToTop.addEventListener('click',event=>{
+    event.preventDefault();
+    const behavior=window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
+    window.scrollTo({top:0,left:0,behavior});
+  });
+  window.addEventListener('resize',()=>window.requestAnimationFrame(drawRouteWave));
   [dom.from,dom.to,dom.time].forEach(element=>element.addEventListener('change',()=>{if(!dom.resultContent.hidden&&dom.from.value!==dom.to.value)showRouteResult();}));
 }
 function init() {
