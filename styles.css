@@ -969,26 +969,6 @@
   html[dir="rtl"] .hero-orb-one { right: auto; left: -220px; }
   html[dir="rtl"] .hero-orb-two { left: auto; right: 45%; }
 
-  @media (max-width: 980px) {
-    html[data-language="fa"] .hero-grid {
-      grid-template-columns: 1fr;
-    }
-    html[data-language="fa"] .hero-copy {
-      text-align: center;
-    }
-    html[data-language="fa"] .hero-lead {
-      margin-inline: auto;
-    }
-    html[data-language="fa"] .hero-facts {
-      justify-content: center;
-    }
-    html[data-language="fa"] .line-preview {
-      width: min(100%, 500px);
-      margin-inline: auto;
-      transform: none;
-    }
-  }
-
   @media (max-width: 780px) {
     html[dir="rtl"] .line-preview { transform: none; }
   }

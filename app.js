@@ -14,7 +14,7 @@ const UI = {
     chooseLineLabel: 'Choose metro line', serviceOverviewLabel: 'Service overview',
     stationsFact: 'stations', betweenStationsFact: 'between stations', frequencyFact: 'scheduled frequency',
     linePreviewLabel: 'Metro line preview',
-    plannerEyebrow: 'Journey planner', plannerTitle: 'Where are you going?', leaveNow: 'Leave now',
+    plannerEyebrow: 'Journey planner', plannerTitle: 'Where are you going?',
     metroLineLabel: 'Metro line', startingStationLabel: 'Starting station', swapStationsLabel: 'Swap starting point and destination',
     destinationLabel: 'Destination', dateLabel: 'Date', timeLabel: 'Time', serviceTypeLabel: 'Service type',
     weekdayLabel: 'Working day', weekendLabel: 'Weekend / holiday', planJourney: 'Plan my journey',
@@ -74,7 +74,7 @@ const UI = {
     chooseLineLabel: 'انتخاب خط مترو', serviceOverviewLabel: 'نمای کلی خدمات',
     stationsFact: 'ایستگاه', betweenStationsFact: 'بین هر دو ایستگاه', frequencyFact: 'فاصله حرکت برنامه‌ریزی‌شده',
     linePreviewLabel: 'پیش‌نمایش خط مترو',
-    plannerEyebrow: 'برنامه‌ریز سفر', plannerTitle: 'به کجا می‌روید؟', leaveNow: 'حرکت از اکنون',
+    plannerEyebrow: 'برنامه‌ریز سفر', plannerTitle: 'به کجا می‌روید؟',
     metroLineLabel: 'خط مترو', startingStationLabel: 'ایستگاه مبدأ', swapStationsLabel: 'جابجایی مبدأ و مقصد',
     destinationLabel: 'ایستگاه مقصد', dateLabel: 'تاریخ', timeLabel: 'زمان', serviceTypeLabel: 'نوع سرویس',
     weekdayLabel: 'روز کاری', weekendLabel: 'تعطیلات و آخر هفته', planJourney: 'برنامه‌ریزی سفر',
@@ -195,7 +195,7 @@ const dom = {
   html: document.documentElement, form: document.querySelector('#routeForm'), line: document.querySelector('#metroLine'),
   matrixLine: document.querySelector('#matrixLine'), from: document.querySelector('#fromStation'), to: document.querySelector('#toStation'),
   date: document.querySelector('#travelDate'), time: document.querySelector('#travelTime'), swap: document.querySelector('#swapStations'),
-  leaveNow: document.querySelector('#leaveNowButton'), lineServiceBanner: document.querySelector('#lineServiceBanner'), formNote: document.querySelector('#formNote'),
+  lineServiceBanner: document.querySelector('#lineServiceBanner'), formNote: document.querySelector('#formNote'),
   resultEmpty: document.querySelector('#resultEmpty'), resultContent: document.querySelector('#resultContent'), resultDirection: document.querySelector('#resultDirection'),
   resultFrom: document.querySelector('#resultFrom'), resultTo: document.querySelector('#resultTo'), resultServiceBadge: document.querySelector('#resultServiceBadge'),
   journeyDuration: document.querySelector('#journeyDuration'), journeyStops: document.querySelector('#journeyStops'), nextDeparture: document.querySelector('#nextDeparture'),
@@ -560,7 +560,6 @@ function bindEvents() {
   dom.matrixLine.addEventListener('change',()=>setActiveLine(dom.matrixLine.value));
   document.querySelectorAll('[data-line-switch]').forEach(button=>button.addEventListener('click',()=>setActiveLine(button.dataset.lineSwitch)));
   dom.swap.addEventListener('click',()=>{const currentFrom=dom.from.value;dom.from.value=dom.to.value;dom.to.value=currentFrom;showRouteResult();});
-  dom.leaveNow.addEventListener('click',()=>{syncDateAndTimeToNow();showRouteResult({scroll:window.innerWidth<700});});
   [dom.time,dom.matrixTime].forEach(input=>{
     input.addEventListener('input',()=>input.setCustomValidity(''));
     input.addEventListener('change',()=>{
@@ -599,7 +598,8 @@ function init() {
   currentLanguage=storage.get('shirazgo-language')==='fa'?'fa':'en';
   activeLineId=LINES[storage.get('shirazgo-active-line')]?storage.get('shirazgo-active-line'):'line1';
   translateStaticContent(); setActiveLine(activeLineId,{updateResult:false});
-  const restored=restoreRoute(); if(!restored)syncDateAndTimeToNow(); if(!dom.date.value||!dom.time.value)syncDateAndTimeToNow();
+  const restored=restoreRoute();
+  syncDateAndTimeToNow();
   applyLanguage(currentLanguage,{persist:false}); renderLineControls(); renderHero(); renderMatrix(); renderStationList(); bindEvents();
   if(restored&&dom.from.value!==dom.to.value)showRouteResult();
 }
