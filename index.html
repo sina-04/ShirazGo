@@ -132,17 +132,13 @@
                 <span data-i18n="timeLabel">Time</span>
                 <input id="travelTime" name="travelTime" class="clock-input" type="text" inputmode="numeric" placeholder="HH:MM" pattern="(?:[01][0-9]|2[0-3]):[0-5][0-9]" maxlength="5" autocomplete="off" required>
               </label>
-              <fieldset class="service-type" id="serviceTypeGroup">
-                <legend data-i18n="serviceTypeLabel">Service type</legend>
-                <label><input type="radio" name="serviceType" value="weekday" checked><span data-i18n="weekdayLabel">Working day</span></label>
-                <label><input type="radio" name="serviceType" value="weekend"><span data-i18n="weekendLabel">Weekend / holiday</span></label>
-              </fieldset>
+              <div class="service-day-summary" id="serviceDaySummary" role="status" aria-live="polite">
+                <span data-i18n="automaticTimetableLabel">Today’s timetable</span>
+                <strong data-i18n="weekdayLabel">Working day</strong>
+                <small data-i18n="automaticTimetableHint">Selected automatically from the local Iranian calendar.</small>
+              </div>
             </div>
 
-            <button class="primary-button" type="submit">
-              <span data-i18n="planJourney">Plan my journey</span>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
-            </button>
             <p class="form-note" id="formNote">Line 1 uses the supplied station timetable. Travel duration follows published station offsets.</p>
           </form>
 
@@ -241,11 +237,11 @@
           <div>
             <p class="eyebrow"><span></span><b data-i18n="allStations">All stations</b></p>
             <h2 id="stations-title">Line 1 at a glance</h2>
-            <p id="stationsDescription">First and last scheduled train times for the selected service type.</p>
+            <p id="stationsDescription">First and last scheduled train times for today’s automatically selected timetable.</p>
           </div>
-          <div class="station-list-toggle" role="group" aria-label="Station list timetable type" data-i18n-aria-label="stationListToggleLabel">
-            <button type="button" data-station-service="weekday" class="active" data-i18n="weekdayLabel">Working day</button>
-            <button type="button" data-station-service="weekend" data-i18n="weekendLabel">Weekend / holiday</button>
+          <div class="station-service-summary" id="stationServiceSummary" aria-live="polite">
+            <span data-i18n="automaticTimetableLabel">Today’s timetable</span>
+            <strong data-i18n="weekdayLabel">Working day</strong>
           </div>
         </div>
 
@@ -253,28 +249,7 @@
       </div>
     </section>
 
-    <section class="timetable-section" id="timetable" aria-labelledby="timetable-title">
-      <div class="shell">
-        <div class="section-heading timetable-heading">
-          <div>
-            <p class="eyebrow"><span></span><b data-i18n="timetableEyebrow">Published schedule</b></p>
-            <h2 id="timetable-title" data-i18n="timetableTitle">Read the full timetable</h2>
-            <p data-i18n="timetableDescription">Browse the complete Shiraz Metro timetable here without downloading a file.</p>
-          </div>
-        </div>
-        <div class="timetable-viewer">
-          <iframe
-            id="timetableViewer"
-            src="assets/shiraz-subway-timetable.pdf#view=FitH&amp;toolbar=0&amp;navpanes=0"
-            title="Shiraz Metro timetable PDF"
-            data-i18n-title="timetableViewerLabel"
-            loading="lazy"
-          ></iframe>
-        </div>
-      </div>
-    </section>
-
-    <section class="service-note-section">
+    <section class="service-note-section" id="timetable">
       <div class="shell service-note-card">
         <div class="service-note-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M12 3 2.8 19h18.4L12 3Z"/><path d="M12 9v4M12 16.5v.2"/></svg>
@@ -283,7 +258,7 @@
           <h2 data-i18n="bufferTitle">Plan with a small buffer</h2>
           <p data-i18n="bufferText">Published timetables can change because of maintenance, special events, or operational conditions. Line 2 is partially operational, so planned stations do not show departure times.</p>
         </div>
-        <a href="#timetable"><span data-i18n="openReadableTimetable">View PDF timetable</span> <span aria-hidden="true">↓</span></a>
+        <a data-timetable-download href="assets/shiraz-subway-timetable.pdf" download="ShirazGo-metro-guide.pdf"><span data-i18n="openReadableTimetable">Download PDF timetable</span> <span aria-hidden="true">↓</span></a>
       </div>
     </section>
   </main>

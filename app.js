@@ -17,7 +17,13 @@ const UI = {
     plannerEyebrow: 'Journey planner', plannerTitle: 'Where are you going?',
     metroLineLabel: 'Metro line', startingStationLabel: 'Starting station', swapStationsLabel: 'Swap starting point and destination',
     destinationLabel: 'Destination', dateLabel: 'Date', timeLabel: 'Time', serviceTypeLabel: 'Service type',
-    weekdayLabel: 'Working day', weekendLabel: 'Weekend / holiday', planJourney: 'Plan my journey',
+    weekdayLabel: 'Working day', weekendLabel: 'Weekend / holiday',
+    automaticTimetableLabel: 'Today’s timetable', automaticTimetableHint: 'Selected automatically from the local Iranian calendar.',
+    regularDayDescription: 'Regular working day', thursdayDescription: 'Thursday uses the working-day timetable',
+    fridayDescription: 'Friday uses the weekend / holiday timetable',
+    officialHolidayDescription: name => `${name || 'Official holiday'} · holiday timetable`,
+    specialClosureDescription: (name, affected) => `${name || 'Special closure'} · ${affected ? 'holiday timetable' : 'metro timetable unchanged'}`,
+    calendarFallbackHint: 'Calendar file unavailable; inferred from the weekday.',
     emptyResultTitle: 'Your route will appear here',
     emptyResultText: 'Select a line, starting station, and destination to view departures, arrival time, and every stop on the way.',
     estimatedJourneyLabel: 'Estimated journey', nextDepartureLabel: 'Next departure', estimatedArrivalLabel: 'Estimated arrival',
@@ -29,14 +35,11 @@ const UI = {
     allStations: 'All stations', stationListToggleLabel: 'Station list timetable type',
     bufferTitle: 'Plan with a small buffer',
     bufferText: 'Published timetables can change because of maintenance, special events, or operational conditions. Line 2 is partially operational, so planned stations do not show departure times.',
-    timetableEyebrow: 'Published schedule', timetableTitle: 'Read the full timetable',
-    timetableDescription: 'Browse the complete Shiraz Metro timetable here without downloading a file.',
-    timetableViewerLabel: 'Shiraz Metro timetable PDF',
-    openReadableTimetable: 'View PDF timetable', footerTagline: 'Independent journey-planning interface',
+    openReadableTimetable: 'Download PDF timetable', footerTagline: 'Independent journey-planning interface',
     footerText: 'Built for clear access to Shiraz Metro Lines 1 and 2.', backToTop: 'Back to top ↑',
     languageTarget: 'فارسی', languageToggleLabel: 'Change language to Persian',
     lineAtGlance: line => `${line} at a glance`,
-    line1StationDescription: 'First and last scheduled train times for the selected service type.',
+    line1StationDescription: 'First and last scheduled train times for today’s automatically selected timetable.',
     line2StationDescription: 'Operational status and modeled service windows for the current partial-service section.',
     plannedNoService: 'Planned / no service', sameStation: 'Same station',
     chooseDifferent: 'Choose two different stations.', unavailable: 'Unavailable', closed: 'Closed',
@@ -44,6 +47,7 @@ const UI = {
     minutes: n => `${n} min`, stops: n => `${n} ${n === 1 ? 'stop' : 'stops'}`,
     everyMinutes: n => `Every ${n} minutes`,
     estimatedArrivalAt: time => `Estimated arrival ${time}`,
+    planDeparture: (departure, arrival) => `Plan this journey on the ${departure} train, arriving at approximately ${arrival}`,
     noRegularService: label => `No regular ${label.toLowerCase()} service`,
     noTrainAfter: time => `No scheduled train after ${time}`,
     matrixCorner: 'From ↓ / To →', noServiceShort: 'No svc', planned: 'Planned',
@@ -77,7 +81,13 @@ const UI = {
     plannerEyebrow: 'برنامه‌ریز سفر', plannerTitle: 'به کجا می‌روید؟',
     metroLineLabel: 'خط مترو', startingStationLabel: 'ایستگاه مبدأ', swapStationsLabel: 'جابجایی مبدأ و مقصد',
     destinationLabel: 'ایستگاه مقصد', dateLabel: 'تاریخ', timeLabel: 'زمان', serviceTypeLabel: 'نوع سرویس',
-    weekdayLabel: 'روز کاری', weekendLabel: 'تعطیلات و آخر هفته', planJourney: 'برنامه‌ریزی سفر',
+    weekdayLabel: 'روز کاری', weekendLabel: 'تعطیلات و آخر هفته',
+    automaticTimetableLabel: 'جدول زمانی امروز', automaticTimetableHint: 'به‌صورت خودکار از تقویم محلی ایران انتخاب شده است.',
+    regularDayDescription: 'روز کاری عادی', thursdayDescription: 'پنج‌شنبه از جدول روز کاری استفاده می‌کند',
+    fridayDescription: 'جمعه از جدول تعطیلات و آخر هفته استفاده می‌کند',
+    officialHolidayDescription: name => `${name || 'تعطیل رسمی'} · جدول تعطیلات`,
+    specialClosureDescription: (name, affected) => `${name || 'تعطیلی ویژه'} · ${affected ? 'جدول تعطیلات' : 'جدول مترو بدون تغییر'}`,
+    calendarFallbackHint: 'فایل تقویم در دسترس نبود؛ نوع سرویس از روز هفته تشخیص داده شد.',
     emptyResultTitle: 'مسیر شما اینجا نمایش داده می‌شود',
     emptyResultText: 'خط، مبدأ و مقصد را انتخاب کنید تا زمان حرکت، رسیدن و تمام ایستگاه‌های مسیر نمایش داده شوند.',
     estimatedJourneyLabel: 'زمان تقریبی سفر', nextDepartureLabel: 'حرکت بعدی', estimatedArrivalLabel: 'زمان تقریبی رسیدن',
@@ -89,19 +99,17 @@ const UI = {
     allStations: 'همه ایستگاه‌ها', stationListToggleLabel: 'نوع جدول زمانی فهرست ایستگاه‌ها',
     bufferTitle: 'زمان احتیاطی کوتاهی در نظر بگیرید',
     bufferText: 'جدول‌های زمانی ممکن است به‌دلیل تعمیرات، رویدادهای ویژه یا شرایط بهره‌برداری تغییر کنند. خط ۲ به‌صورت بخشی فعال است؛ بنابراین برای ایستگاه‌های برنامه‌ریزی‌شده زمان حرکت نمایش داده نمی‌شود.',
-    timetableEyebrow: 'برنامه منتشرشده', timetableTitle: 'جدول زمانی کامل را بخوانید',
-    timetableDescription: 'جدول زمانی کامل متروی شیراز را بدون دانلود فایل در همین صفحه مرور کنید.',
-    timetableViewerLabel: 'فایل PDF جدول زمانی متروی شیراز',
-    openReadableTimetable: 'مشاهده جدول زمانی PDF', footerTagline: 'رابط مستقل برنامه‌ریزی سفر',
+    openReadableTimetable: 'دانلود جدول زمانی PDF', footerTagline: 'رابط مستقل برنامه‌ریزی سفر',
     footerText: 'برای دسترسی روشن به خطوط ۱ و ۲ متروی شیراز ساخته شده است.', backToTop: 'بازگشت به بالا ↑',
     languageTarget: 'English', languageToggleLabel: 'تغییر زبان به انگلیسی',
-    lineAtGlance: line => `نمای کلی ${line}`, line1StationDescription: 'زمان نخستین و آخرین قطار برای نوع سرویس انتخاب‌شده.',
+    lineAtGlance: line => `نمای کلی ${line}`, line1StationDescription: 'زمان نخستین و آخرین قطار برای جدول زمانی انتخاب‌شده خودکار امروز.',
     line2StationDescription: 'وضعیت بهره‌برداری و بازه‌های زمانی برآوردی بخش فعال خط ۲.',
     plannedNoService: 'برنامه‌ریزی‌شده / بدون سرویس', sameStation: 'ایستگاه یکسان',
     chooseDifferent: 'دو ایستگاه متفاوت انتخاب کنید.', unavailable: 'در دسترس نیست', closed: 'پایان سرویس',
     noPassengerTimetable: 'برای این انتخاب جدول زمانی منظم مسافری وجود ندارد', noMoreTrains: 'امروز قطار برنامه‌ریزی‌شده دیگری وجود ندارد',
     minutes: n => `${n} دقیقه`, stops: n => `${n} ایستگاه`, everyMinutes: n => `هر ${n} دقیقه`,
     estimatedArrivalAt: time => `زمان تقریبی رسیدن: ${time}`, noRegularService: label => `سرویس منظم ${label} وجود ندارد`,
+    planDeparture: (departure, arrival) => `برنامه‌ریزی این سفر با قطار ساعت ${departure} و رسیدن تقریبی در ساعت ${arrival}`,
     noTrainAfter: time => `پس از ساعت ${time} قطار برنامه‌ریزی‌شده‌ای وجود ندارد`,
     matrixCorner: 'مبدأ ↓ / مقصد ←', noServiceShort: 'بدون سرویس', planned: 'برنامه‌ریزی‌شده',
     plannedStation: 'ایستگاه برنامه‌ریزی‌شده', serviceTerminus: 'ایستگاه پایانی سرویس', operationalStation: 'ایستگاه فعال',
@@ -121,6 +129,14 @@ const UI = {
 };
 
 const text = (en, fa) => ({ en, fa });
+
+const SERVICE_DAY_TYPES = Object.freeze({
+  REGULAR_WEEKDAY: 'REGULAR_WEEKDAY',
+  THURSDAY: 'THURSDAY',
+  FRIDAY: 'FRIDAY',
+  OFFICIAL_HOLIDAY: 'OFFICIAL_HOLIDAY',
+  SPECIAL_CLOSURE: 'SPECIAL_CLOSURE'
+});
 
 const LINES = {
   line1: {
@@ -207,14 +223,15 @@ const dom = {
   heroStationCount: document.querySelector('#heroStationCount'), heroTravelTime: document.querySelector('#heroTravelTime'), heroFrequency: document.querySelector('#heroFrequency'),
   previewLineName: document.querySelector('#previewLineName'), previewStatus: document.querySelector('#previewStatus'), previewNote: document.querySelector('#previewNote'),
   heroMiniMap: document.querySelector('#heroMiniMap'), backToTop: document.querySelector('#backToTop'),
-  timetableViewer: document.querySelector('#timetableViewer')
+  timetableDownloads: document.querySelectorAll('[data-timetable-download]'), serviceDaySummary: document.querySelector('#serviceDaySummary'),
+  stationServiceSummary: document.querySelector('#stationServiceSummary')
 };
 
 let activeLineId = 'line1';
 let currentLanguage = 'en';
 let selectedMatrixCell = null;
-let stationListService = 'weekday';
-let serviceTypeManuallyChanged = false;
+let activeServiceType = 'weekday';
+let currentServiceDay = null;
 
 const storage = {
   get(key) { try { return window.localStorage.getItem(key); } catch { return null; } },
@@ -264,14 +281,72 @@ function formatDateInput(date) {
   const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
   return localDate.toISOString().slice(0, 10);
 }
-function isFriday(dateString) { return Boolean(dateString) && new Date(`${dateString}T12:00:00`).getDay() === 5; }
-function getSelectedServiceType() {
-  const selected = document.querySelector('input[name="serviceType"]:checked');
-  return selected ? selected.value : 'weekday';
+function createFallbackServiceDay(date = new Date()) {
+  const weekday = date.getDay();
+  const serviceDayType = weekday === 5 ? SERVICE_DAY_TYPES.FRIDAY : weekday === 4 ? SERVICE_DAY_TYPES.THURSDAY : SERVICE_DAY_TYPES.REGULAR_WEEKDAY;
+  return { gregorian:formatDateInput(date), serviceDayType, baseServiceDayType:serviceDayType, calendarSource:'fallback', hasOverride:false };
 }
-function setServiceType(type) {
-  const input = document.querySelector(`input[name="serviceType"][value="${type}"]`);
-  if (input) input.checked = true;
+function getTimetableCategory(serviceDay = currentServiceDay) {
+  if (serviceDay?.timetableCategory === 'weekday' || serviceDay?.timetableCategory === 'weekend') return serviceDay.timetableCategory;
+  if (serviceDay?.serviceDayType === SERVICE_DAY_TYPES.SPECIAL_CLOSURE && serviceDay.affectsMetroSchedule === false) {
+    return getTimetableCategory({serviceDayType:serviceDay.baseServiceDayType});
+  }
+  switch (serviceDay?.serviceDayType) {
+    case SERVICE_DAY_TYPES.FRIDAY:
+    case SERVICE_DAY_TYPES.OFFICIAL_HOLIDAY:
+    case SERVICE_DAY_TYPES.SPECIAL_CLOSURE:
+      return 'weekend';
+    default:
+      return 'weekday';
+  }
+}
+function getSelectedServiceType() { return activeServiceType; }
+async function fetchCalendarJson(relativePath,{optional=false}={}) {
+  try {
+    const response=await fetch(new URL(relativePath,document.baseURI),{cache:'no-cache'});
+    if (!response.ok) throw new Error(`Calendar request failed: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    if (optional) return {};
+    throw error;
+  }
+}
+async function loadServiceDay(date = new Date()) {
+  const dateKey=formatDateInput(date), fallback=createFallbackServiceDay(date);
+  try {
+    const manifest=await fetchCalendarJson('data/calendar/index.json');
+    const calendarInfo=manifest.calendars?.find(item=>dateKey>=item.validFrom&&dateKey<=item.validThrough);
+    if (!calendarInfo) throw new Error(`No calendar covers ${dateKey}`);
+    const [calendar,overrides]=await Promise.all([
+      fetchCalendarJson(`data/calendar/${calendarInfo.file}`),
+      fetchCalendarJson('data/calendar/overrides.json',{optional:true})
+    ]);
+    const baseDate=calendar.dates?.[dateKey];
+    if (!baseDate) throw new Error(`No calendar record for ${dateKey}`);
+    const override=overrides[dateKey];
+    currentServiceDay={...baseDate,...(override||{}),gregorian:dateKey,baseServiceDayType:baseDate.serviceDayType,calendarSource:'static',hasOverride:Boolean(override)};
+  } catch {
+    currentServiceDay=fallback;
+  }
+  activeServiceType=getTimetableCategory(currentServiceDay);
+}
+function serviceDayDescription() {
+  const day=currentServiceDay||createFallbackServiceDay();
+  if (day.serviceDayType===SERVICE_DAY_TYPES.THURSDAY) return t('thursdayDescription');
+  if (day.serviceDayType===SERVICE_DAY_TYPES.FRIDAY) return t('fridayDescription');
+  if (day.serviceDayType===SERVICE_DAY_TYPES.OFFICIAL_HOLIDAY) return t('officialHolidayDescription',currentLanguage==='fa'?day.holidayNameFa:day.holidayNameEn);
+  if (day.serviceDayType===SERVICE_DAY_TYPES.SPECIAL_CLOSURE) return t('specialClosureDescription',currentLanguage==='fa'?day.titleFa:day.titleEn,day.affectsMetroSchedule!==false);
+  return t('regularDayDescription');
+}
+function renderServiceDayStatus() {
+  const serviceLabel=local(LINES.line1.services[activeServiceType].label);
+  const fallback=currentServiceDay?.calendarSource==='fallback'?` ${t('calendarFallbackHint')}`:'';
+  const summary=`<span>${escapeHtml(t('automaticTimetableLabel'))}</span><strong>${escapeHtml(serviceLabel)}</strong><small>${escapeHtml(`${serviceDayDescription()}. ${t('automaticTimetableHint')}${fallback}`)}</small>`;
+  if (dom.serviceDaySummary) { dom.serviceDaySummary.dataset.service=activeServiceType; dom.serviceDaySummary.innerHTML=summary; }
+  if (dom.stationServiceSummary) {
+    dom.stationServiceSummary.dataset.service=activeServiceType;
+    dom.stationServiceSummary.innerHTML=`<span>${escapeHtml(t('automaticTimetableLabel'))}</span><strong>${escapeHtml(serviceLabel)}</strong>`;
+  }
 }
 function getDirection(fromIndex, toIndex) { return toIndex > fromIndex ? 'forward' : 'reverse'; }
 function isOperationalStation(line, index) { return Boolean(line.stations[index]?.active); }
@@ -375,10 +450,9 @@ function syncDateAndTimeToNow() {
   dom.date.value=formatDateInput(now);
   dom.time.value=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   dom.matrixTime.value=dom.time.value;
-  if (!serviceTypeManuallyChanged) setServiceType(isFriday(dom.date.value)?'weekend':'weekday');
 }
 function persistRoute() {
-  storage.set('shirazgo-route-v3',JSON.stringify({line:activeLineId,from:dom.from.value,to:dom.to.value,time:dom.time.value,serviceType:getSelectedServiceType()}));
+  storage.set('shirazgo-route-v3',JSON.stringify({line:activeLineId,from:dom.from.value,to:dom.to.value,time:dom.time.value}));
 }
 function restoreRoute() {
   try {
@@ -390,7 +464,6 @@ function restoreRoute() {
     if (line.stations[Number(saved.to)]) dom.to.value=saved.to;
     dom.date.value=formatDateInput(new Date());
     if (saved.time) { dom.time.value=saved.time; dom.matrixTime.value=saved.time; }
-    if (line.services[saved.serviceType]) { setServiceType(saved.serviceType); stationListService=saved.serviceType; }
     return true;
   } catch { return false; }
 }
@@ -464,7 +537,11 @@ function showRouteResult({scroll=false}={}) {
     if (departures.length) {
       dom.nextDeparture.textContent=timeFromMinutes(departures[0]);
       dom.estimatedArrival.textContent=timeFromMinutes(departures[0]+duration);
-      dom.departureList.innerHTML=departures.map((departure,index)=>`<div class="departure-time ${index===0?'next':''}" title="${t('estimatedArrivalAt',timeFromMinutes(departure+duration))}">${timeFromMinutes(departure)}</div>`).join('');
+      dom.departureList.innerHTML=departures.map((departure,index)=>{
+        const departureTime=timeFromMinutes(departure),arrivalTime=timeFromMinutes(departure+duration);
+        const label=escapeHtml(t('planDeparture',departureTime,arrivalTime));
+        return `<button type="button" class="departure-time ${index===0?'next':''}" data-departure="${timeFromMinutes(departure)}" title="${label}" aria-label="${label}">${departureTime}</button>`;
+      }).join('');
       dom.serviceMessage.hidden=true;
     } else {
       const windowData=getStationServiceWindow(line,fromIndex,directionKey,serviceType);
@@ -505,9 +582,9 @@ function renderMatrix() {
   dom.matrixTable.style.minWidth=`${Math.max(900,175+(line.stations.length*66))}px`;
 }
 function renderStationList() {
-  const line=lineData(), service=line.services[stationListService];
+  const line=lineData(), service=line.services[activeServiceType];
   dom.stationList.innerHTML=line.stations.map((station,index)=>{
-    const summary=getStationDirectionSummary(line,index,stationListService);
+    const summary=getStationDirectionSummary(line,index,activeServiceType);
     const forward=summary.forward?`${timeFromMinutes(summary.forward.first)}–${timeFromMinutes(summary.forward.last)}`:'—';
     const reverse=summary.reverse?`${timeFromMinutes(summary.reverse.first)}–${timeFromMinutes(summary.reverse.last)}`:'—';
     const endpoint=index===line.directions.forward.originIndex||index===line.directions.forward.terminusIndex;
@@ -548,9 +625,9 @@ function applyLanguage(language,{persist=true}={}) {
   currentLanguage=language==='fa'?'fa':'en';
   dom.html.lang=currentLanguage; dom.html.dir=currentLanguage==='fa'?'rtl':'ltr'; dom.html.dataset.language=currentLanguage;
   const timetableFile=currentLanguage==='fa'?'shiraz-subway-timetable-fa.pdf':'shiraz-subway-timetable.pdf';
-  const timetableSource=`assets/${timetableFile}#view=FitH&toolbar=0&navpanes=0`;
-  if (dom.timetableViewer?.getAttribute('src')!==timetableSource) dom.timetableViewer?.setAttribute('src',timetableSource);
-  translateStaticContent(); renderLineOptions(); populateStationSelects({preserve:true}); renderLineControls(); renderHero(); renderMatrix(); renderStationList();
+  const downloadName=currentLanguage==='fa'?'ShirazGo-metro-guide-fa.pdf':'ShirazGo-metro-guide.pdf';
+  dom.timetableDownloads.forEach(link=>{link.href=`assets/${timetableFile}`;link.download=downloadName;});
+  translateStaticContent(); renderLineOptions(); populateStationSelects({preserve:true}); renderLineControls(); renderHero(); renderServiceDayStatus(); renderMatrix(); renderStationList();
   if (!dom.resultContent.hidden && dom.from.value!==dom.to.value) showRouteResult();
   if (persist) storage.set('shirazgo-language',currentLanguage);
 }
@@ -567,11 +644,6 @@ function bindEvents() {
       if (normalized) input.value=normalized;
     });
   });
-  document.querySelectorAll('input[name="serviceType"]').forEach(input=>input.addEventListener('change',()=>{
-    serviceTypeManuallyChanged=true;stationListService=input.value;
-    document.querySelectorAll('[data-station-service]').forEach(button=>button.classList.toggle('active',button.dataset.stationService===stationListService));
-    renderMatrix();renderStationList();if(!dom.resultContent.hidden)showRouteResult();
-  }));
   dom.matrixMode.addEventListener('change',renderMatrix); dom.matrixTime.addEventListener('change',renderMatrix);
   dom.matrixTable.addEventListener('click',event=>{
     const button=event.target.closest('.matrix-cell:not(.same)'); if(!button)return;
@@ -579,10 +651,13 @@ function bindEvents() {
     dom.from.value=String(from);dom.to.value=String(to);dom.time.value=dom.matrixTime.value||dom.time.value;showRouteResult();
     document.querySelector('#planner').scrollIntoView({behavior:'smooth',block:'start'});
   });
-  document.querySelectorAll('[data-station-service]').forEach(button=>button.addEventListener('click',()=>{
-    stationListService=button.dataset.stationService;
-    document.querySelectorAll('[data-station-service]').forEach(item=>item.classList.toggle('active',item===button));renderStationList();
-  }));
+  dom.departureList.addEventListener('click',event=>{
+    const button=event.target.closest('button[data-departure]'); if(!button)return;
+    const departure=normalizeTimeValue(button.dataset.departure); if(!departure)return;
+    dom.time.value=departure;dom.matrixTime.value=departure;showRouteResult();
+    const behavior=window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
+    document.querySelector('#planner').scrollIntoView({behavior,block:'start'});
+  });
   dom.themeToggle.addEventListener('click',()=>applyTheme(dom.html.dataset.theme==='dark'?'light':'dark'));
   dom.languageToggle.addEventListener('click',()=>applyLanguage(currentLanguage==='en'?'fa':'en'));
   dom.backToTop.addEventListener('click',event=>{
@@ -591,16 +666,18 @@ function bindEvents() {
     window.scrollTo({top:0,left:0,behavior});
   });
   window.addEventListener('resize',()=>window.requestAnimationFrame(drawRouteWave));
-  [dom.from,dom.to,dom.time].forEach(element=>element.addEventListener('change',()=>{if(!dom.resultContent.hidden&&dom.from.value!==dom.to.value)showRouteResult();}));
+  dom.to.addEventListener('change',()=>showRouteResult({scroll:window.innerWidth<700}));
+  [dom.from,dom.time].forEach(element=>element.addEventListener('change',()=>{if(!dom.resultContent.hidden&&dom.from.value!==dom.to.value)showRouteResult();}));
 }
-function init() {
+async function init() {
   initializeTheme();
   currentLanguage=storage.get('shirazgo-language')==='fa'?'fa':'en';
   activeLineId=LINES[storage.get('shirazgo-active-line')]?storage.get('shirazgo-active-line'):'line1';
   translateStaticContent(); setActiveLine(activeLineId,{updateResult:false});
   const restored=restoreRoute();
   syncDateAndTimeToNow();
-  applyLanguage(currentLanguage,{persist:false}); renderLineControls(); renderHero(); renderMatrix(); renderStationList(); bindEvents();
+  await loadServiceDay(new Date());
+  applyLanguage(currentLanguage,{persist:false}); renderLineControls(); renderHero(); renderServiceDayStatus(); renderMatrix(); renderStationList(); bindEvents();
   if(restored&&dom.from.value!==dom.to.value)showRouteResult();
 }
 

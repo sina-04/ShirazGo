@@ -1,0 +1,2 @@
+holidays>=0.102,<1.0
+jdatetime>=6.0.1,<7.0
