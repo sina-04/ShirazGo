@@ -167,8 +167,11 @@
                   <small id="journeyStops">— stops</small>
                 </div>
                 <div class="metric-times">
-                  <div><span data-i18n="nextDepartureLabel">Next departure</span><strong id="nextDeparture">—</strong></div>
-                  <div><span data-i18n="estimatedArrivalLabel">Estimated arrival</span><strong id="estimatedArrival">—</strong></div>
+                  <div class="metric-schedule-row">
+                    <div><span data-i18n="nextDepartureLabel">Next departure</span><strong id="nextDeparture">—</strong></div>
+                    <div><span data-i18n="estimatedArrivalLabel">Estimated arrival</span><strong id="estimatedArrival">—</strong></div>
+                  </div>
+                  <div class="countdown-metric" aria-live="off"><span data-i18n="departureCountdownLabel">Time to departure</span><strong id="departureCountdown">—</strong></div>
                 </div>
               </div>
 
@@ -216,9 +219,9 @@
         </div>
 
         <div class="matrix-legend">
-          <span><i class="legend-dot short"></i> <b data-i18n="legendShort">2–12 min</b></span>
-          <span><i class="legend-dot medium"></i> <b data-i18n="legendMedium">13–26 min</b></span>
-          <span><i class="legend-dot long"></i> <b data-i18n="legendLong">27+ min</b></span>
+          <span><i class="legend-dot short"></i> <b data-i18n="legendShort">short-term trip (2 - 12 min)</b></span>
+          <span><i class="legend-dot medium"></i> <b data-i18n="legendMedium">mid-term trip (13 - 26 min)</b></span>
+          <span><i class="legend-dot long"></i> <b data-i18n="legendLong">long-term trip (+27 min)</b></span>
           <span><i class="legend-dot planned"></i> <b data-i18n="legendPlanned">Planned / no timetable</b></span>
           <span class="matrix-hint" data-i18n="matrixHint">Select a cell to load that route in the planner.</span>
         </div>

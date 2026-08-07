@@ -25,12 +25,13 @@ const UI = {
     specialClosureDescription: (name, affected) => `${name || 'Special closure'} · ${affected ? 'holiday timetable' : 'metro timetable unchanged'}`,
     calendarFallbackHint: 'Calendar file unavailable; inferred from the weekday.',
     emptyResultTitle: 'Your route will appear here',
-    emptyResultText: 'Select a line, starting station, and destination to view departures, arrival time, and every stop on the way.',
-    estimatedJourneyLabel: 'Estimated journey', nextDepartureLabel: 'Next departure', estimatedArrivalLabel: 'Estimated arrival',
+    emptyResultText: 'Select a line, starting station, and destination to view the next departure, live countdown, and every stop on the way.',
+    estimatedJourneyLabel: 'Estimated journey', nextDepartureLabel: 'Next departure', estimatedArrivalLabel: 'Estimated arrival', departureCountdownLabel: 'Time to departure',
+    departureCountdown: (minutes, seconds) => `${minutes} min ${seconds} sec`,
     upcomingTrains: 'Upcoming trains', networkExplorer: 'Network explorer', matrixTitle: 'From–To matrix',
     matrixDescription: 'Compare estimated travel duration or the next scheduled arrival for every station pair.',
     displayLabel: 'Display', travelTimeOption: 'Travel time', nextArrivalOption: 'Next arrival', lookupTimeLabel: 'Lookup time',
-    legendShort: '2–12 min', legendMedium: '13–26 min', legendLong: '27+ min', legendPlanned: 'Planned / no timetable',
+    legendShort: 'short-term trip (2 - 12 min)', legendMedium: 'mid-term trip (13 - 26 min)', legendLong: 'long-term trip (+27 min)', legendPlanned: 'Planned / no timetable',
     matrixHint: 'Select a cell to load that route in the planner.', matrixRegionLabel: 'Station-to-station travel matrix',
     allStations: 'All stations', stationListToggleLabel: 'Station list timetable type',
     bufferTitle: 'Plan with a small buffer',
@@ -89,12 +90,13 @@ const UI = {
     specialClosureDescription: (name, affected) => `${name || 'تعطیلی ویژه'} · ${affected ? 'جدول تعطیلات' : 'جدول مترو بدون تغییر'}`,
     calendarFallbackHint: 'فایل تقویم در دسترس نبود؛ نوع سرویس از روز هفته تشخیص داده شد.',
     emptyResultTitle: 'مسیر شما اینجا نمایش داده می‌شود',
-    emptyResultText: 'خط، مبدأ و مقصد را انتخاب کنید تا زمان حرکت، رسیدن و تمام ایستگاه‌های مسیر نمایش داده شوند.',
-    estimatedJourneyLabel: 'زمان تقریبی سفر', nextDepartureLabel: 'حرکت بعدی', estimatedArrivalLabel: 'زمان تقریبی رسیدن',
+    emptyResultText: 'خط، مبدأ و مقصد را انتخاب کنید تا حرکت بعدی، شمارش معکوس زنده و تمام ایستگاه‌های مسیر نمایش داده شوند.',
+    estimatedJourneyLabel: 'زمان تقریبی سفر', nextDepartureLabel: 'حرکت بعدی', estimatedArrivalLabel: 'زمان تقریبی رسیدن', departureCountdownLabel: 'زمان باقی‌مانده تا حرکت',
+    departureCountdown: (minutes, seconds) => `${minutes} دقیقه و ${seconds} ثانیه`,
     upcomingTrains: 'قطارهای بعدی', networkExplorer: 'کاوش شبکه', matrixTitle: 'ماتریس مبدأ–مقصد',
     matrixDescription: 'زمان تقریبی سفر یا نزدیک‌ترین زمان رسیدن را برای همه جفت‌های ایستگاهی مقایسه کنید.',
     displayLabel: 'نوع نمایش', travelTimeOption: 'زمان سفر', nextArrivalOption: 'نزدیک‌ترین رسیدن', lookupTimeLabel: 'زمان جست‌وجو',
-    legendShort: '۲ تا ۱۲ دقیقه', legendMedium: '۱۳ تا ۲۶ دقیقه', legendLong: '۲۷ دقیقه و بیشتر', legendPlanned: 'برنامه‌ریزی‌شده / بدون جدول',
+    legendShort: 'سفر کوتاه‌مدت (۲ تا ۱۲ دقیقه)', legendMedium: 'سفر میان‌مدت (۱۳ تا ۲۶ دقیقه)', legendLong: 'سفر بلندمدت (۲۷ دقیقه و بیشتر)', legendPlanned: 'برنامه‌ریزی‌شده / بدون جدول',
     matrixHint: 'با انتخاب هر خانه، همان مسیر در برنامه‌ریز بارگذاری می‌شود.', matrixRegionLabel: 'ماتریس زمان سفر میان ایستگاه‌ها',
     allStations: 'همه ایستگاه‌ها', stationListToggleLabel: 'نوع جدول زمانی فهرست ایستگاه‌ها',
     bufferTitle: 'زمان احتیاطی کوتاهی در نظر بگیرید',
@@ -214,8 +216,8 @@ const dom = {
   lineServiceBanner: document.querySelector('#lineServiceBanner'), formNote: document.querySelector('#formNote'),
   resultEmpty: document.querySelector('#resultEmpty'), resultContent: document.querySelector('#resultContent'), resultDirection: document.querySelector('#resultDirection'),
   resultFrom: document.querySelector('#resultFrom'), resultTo: document.querySelector('#resultTo'), resultServiceBadge: document.querySelector('#resultServiceBadge'),
-  journeyDuration: document.querySelector('#journeyDuration'), journeyStops: document.querySelector('#journeyStops'), nextDeparture: document.querySelector('#nextDeparture'),
-  estimatedArrival: document.querySelector('#estimatedArrival'), routeProgress: document.querySelector('#routeProgress'), departureList: document.querySelector('#departureList'),
+  journeyDuration: document.querySelector('#journeyDuration'), journeyStops: document.querySelector('#journeyStops'), nextDeparture: document.querySelector('#nextDeparture'), estimatedArrival: document.querySelector('#estimatedArrival'),
+  departureCountdown: document.querySelector('#departureCountdown'), routeProgress: document.querySelector('#routeProgress'), departureList: document.querySelector('#departureList'),
   serviceMessage: document.querySelector('#serviceMessage'), frequencyLabel: document.querySelector('#frequencyLabel'), matrixTable: document.querySelector('#matrixTable'),
   matrixMode: document.querySelector('#matrixMode'), matrixTime: document.querySelector('#matrixTime'), stationList: document.querySelector('#stationList'),
   stationsTitle: document.querySelector('#stations-title'), stationsDescription: document.querySelector('#stationsDescription'), themeToggle: document.querySelector('#themeToggle'),
@@ -232,6 +234,8 @@ let currentLanguage = 'en';
 let selectedMatrixCell = null;
 let activeServiceType = 'weekday';
 let currentServiceDay = null;
+let departureCountdownTimer = null;
+let departureCountdownTarget = null;
 
 const storage = {
   get(key) { try { return window.localStorage.getItem(key); } catch { return null; } },
@@ -399,11 +403,39 @@ function stationOption(station,index) {
 }
 function populateStationSelects({ preserve = false } = {}) {
   const line = lineData();
-  const currentFrom = Number(dom.from.value), currentTo = Number(dom.to.value);
+  const currentFrom = dom.from.value, currentTo = dom.to.value;
   const options = line.stations.map(stationOption).join('');
-  dom.from.innerHTML = options; dom.to.innerHTML = options;
-  dom.from.value = String(preserve && line.stations[currentFrom] ? currentFrom : line.defaultFrom);
-  dom.to.value = String(preserve && line.stations[currentTo] ? currentTo : line.defaultTo);
+  const placeholder = '<option value="">−</option>';
+  dom.from.innerHTML = placeholder + options; dom.to.innerHTML = placeholder + options;
+  dom.from.value = preserve && currentFrom !== '' && line.stations[Number(currentFrom)] ? currentFrom : '';
+  dom.to.value = preserve && currentTo !== '' && line.stations[Number(currentTo)] ? currentTo : '';
+}
+function hasCompleteRoute() { return dom.from.value !== '' && dom.to.value !== ''; }
+function stopDepartureCountdown({reset=true}={}) {
+  if (departureCountdownTimer !== null) window.clearInterval(departureCountdownTimer);
+  departureCountdownTimer=null; departureCountdownTarget=null;
+  if (reset && dom.departureCountdown) dom.departureCountdown.textContent='—';
+}
+function updateDepartureCountdown() {
+  if (departureCountdownTarget === null) return;
+  const remainingMilliseconds=departureCountdownTarget-Date.now();
+  if (remainingMilliseconds<=0) {
+    dom.departureCountdown.textContent=t('departureCountdown',formatNumber(0),formatNumber(0,2));
+    if (departureCountdownTimer !== null) window.clearInterval(departureCountdownTimer);
+    departureCountdownTimer=null;
+    return;
+  }
+  const totalSeconds=Math.ceil(remainingMilliseconds/1000);
+  const minutes=Math.floor(totalSeconds/60), seconds=totalSeconds%60;
+  dom.departureCountdown.textContent=t('departureCountdown',formatNumber(minutes),formatNumber(seconds,2));
+}
+function startDepartureCountdown(departureMinutes) {
+  stopDepartureCountdown({reset:false});
+  const [year,month,day]=(dom.date.value||formatDateInput(new Date())).split('-').map(Number);
+  const departure=new Date(year,month-1,day,Math.floor(departureMinutes/60),departureMinutes%60,0,0);
+  departureCountdownTarget=departure.getTime();
+  updateDepartureCountdown();
+  if (departureCountdownTarget>Date.now()) departureCountdownTimer=window.setInterval(updateDepartureCountdown,1000);
 }
 function renderHero() {
   const line = lineData();
@@ -442,7 +474,7 @@ function setActiveLine(lineId,{preserveStations=false,updateResult=true}={}) {
   activeLineId=lineId; selectedMatrixCell=null;
   renderLineOptions(); populateStationSelects({preserve:preserveStations}); renderLineControls(); renderHero(); renderMatrix(); renderStationList();
   storage.set('shirazgo-active-line',activeLineId);
-  if (updateResult) { dom.resultContent.hidden=true; dom.resultEmpty.hidden=false; }
+  if (updateResult) { stopDepartureCountdown(); dom.resultContent.hidden=true; dom.resultEmpty.hidden=false; }
 }
 
 function syncDateAndTimeToNow() {
@@ -450,22 +482,6 @@ function syncDateAndTimeToNow() {
   dom.date.value=formatDateInput(now);
   dom.time.value=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   dom.matrixTime.value=dom.time.value;
-}
-function persistRoute() {
-  storage.set('shirazgo-route-v3',JSON.stringify({line:activeLineId,from:dom.from.value,to:dom.to.value,time:dom.time.value}));
-}
-function restoreRoute() {
-  try {
-    const saved=JSON.parse(storage.get('shirazgo-route-v3'));
-    if (!saved || !LINES[saved.line]) return false;
-    activeLineId=saved.line; setActiveLine(activeLineId,{updateResult:false});
-    const line=lineData();
-    if (line.stations[Number(saved.from)]) dom.from.value=saved.from;
-    if (line.stations[Number(saved.to)]) dom.to.value=saved.to;
-    dom.date.value=formatDateInput(new Date());
-    if (saved.time) { dom.time.value=saved.time; dom.matrixTime.value=saved.time; }
-    return true;
-  } catch { return false; }
 }
 function renderRouteProgress(line,fromIndex,toIndex) {
   const step=fromIndex<toIndex?1:-1, indices=[];
@@ -506,7 +522,7 @@ function drawRouteWave() {
 }
 function showUnavailableResult(line,fromIndex,toIndex,serviceType) {
   const service=line.services[serviceType], fromStation=line.stations[fromIndex], toStation=line.stations[toIndex];
-  dom.nextDeparture.textContent=t('unavailable'); dom.estimatedArrival.textContent='—';
+  stopDepartureCountdown(); dom.nextDeparture.textContent=t('unavailable'); dom.estimatedArrival.textContent='—';
   dom.departureList.innerHTML=`<div class="departure-time unavailable" style="grid-column:1/-1">${t('noPassengerTimetable')}</div>`;
   dom.serviceMessage.hidden=false;
   if (!service.available) dom.serviceMessage.textContent=t('lineNoService',local(line.name),local(service.label));
@@ -517,6 +533,7 @@ function showUnavailableResult(line,fromIndex,toIndex,serviceType) {
   else dom.serviceMessage.textContent=t('cannotCalculate');
 }
 function showRouteResult({scroll=false}={}) {
+  if (!hasCompleteRoute()) return false;
   const line=lineData(), fromIndex=Number(dom.from.value), toIndex=Number(dom.to.value);
   if (fromIndex===toIndex) { showToast(t('chooseDifferent')); dom.to.focus(); return false; }
   const serviceType=getSelectedServiceType(), service=line.services[serviceType], directionKey=getDirection(fromIndex,toIndex), direction=line.directions[directionKey];
@@ -537,6 +554,7 @@ function showRouteResult({scroll=false}={}) {
     if (departures.length) {
       dom.nextDeparture.textContent=timeFromMinutes(departures[0]);
       dom.estimatedArrival.textContent=timeFromMinutes(departures[0]+duration);
+      startDepartureCountdown(departures[0]);
       dom.departureList.innerHTML=departures.map((departure,index)=>{
         const departureTime=timeFromMinutes(departure),arrivalTime=timeFromMinutes(departure+duration);
         const label=escapeHtml(t('planDeparture',departureTime,arrivalTime));
@@ -545,13 +563,13 @@ function showRouteResult({scroll=false}={}) {
       dom.serviceMessage.hidden=true;
     } else {
       const windowData=getStationServiceWindow(line,fromIndex,directionKey,serviceType);
-      dom.nextDeparture.textContent=t('closed'); dom.estimatedArrival.textContent='—';
+      stopDepartureCountdown(); dom.nextDeparture.textContent=t('closed'); dom.estimatedArrival.textContent='—';
       dom.departureList.innerHTML=`<div class="departure-time unavailable" style="grid-column:1/-1">${t('noMoreTrains')}</div>`;
       dom.serviceMessage.textContent=windowData?t('endedMessage',timeFromMinutes(windowData.last),local(service.label),timeFromMinutes(windowData.first)):t('noWindow');
       dom.serviceMessage.hidden=false;
     }
   }
-  renderRouteProgress(line,fromIndex,toIndex); persistRoute(); renderMatrix();
+  renderRouteProgress(line,fromIndex,toIndex); renderMatrix();
   if (scroll) document.querySelector('#resultCard').scrollIntoView({behavior:'smooth',block:'center'});
   return true;
 }
@@ -628,7 +646,7 @@ function applyLanguage(language,{persist=true}={}) {
   const downloadName=currentLanguage==='fa'?'ShirazGo-metro-guide-fa.pdf':'ShirazGo-metro-guide.pdf';
   dom.timetableDownloads.forEach(link=>{link.href=`assets/${timetableFile}`;link.download=downloadName;});
   translateStaticContent(); renderLineOptions(); populateStationSelects({preserve:true}); renderLineControls(); renderHero(); renderServiceDayStatus(); renderMatrix(); renderStationList();
-  if (!dom.resultContent.hidden && dom.from.value!==dom.to.value) showRouteResult();
+  if (!dom.resultContent.hidden && hasCompleteRoute() && dom.from.value!==dom.to.value) showRouteResult();
   if (persist) storage.set('shirazgo-language',currentLanguage);
 }
 function bindEvents() {
@@ -636,7 +654,7 @@ function bindEvents() {
   dom.line.addEventListener('change',()=>setActiveLine(dom.line.value));
   dom.matrixLine.addEventListener('change',()=>setActiveLine(dom.matrixLine.value));
   document.querySelectorAll('[data-line-switch]').forEach(button=>button.addEventListener('click',()=>setActiveLine(button.dataset.lineSwitch)));
-  dom.swap.addEventListener('click',()=>{const currentFrom=dom.from.value;dom.from.value=dom.to.value;dom.to.value=currentFrom;showRouteResult();});
+  dom.swap.addEventListener('click',()=>{const currentFrom=dom.from.value;dom.from.value=dom.to.value;dom.to.value=currentFrom;if(hasCompleteRoute())showRouteResult();});
   [dom.time,dom.matrixTime].forEach(input=>{
     input.addEventListener('input',()=>input.setCustomValidity(''));
     input.addEventListener('change',()=>{
@@ -666,19 +684,18 @@ function bindEvents() {
     window.scrollTo({top:0,left:0,behavior});
   });
   window.addEventListener('resize',()=>window.requestAnimationFrame(drawRouteWave));
-  dom.to.addEventListener('change',()=>showRouteResult({scroll:window.innerWidth<700}));
-  [dom.from,dom.time].forEach(element=>element.addEventListener('change',()=>{if(!dom.resultContent.hidden&&dom.from.value!==dom.to.value)showRouteResult();}));
+  dom.to.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:window.innerWidth<700});});
+  dom.from.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:window.innerWidth<700});});
+  dom.time.addEventListener('change',()=>{if(!dom.resultContent.hidden&&hasCompleteRoute()&&dom.from.value!==dom.to.value)showRouteResult();});
 }
 async function init() {
   initializeTheme();
   currentLanguage=storage.get('shirazgo-language')==='fa'?'fa':'en';
   activeLineId=LINES[storage.get('shirazgo-active-line')]?storage.get('shirazgo-active-line'):'line1';
   translateStaticContent(); setActiveLine(activeLineId,{updateResult:false});
-  const restored=restoreRoute();
   syncDateAndTimeToNow();
   await loadServiceDay(new Date());
   applyLanguage(currentLanguage,{persist:false}); renderLineControls(); renderHero(); renderServiceDayStatus(); renderMatrix(); renderStationList(); bindEvents();
-  if(restored&&dom.from.value!==dom.to.value)showRouteResult();
 }
 
 init();
