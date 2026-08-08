@@ -221,7 +221,7 @@ const dom = {
   serviceMessage: document.querySelector('#serviceMessage'), frequencyLabel: document.querySelector('#frequencyLabel'), matrixTable: document.querySelector('#matrixTable'),
   matrixMode: document.querySelector('#matrixMode'), matrixTime: document.querySelector('#matrixTime'), stationList: document.querySelector('#stationList'),
   stationsTitle: document.querySelector('#stations-title'), stationsDescription: document.querySelector('#stationsDescription'), themeToggle: document.querySelector('#themeToggle'),
-  languageToggle: document.querySelector('#languageToggle'), languageToggleLabel: document.querySelector('#languageToggleLabel'), toast: document.querySelector('#toast'),
+  languageToggle: document.querySelector('#languageToggle'), languageToggleLabel: document.querySelector('#languageToggleLabel'),
   heroStationCount: document.querySelector('#heroStationCount'), heroTravelTime: document.querySelector('#heroTravelTime'), heroFrequency: document.querySelector('#heroFrequency'),
   previewLineName: document.querySelector('#previewLineName'), previewStatus: document.querySelector('#previewStatus'), previewNote: document.querySelector('#previewNote'),
   heroMiniMap: document.querySelector('#heroMiniMap'), backToTop: document.querySelector('#backToTop'),
@@ -616,8 +616,10 @@ function renderStationList() {
   }).join('');
 }
 function showToast(message) {
-  dom.toast.textContent=message; dom.toast.classList.add('show');
-  window.clearTimeout(showToast.timeoutId); showToast.timeoutId=window.setTimeout(()=>dom.toast.classList.remove('show'),2500);
+  dom.to.setCustomValidity(message);
+  dom.to.reportValidity();
+  window.clearTimeout(showToast.timeoutId);
+  showToast.timeoutId=window.setTimeout(()=>dom.to.setCustomValidity(''),2500);
 }
 function enableMobileDoubleTapZoomReset() {
   const mobileTouch=window.matchMedia('(max-width: 780px) and (pointer: coarse)');
