@@ -619,6 +619,33 @@ function showToast(message) {
   dom.toast.textContent=message; dom.toast.classList.add('show');
   window.clearTimeout(showToast.timeoutId); showToast.timeoutId=window.setTimeout(()=>dom.toast.classList.remove('show'),2500);
 }
+function enableMobileDoubleTapZoomReset() {
+  const mobileTouch=window.matchMedia('(max-width: 780px) and (pointer: coarse)');
+  const viewport=document.querySelector('meta[name="viewport"]');
+  if (!viewport) return;
+  const normalViewport=viewport.getAttribute('content');
+  let previousTapTime=0, previousTapX=0, previousTapY=0, restoreTimer=null;
+
+  document.addEventListener('touchend',event=>{
+    if (!mobileTouch.matches || event.changedTouches.length!==1) return;
+    if (event.target.closest('a, button, input, select, textarea, label')) {
+      previousTapTime=0;
+      return;
+    }
+    const touch=event.changedTouches[0], now=Date.now();
+    const interval=now-previousTapTime;
+    const distance=Math.hypot(touch.clientX-previousTapX,touch.clientY-previousTapY);
+    if (interval>40 && interval<325 && distance<48) {
+      event.preventDefault();
+      window.clearTimeout(restoreTimer);
+      viewport.setAttribute('content','width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no');
+      restoreTimer=window.setTimeout(()=>viewport.setAttribute('content',normalViewport),140);
+      previousTapTime=0;
+      return;
+    }
+    previousTapTime=now; previousTapX=touch.clientX; previousTapY=touch.clientY;
+  },{passive:false});
+}
 function applyTheme(theme) {
   dom.html.dataset.theme=theme; dom.themeToggle.setAttribute('aria-pressed',String(theme==='dark')); storage.set('shirazgo-theme',theme);
 }
@@ -684,6 +711,7 @@ function bindEvents() {
     window.scrollTo({top:0,left:0,behavior});
   });
   window.addEventListener('resize',()=>window.requestAnimationFrame(drawRouteWave));
+  enableMobileDoubleTapZoomReset();
   dom.to.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:window.innerWidth<700});});
   dom.from.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:window.innerWidth<700});});
   dom.time.addEventListener('change',()=>{if(!dom.resultContent.hidden&&hasCompleteRoute()&&dom.from.value!==dom.to.value)showRouteResult();});
