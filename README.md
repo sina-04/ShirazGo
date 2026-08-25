@@ -1,6 +1,14 @@
 # ShirazGo
 
+[![CI](https://github.com/sina-04/ShirazGo/actions/workflows/ci.yml/badge.svg)](https://github.com/sina-04/ShirazGo/actions/workflows/ci.yml)
+[![Live site](https://img.shields.io/badge/live-GitHub%20Pages-222)](https://sina-04.github.io/ShirazGo/)
+[![License: MIT](https://img.shields.io/badge/code%20license-MIT-yellow.svg)](LICENSE)
+
 A responsive, dependency-free Shiraz Metro journey planner for **Lines 1 and 2**, built with semantic HTML, modern CSS, and vanilla JavaScript. The interface supports persistent English and Persian modes, complete RTL layout mirroring, and Persian numerals.
+
+**[Open the journey planner](https://sina-04.github.io/ShirazGo/)**
+
+![ShirazGo metro journey planner](docs/shirazgo-social.svg)
 
 ## Information architecture
 
@@ -42,6 +50,10 @@ A responsive, dependency-free Shiraz Metro journey planner for **Lines 1 and 2**
 
 The supplied Shiraz Metro PDF covers Line 1. Line 2 was added from the station list provided for this project and publicly published operating information. The official Line 2 webpage was not consistently reachable during development, so Line 2 departure calculations are explicitly presented as a planning model and should be checked against station notices.
 
+ShirazGo is an independent planning aid, not an official transit publication.
+Schedules can change without notice; confirm critical journeys using current
+station announcements or official operator channels.
+
 ## Run locally
 
 Open `index.html` directly, or serve the folder:
@@ -58,3 +70,10 @@ Then visit `http://localhost:8080`.
 - `styles.css` — responsive design system, Persian font stack, and RTL component rules
 - `app.js` — multi-line timetable engine, bilingual content, localization, and interaction logic
 - `assets/shiraz-subway-timetable.md` — accessible timetable reference for Lines 1 and 2
+
+## License and data terms
+
+Original site code and documentation are available under the
+[MIT License](LICENSE). Official timetable PDFs, transit data, operator names
+and marks, and third-party fonts are not relicensed. See
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

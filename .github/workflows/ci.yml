@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - run: node --check app.js
+      - run: python -m compileall -q scripts
+      - name: Validate calendar JSON
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+
+          files = list(Path("data/calendar").glob("iran-calendar-*.json"))
+          assert files, "No generated calendar files found"
+          for path in files:
+              data = json.loads(path.read_text(encoding="utf-8"))
+              assert data, f"{path} is empty"
+          json.loads(Path("data/calendar/overrides.json").read_text(encoding="utf-8"))
+          print(f"Validated {len(files)} generated calendar files")
