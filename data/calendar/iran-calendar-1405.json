@@ -1,13 +1,14 @@
 {
   "schemaVersion": 1,
   "calendarYear": 1405,
-  "generatedAt": "2026-08-06",
+  "generatedAt": "2026-08-30",
   "validFrom": "2026-03-21",
   "validThrough": "2027-03-20",
   "source": {
-    "library": "holidays",
-    "country": "IR",
-    "note": "Islamic-calendar holidays marked as estimated should be reviewed when official dates are announced."
+    "authority": "Calendar Center, Institute of Geophysics, University of Tehran",
+    "title": "Official Calendar of Iran, Solar Hijri year 1405 (final version)",
+    "url": "https://calendar.ut.ac.ir/documents/2139738/7092644/Calendar-1405.pdf/64228cbb-f4de-dc32-4d2b-57db3c8e322f?t=1761972997587",
+    "note": "Official occasions approved by the Public Culture Council; calendar extracted and compiled by the University of Tehran Calendar Center."
   },
   "dates": {
     "2026-03-21": {
@@ -16,9 +17,9 @@
       "weekdayFa": "شنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "جشن نوروز; عید سعید فطر (تخمینی)",
-      "holidayNameEn": "Eid al-Fitr (estimated); Nowruz",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "عید سعید فطر و آغاز نوروز",
+      "holidayNameEn": "Eid al-Fitr and Nowruz",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-03-22": {
@@ -27,9 +28,9 @@
       "weekdayFa": "یکشنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "تعطیل به مناسبت عید سعید فطر (تخمینی); عیدنوروز",
-      "holidayNameEn": "Eid al-Fitr Holiday (estimated); Nowruz Holiday",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "تعطیل به مناسبت عید سعید فطر و عید نوروز",
+      "holidayNameEn": "Eid al-Fitr and Nowruz holiday",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-03-23": {
@@ -38,8 +39,8 @@
       "weekdayFa": "دوشنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "عیدنوروز",
-      "holidayNameEn": "Nowruz Holiday",
+      "holidayNameFa": "عید نوروز",
+      "holidayNameEn": "Nowruz holiday",
       "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
@@ -49,8 +50,8 @@
       "weekdayFa": "سه‌شنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "عیدنوروز",
-      "holidayNameEn": "Nowruz Holiday",
+      "holidayNameFa": "عید نوروز",
+      "holidayNameEn": "Nowruz holiday",
       "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
@@ -137,7 +138,7 @@
       "weekdayFa": "چهارشنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "روز جمهوری اسلامی",
+      "holidayNameFa": "روز جمهوری اسلامی ایران",
       "holidayNameEn": "Islamic Republic Day",
       "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
@@ -149,7 +150,7 @@
       "isFriday": false,
       "isOfficialHoliday": true,
       "holidayNameFa": "روز طبیعت",
-      "holidayNameEn": "Nature's Day",
+      "holidayNameEn": "Nature Day",
       "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
@@ -280,9 +281,9 @@
       "weekdayFa": "سه‌شنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "شهادت امام جعفر صادق علیه السلام (تخمینی)",
-      "holidayNameEn": "Martyrdom of Imam Ja'far al-Sadiq (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "شهادت امام جعفر صادق علیه السلام",
+      "holidayNameEn": "Martyrdom of Imam Ja'far al-Sadiq",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-04-15": {
@@ -752,22 +753,22 @@
       "weekday": "Wednesday",
       "weekdayFa": "چهارشنبه",
       "isFriday": false,
-      "isOfficialHoliday": false,
-      "holidayNameFa": null,
-      "holidayNameEn": null,
+      "isOfficialHoliday": true,
+      "holidayNameFa": "عید سعید قربان",
+      "holidayNameEn": "Eid al-Adha",
       "isEstimatedHoliday": false,
-      "serviceDayType": "REGULAR_WEEKDAY"
+      "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-05-28": {
       "jalali": "1405-03-07",
       "weekday": "Thursday",
       "weekdayFa": "پنج‌شنبه",
       "isFriday": false,
-      "isOfficialHoliday": true,
-      "holidayNameFa": "عید سعید قربان (تخمینی)",
-      "holidayNameEn": "Eid al-Adha (estimated)",
-      "isEstimatedHoliday": true,
-      "serviceDayType": "OFFICIAL_HOLIDAY"
+      "isOfficialHoliday": false,
+      "holidayNameFa": null,
+      "holidayNameEn": null,
+      "isEstimatedHoliday": false,
+      "serviceDayType": "THURSDAY"
     },
     "2026-05-29": {
       "jalali": "1405-03-08",
@@ -841,8 +842,8 @@
       "weekdayFa": "پنج‌شنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "رحلت حضرت امام خمینی",
-      "holidayNameEn": "Death of Imam Khomeini",
+      "holidayNameFa": "عید سعید غدیر خم و رحلت امام خمینی",
+      "holidayNameEn": "Eid al-Ghadir and the death anniversary of Imam Khomeini",
       "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
@@ -852,9 +853,9 @@
       "weekdayFa": "جمعه",
       "isFriday": true,
       "isOfficialHoliday": true,
-      "holidayNameFa": "عید سعید غدیر خم (تخمینی); قیام 15 خرداد",
-      "holidayNameEn": "15 Khordad Uprising; Eid al-Ghadir (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "قیام خونین ۱۵ خرداد",
+      "holidayNameEn": "15 Khordad uprising",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-06-06": {
@@ -1060,11 +1061,11 @@
       "weekday": "Wednesday",
       "weekdayFa": "چهارشنبه",
       "isFriday": false,
-      "isOfficialHoliday": false,
-      "holidayNameFa": null,
-      "holidayNameEn": null,
+      "isOfficialHoliday": true,
+      "holidayNameFa": "تاسوعای حسینی",
+      "holidayNameEn": "Tasu'a",
       "isEstimatedHoliday": false,
-      "serviceDayType": "REGULAR_WEEKDAY"
+      "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-06-25": {
       "jalali": "1405-04-04",
@@ -1072,9 +1073,9 @@
       "weekdayFa": "پنج‌شنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "تاسوعای حسینی (تخمینی)",
-      "holidayNameEn": "Tasua (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "عاشورای حسینی",
+      "holidayNameEn": "Ashura",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-06-26": {
@@ -1082,11 +1083,11 @@
       "weekday": "Friday",
       "weekdayFa": "جمعه",
       "isFriday": true,
-      "isOfficialHoliday": true,
-      "holidayNameFa": "عاشورای حسینی (تخمینی)",
-      "holidayNameEn": "Ashura (estimated)",
-      "isEstimatedHoliday": true,
-      "serviceDayType": "OFFICIAL_HOLIDAY"
+      "isOfficialHoliday": false,
+      "holidayNameFa": null,
+      "holidayNameEn": null,
+      "isEstimatedHoliday": false,
+      "serviceDayType": "FRIDAY"
     },
     "2026-06-27": {
       "jalali": "1405-04-06",
@@ -1512,9 +1513,9 @@
       "weekdayFa": "سه‌شنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "اربعین حسینی (تخمینی)",
-      "holidayNameEn": "Arbaeen (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "اربعین حسینی",
+      "holidayNameEn": "Arba'in",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-08-05": {
@@ -1600,9 +1601,9 @@
       "weekdayFa": "چهارشنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "رحلت رسول اکرم؛شهادت امام حسن مجتبی علیه السلام (تخمینی)",
-      "holidayNameEn": "Death of Prophet Muhammad and Martyrdom of Hasan ibn Ali (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "رحلت رسول اکرم و شهادت امام حسن مجتبی علیه السلام",
+      "holidayNameEn": "Death of Prophet Muhammad and martyrdom of Imam Hasan",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-08-13": {
@@ -1610,22 +1611,22 @@
       "weekday": "Thursday",
       "weekdayFa": "پنج‌شنبه",
       "isFriday": false,
-      "isOfficialHoliday": false,
-      "holidayNameFa": null,
-      "holidayNameEn": null,
+      "isOfficialHoliday": true,
+      "holidayNameFa": "شهادت امام رضا علیه السلام",
+      "holidayNameEn": "Martyrdom of Imam Reza",
       "isEstimatedHoliday": false,
-      "serviceDayType": "THURSDAY"
+      "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-08-14": {
       "jalali": "1405-05-23",
       "weekday": "Friday",
       "weekdayFa": "جمعه",
       "isFriday": true,
-      "isOfficialHoliday": true,
-      "holidayNameFa": "شهادت امام رضا علیه السلام (تخمینی)",
-      "holidayNameEn": "Martyrdom of Ali al-Rida (estimated)",
-      "isEstimatedHoliday": true,
-      "serviceDayType": "OFFICIAL_HOLIDAY"
+      "isOfficialHoliday": false,
+      "holidayNameFa": null,
+      "holidayNameEn": null,
+      "isEstimatedHoliday": false,
+      "serviceDayType": "FRIDAY"
     },
     "2026-08-15": {
       "jalali": "1405-05-24",
@@ -1698,22 +1699,22 @@
       "weekday": "Friday",
       "weekdayFa": "جمعه",
       "isFriday": true,
-      "isOfficialHoliday": false,
-      "holidayNameFa": null,
-      "holidayNameEn": null,
+      "isOfficialHoliday": true,
+      "holidayNameFa": "شهادت امام حسن عسکری علیه السلام",
+      "holidayNameEn": "Martyrdom of Imam Hasan al-Askari",
       "isEstimatedHoliday": false,
-      "serviceDayType": "FRIDAY"
+      "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-08-22": {
       "jalali": "1405-05-31",
       "weekday": "Saturday",
       "weekdayFa": "شنبه",
       "isFriday": false,
-      "isOfficialHoliday": true,
-      "holidayNameFa": "شهادت امام حسن عسکری علیه السلام (تخمینی)",
-      "holidayNameEn": "Martyrdom of Hasan al-Askari (estimated)",
-      "isEstimatedHoliday": true,
-      "serviceDayType": "OFFICIAL_HOLIDAY"
+      "isOfficialHoliday": false,
+      "holidayNameFa": null,
+      "holidayNameEn": null,
+      "isEstimatedHoliday": false,
+      "serviceDayType": "REGULAR_WEEKDAY"
     },
     "2026-08-23": {
       "jalali": "1405-06-01",
@@ -1797,22 +1798,22 @@
       "weekday": "Sunday",
       "weekdayFa": "یکشنبه",
       "isFriday": false,
-      "isOfficialHoliday": false,
-      "holidayNameFa": null,
-      "holidayNameEn": null,
+      "isOfficialHoliday": true,
+      "holidayNameFa": "ولادت رسول اکرم و امام جعفر صادق علیه السلام",
+      "holidayNameEn": "Birthday of Prophet Muhammad and Imam Ja'far al-Sadiq",
       "isEstimatedHoliday": false,
-      "serviceDayType": "REGULAR_WEEKDAY"
+      "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-08-31": {
       "jalali": "1405-06-09",
       "weekday": "Monday",
       "weekdayFa": "دوشنبه",
       "isFriday": false,
-      "isOfficialHoliday": true,
-      "holidayNameFa": "میلاد رسول اکرم و امام جعفر صادق علیه السلام (تخمینی)",
-      "holidayNameEn": "Birthday of Muhammad and Imam Ja'far al-Sadiq (estimated)",
-      "isEstimatedHoliday": true,
-      "serviceDayType": "OFFICIAL_HOLIDAY"
+      "isOfficialHoliday": false,
+      "holidayNameFa": null,
+      "holidayNameEn": null,
+      "isEstimatedHoliday": false,
+      "serviceDayType": "REGULAR_WEEKDAY"
     },
     "2026-09-01": {
       "jalali": "1405-06-10",
@@ -2622,22 +2623,22 @@
       "weekday": "Friday",
       "weekdayFa": "جمعه",
       "isFriday": true,
-      "isOfficialHoliday": false,
-      "holidayNameFa": null,
-      "holidayNameEn": null,
+      "isOfficialHoliday": true,
+      "holidayNameFa": "شهادت حضرت فاطمه زهرا سلام الله علیها",
+      "holidayNameEn": "Martyrdom of Fatima al-Zahra",
       "isEstimatedHoliday": false,
-      "serviceDayType": "FRIDAY"
+      "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-11-14": {
       "jalali": "1405-08-23",
       "weekday": "Saturday",
       "weekdayFa": "شنبه",
       "isFriday": false,
-      "isOfficialHoliday": true,
-      "holidayNameFa": "شهادت حضرت فاطمه زهرا سلام الله علیها (تخمینی)",
-      "holidayNameEn": "Martyrdom of Fatima (estimated)",
-      "isEstimatedHoliday": true,
-      "serviceDayType": "OFFICIAL_HOLIDAY"
+      "isOfficialHoliday": false,
+      "holidayNameFa": null,
+      "holidayNameEn": null,
+      "isEstimatedHoliday": false,
+      "serviceDayType": "REGULAR_WEEKDAY"
     },
     "2026-11-15": {
       "jalali": "1405-08-24",
@@ -3063,9 +3064,9 @@
       "weekdayFa": "چهارشنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "ولادت امام علی علیه السلام و روز پدر (تخمینی)",
-      "holidayNameEn": "Birthday of Imam Ali (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "ولادت امام علی علیه السلام و روز پدر",
+      "holidayNameEn": "Birthday of Imam Ali and Father's Day",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2026-12-24": {
@@ -3217,9 +3218,9 @@
       "weekdayFa": "چهارشنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "مبعث رسول اکرم (ص) (تخمینی)",
-      "holidayNameEn": "Isra' and Mi'raj (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "مبعث رسول اکرم صلی الله علیه و آله",
+      "holidayNameEn": "Prophet Muhammad's first revelation",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2027-01-07": {
@@ -3415,9 +3416,9 @@
       "weekdayFa": "یکشنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "ولادت حضرت قائم عجل الله تعالی فرجه و جشن نیمه شعبان (تخمینی)",
-      "holidayNameEn": "Birthday of Mahdi (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "ولادت حضرت قائم عجل الله تعالی فرجه و جشن نیمه شعبان",
+      "holidayNameEn": "Birthday of Imam Mahdi",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2027-01-25": {
@@ -3613,8 +3614,8 @@
       "weekdayFa": "پنج‌شنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "پیروزی انقلاب اسلامی",
-      "holidayNameEn": "Islamic Revolution Day",
+      "holidayNameFa": "پیروزی انقلاب اسلامی ایران",
+      "holidayNameEn": "Anniversary of the Islamic Revolution",
       "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
@@ -3799,22 +3800,22 @@
       "weekday": "Sunday",
       "weekdayFa": "یکشنبه",
       "isFriday": false,
-      "isOfficialHoliday": false,
-      "holidayNameFa": null,
-      "holidayNameEn": null,
+      "isOfficialHoliday": true,
+      "holidayNameFa": "شهادت امام علی علیه السلام",
+      "holidayNameEn": "Martyrdom of Imam Ali",
       "isEstimatedHoliday": false,
-      "serviceDayType": "REGULAR_WEEKDAY"
+      "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2027-03-01": {
       "jalali": "1405-12-10",
       "weekday": "Monday",
       "weekdayFa": "دوشنبه",
       "isFriday": false,
-      "isOfficialHoliday": true,
-      "holidayNameFa": "شهادت حضرت علی علیه السلام (تخمینی)",
-      "holidayNameEn": "Martyrdom of Imam Ali (estimated)",
-      "isEstimatedHoliday": true,
-      "serviceDayType": "OFFICIAL_HOLIDAY"
+      "isOfficialHoliday": false,
+      "holidayNameFa": null,
+      "holidayNameEn": null,
+      "isEstimatedHoliday": false,
+      "serviceDayType": "REGULAR_WEEKDAY"
     },
     "2027-03-02": {
       "jalali": "1405-12-11",
@@ -3910,9 +3911,9 @@
       "weekdayFa": "چهارشنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "عید سعید فطر (تخمینی)",
-      "holidayNameEn": "Eid al-Fitr (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "عید سعید فطر",
+      "holidayNameEn": "Eid al-Fitr",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2027-03-11": {
@@ -3921,9 +3922,9 @@
       "weekdayFa": "پنج‌شنبه",
       "isFriday": false,
       "isOfficialHoliday": true,
-      "holidayNameFa": "تعطیل به مناسبت عید سعید فطر (تخمینی)",
-      "holidayNameEn": "Eid al-Fitr Holiday (estimated)",
-      "isEstimatedHoliday": true,
+      "holidayNameFa": "تعطیل به مناسبت عید سعید فطر",
+      "holidayNameEn": "Eid al-Fitr holiday",
+      "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     },
     "2027-03-12": {
@@ -4021,7 +4022,7 @@
       "isFriday": false,
       "isOfficialHoliday": true,
       "holidayNameFa": "روز ملی شدن صنعت نفت ایران",
-      "holidayNameEn": "Iranian Oil Industry Nationalization Day",
+      "holidayNameEn": "Oil Industry Nationalization Day",
       "isEstimatedHoliday": false,
       "serviceDayType": "OFFICIAL_HOLIDAY"
     }

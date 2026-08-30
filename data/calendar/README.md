@@ -2,6 +2,11 @@
 
 The `iran-calendar-*.json` files are generated assets. Do not edit them by hand.
 
+When an `official-holidays-<year>.json` file exists, its authoritative holiday
+list replaces the estimated lunar holidays from the `holidays` package for that
+year. Years without an official source file continue to use the package data and
+mark estimated dates for review.
+
 Generate the current and next Jalali years:
 
 ```bash

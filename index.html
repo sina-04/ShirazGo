@@ -9,8 +9,8 @@
   <link rel="icon" href="logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260808-2">
-  <script src="app.js?v=20260808-2" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260830-1">
+  <script src="app.js?v=20260830-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#planner" data-i18n="skipLink">Skip to journey planner</a>
@@ -130,7 +130,7 @@
               <input id="travelDate" name="travelDate" type="hidden">
               <label class="field-group small-field">
                 <span data-i18n="timeLabel">Time</span>
-                <input id="travelTime" name="travelTime" class="clock-input" type="text" inputmode="numeric" placeholder="HH:MM" pattern="(?:[01][0-9]|2[0-3]):[0-5][0-9]" maxlength="5" autocomplete="off" required>
+                <input id="travelTime" name="travelTime" class="clock-input" type="text" placeholder="HH:MM" readonly aria-readonly="true" required>
               </label>
               <div class="service-day-summary" id="serviceDaySummary" role="status" aria-live="polite">
                 <span data-i18n="automaticTimetableLabel">Today’s timetable</span>
@@ -213,7 +213,7 @@
             </label>
             <label>
               <span data-i18n="lookupTimeLabel">Lookup time</span>
-              <input class="clock-input" type="text" id="matrixTime" inputmode="numeric" placeholder="HH:MM" pattern="(?:[01][0-9]|2[0-3]):[0-5][0-9]" maxlength="5" autocomplete="off">
+              <input class="clock-input" type="text" id="matrixTime" placeholder="HH:MM" readonly aria-readonly="true">
             </label>
           </div>
         </div>

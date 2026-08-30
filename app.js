@@ -16,7 +16,7 @@ const UI = {
     linePreviewLabel: 'Metro line preview',
     plannerEyebrow: 'Journey planner', plannerTitle: 'Where are you going?',
     metroLineLabel: 'Metro line', startingStationLabel: 'Starting station', swapStationsLabel: 'Swap starting point and destination',
-    destinationLabel: 'Destination', dateLabel: 'Date', timeLabel: 'Time', serviceTypeLabel: 'Service type',
+    destinationLabel: 'Destination', dateLabel: 'Date', timeLabel: 'Device time', serviceTypeLabel: 'Service type',
     weekdayLabel: 'Working day', weekendLabel: 'Weekend / holiday',
     automaticTimetableLabel: 'Today’s timetable', automaticTimetableHint: 'Selected automatically from the local Iranian calendar.',
     regularDayDescription: 'Regular working day', thursdayDescription: 'Thursday uses the working-day timetable',
@@ -30,7 +30,7 @@ const UI = {
     departureCountdown: (minutes, seconds) => `${minutes} min ${seconds} sec`,
     upcomingTrains: 'Upcoming trains', networkExplorer: 'Network explorer', matrixTitle: 'From–To matrix',
     matrixDescription: 'Compare estimated travel duration or the next scheduled arrival for every station pair.',
-    displayLabel: 'Display', travelTimeOption: 'Travel time', nextArrivalOption: 'Next arrival', lookupTimeLabel: 'Lookup time',
+    displayLabel: 'Display', travelTimeOption: 'Travel time', nextArrivalOption: 'Next arrival', lookupTimeLabel: 'Device time',
     legendShort: 'short-term trip (2 - 12 min)', legendMedium: 'mid-term trip (13 - 26 min)', legendLong: 'long-term trip (+27 min)', legendPlanned: 'Planned / no timetable',
     matrixHint: 'Select a cell to load that route in the planner.', matrixRegionLabel: 'Station-to-station travel matrix',
     allStations: 'All stations', stationListToggleLabel: 'Station list timetable type',
@@ -81,7 +81,7 @@ const UI = {
     linePreviewLabel: 'پیش‌نمایش خط مترو',
     plannerEyebrow: 'برنامه‌ریز سفر', plannerTitle: 'به کجا می‌روید؟',
     metroLineLabel: 'خط مترو', startingStationLabel: 'ایستگاه مبدأ', swapStationsLabel: 'جابجایی مبدأ و مقصد',
-    destinationLabel: 'ایستگاه مقصد', dateLabel: 'تاریخ', timeLabel: 'زمان', serviceTypeLabel: 'نوع سرویس',
+    destinationLabel: 'ایستگاه مقصد', dateLabel: 'تاریخ', timeLabel: 'زمان دستگاه', serviceTypeLabel: 'نوع سرویس',
     weekdayLabel: 'روز کاری', weekendLabel: 'تعطیلات و آخر هفته',
     automaticTimetableLabel: 'جدول زمانی امروز', automaticTimetableHint: 'به‌صورت خودکار از تقویم محلی ایران انتخاب شده است.',
     regularDayDescription: 'روز کاری عادی', thursdayDescription: 'پنج‌شنبه از جدول روز کاری استفاده می‌کند',
@@ -95,7 +95,7 @@ const UI = {
     departureCountdown: (minutes, seconds) => `${minutes} دقیقه و ${seconds} ثانیه`,
     upcomingTrains: 'قطارهای بعدی', networkExplorer: 'کاوش شبکه', matrixTitle: 'ماتریس مبدأ–مقصد',
     matrixDescription: 'زمان تقریبی سفر یا نزدیک‌ترین زمان رسیدن را برای همه جفت‌های ایستگاهی مقایسه کنید.',
-    displayLabel: 'نوع نمایش', travelTimeOption: 'زمان سفر', nextArrivalOption: 'نزدیک‌ترین رسیدن', lookupTimeLabel: 'زمان جست‌وجو',
+    displayLabel: 'نوع نمایش', travelTimeOption: 'زمان سفر', nextArrivalOption: 'نزدیک‌ترین رسیدن', lookupTimeLabel: 'زمان دستگاه',
     legendShort: 'سفر کوتاه‌مدت (۲ تا ۱۲ دقیقه)', legendMedium: 'سفر میان‌مدت (۱۳ تا ۲۶ دقیقه)', legendLong: 'سفر بلندمدت (۲۷ دقیقه و بیشتر)', legendPlanned: 'برنامه‌ریزی‌شده / بدون جدول',
     matrixHint: 'با انتخاب هر خانه، همان مسیر در برنامه‌ریز بارگذاری می‌شود.', matrixRegionLabel: 'ماتریس زمان سفر میان ایستگاه‌ها',
     allStations: 'همه ایستگاه‌ها', stationListToggleLabel: 'نوع جدول زمانی فهرست ایستگاه‌ها',
@@ -236,6 +236,7 @@ let activeServiceType = 'weekday';
 let currentServiceDay = null;
 let departureCountdownTimer = null;
 let departureCountdownTarget = null;
+let deviceClockTimer = null;
 
 const storage = {
   get(key) { try { return window.localStorage.getItem(key); } catch { return null; } },
@@ -477,11 +478,29 @@ function setActiveLine(lineId,{preserveStations=false,updateResult=true}={}) {
   if (updateResult) { stopDepartureCountdown(); dom.resultContent.hidden=true; dom.resultEmpty.hidden=false; }
 }
 
-function syncDateAndTimeToNow() {
-  const now=new Date();
+function syncDateAndTimeToNow(now=new Date()) {
   dom.date.value=formatDateInput(now);
   dom.time.value=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   dom.matrixTime.value=dom.time.value;
+}
+async function refreshDeviceClock() {
+  const previousDate=dom.date.value, now=new Date();
+  syncDateAndTimeToNow(now);
+  if (previousDate && previousDate!==dom.date.value) {
+    await loadServiceDay(now);
+    renderServiceDayStatus();
+    renderStationList();
+  }
+  renderMatrix();
+  if (!dom.resultContent.hidden && hasCompleteRoute() && dom.from.value!==dom.to.value) showRouteResult();
+}
+function startDeviceClock() {
+  if (deviceClockTimer !== null) window.clearTimeout(deviceClockTimer);
+  const delayUntilNextMinute=60000-(Date.now()%60000)+50;
+  deviceClockTimer=window.setTimeout(async()=>{
+    await refreshDeviceClock();
+    startDeviceClock();
+  },delayUntilNextMinute);
 }
 function renderRouteProgress(line,fromIndex,toIndex) {
   const step=fromIndex<toIndex?1:-1, indices=[];
@@ -558,7 +577,7 @@ function showRouteResult({scroll=false}={}) {
       dom.departureList.innerHTML=departures.map((departure,index)=>{
         const departureTime=timeFromMinutes(departure),arrivalTime=timeFromMinutes(departure+duration);
         const label=escapeHtml(t('planDeparture',departureTime,arrivalTime));
-        return `<button type="button" class="departure-time ${index===0?'next':''}" data-departure="${timeFromMinutes(departure)}" title="${label}" aria-label="${label}">${departureTime}</button>`;
+        return `<div class="departure-time ${index===0?'next':''}" title="${label}" aria-label="${label}">${departureTime}</div>`;
       }).join('');
       dom.serviceMessage.hidden=true;
     } else {
@@ -684,26 +703,12 @@ function bindEvents() {
   dom.matrixLine.addEventListener('change',()=>setActiveLine(dom.matrixLine.value));
   document.querySelectorAll('[data-line-switch]').forEach(button=>button.addEventListener('click',()=>setActiveLine(button.dataset.lineSwitch)));
   dom.swap.addEventListener('click',()=>{const currentFrom=dom.from.value;dom.from.value=dom.to.value;dom.to.value=currentFrom;if(hasCompleteRoute())showRouteResult();});
-  [dom.time,dom.matrixTime].forEach(input=>{
-    input.addEventListener('input',()=>input.setCustomValidity(''));
-    input.addEventListener('change',()=>{
-      const normalized=normalizeTimeValue(input.value);
-      if (normalized) input.value=normalized;
-    });
-  });
-  dom.matrixMode.addEventListener('change',renderMatrix); dom.matrixTime.addEventListener('change',renderMatrix);
+  dom.matrixMode.addEventListener('change',renderMatrix);
   dom.matrixTable.addEventListener('click',event=>{
     const button=event.target.closest('.matrix-cell:not(.same)'); if(!button)return;
     const from=Number(button.dataset.from),to=Number(button.dataset.to); selectedMatrixCell={from,to};
-    dom.from.value=String(from);dom.to.value=String(to);dom.time.value=dom.matrixTime.value||dom.time.value;showRouteResult();
+    dom.from.value=String(from);dom.to.value=String(to);showRouteResult();
     document.querySelector('#planner').scrollIntoView({behavior:'smooth',block:'start'});
-  });
-  dom.departureList.addEventListener('click',event=>{
-    const button=event.target.closest('button[data-departure]'); if(!button)return;
-    const departure=normalizeTimeValue(button.dataset.departure); if(!departure)return;
-    dom.time.value=departure;dom.matrixTime.value=departure;showRouteResult();
-    const behavior=window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
-    document.querySelector('#planner').scrollIntoView({behavior,block:'start'});
   });
   dom.themeToggle.addEventListener('click',()=>applyTheme(dom.html.dataset.theme==='dark'?'light':'dark'));
   dom.languageToggle.addEventListener('click',()=>applyLanguage(currentLanguage==='en'?'fa':'en'));
@@ -716,7 +721,6 @@ function bindEvents() {
   enableMobileDoubleTapZoomReset();
   dom.to.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:window.innerWidth<700});});
   dom.from.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:window.innerWidth<700});});
-  dom.time.addEventListener('change',()=>{if(!dom.resultContent.hidden&&hasCompleteRoute()&&dom.from.value!==dom.to.value)showRouteResult();});
 }
 async function init() {
   initializeTheme();
@@ -725,7 +729,7 @@ async function init() {
   translateStaticContent(); setActiveLine(activeLineId,{updateResult:false});
   syncDateAndTimeToNow();
   await loadServiceDay(new Date());
-  applyLanguage(currentLanguage,{persist:false}); renderLineControls(); renderHero(); renderServiceDayStatus(); renderMatrix(); renderStationList(); bindEvents();
+  applyLanguage(currentLanguage,{persist:false}); renderLineControls(); renderHero(); renderServiceDayStatus(); renderMatrix(); renderStationList(); bindEvents(); startDeviceClock();
 }
 
 init();

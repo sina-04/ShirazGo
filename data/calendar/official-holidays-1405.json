@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "calendarYear": 1405,
+  "source": {
+    "authority": "Calendar Center, Institute of Geophysics, University of Tehran",
+    "title": "Official Calendar of Iran, Solar Hijri year 1405 (final version)",
+    "url": "https://calendar.ut.ac.ir/documents/2139738/7092644/Calendar-1405.pdf/64228cbb-f4de-dc32-4d2b-57db3c8e322f?t=1761972997587",
+    "note": "Official occasions approved by the Public Culture Council; calendar extracted and compiled by the University of Tehran Calendar Center."
+  },
+  "holidays": {
+    "1405-01-01": { "fa": "عید سعید فطر و آغاز نوروز", "en": "Eid al-Fitr and Nowruz" },
+    "1405-01-02": { "fa": "تعطیل به مناسبت عید سعید فطر و عید نوروز", "en": "Eid al-Fitr and Nowruz holiday" },
+    "1405-01-03": { "fa": "عید نوروز", "en": "Nowruz holiday" },
+    "1405-01-04": { "fa": "عید نوروز", "en": "Nowruz holiday" },
+    "1405-01-12": { "fa": "روز جمهوری اسلامی ایران", "en": "Islamic Republic Day" },
+    "1405-01-13": { "fa": "روز طبیعت", "en": "Nature Day" },
+    "1405-01-25": { "fa": "شهادت امام جعفر صادق علیه السلام", "en": "Martyrdom of Imam Ja'far al-Sadiq" },
+    "1405-03-06": { "fa": "عید سعید قربان", "en": "Eid al-Adha" },
+    "1405-03-14": { "fa": "عید سعید غدیر خم و رحلت امام خمینی", "en": "Eid al-Ghadir and the death anniversary of Imam Khomeini" },
+    "1405-03-15": { "fa": "قیام خونین ۱۵ خرداد", "en": "15 Khordad uprising" },
+    "1405-04-03": { "fa": "تاسوعای حسینی", "en": "Tasu'a" },
+    "1405-04-04": { "fa": "عاشورای حسینی", "en": "Ashura" },
+    "1405-05-13": { "fa": "اربعین حسینی", "en": "Arba'in" },
+    "1405-05-21": { "fa": "رحلت رسول اکرم و شهادت امام حسن مجتبی علیه السلام", "en": "Death of Prophet Muhammad and martyrdom of Imam Hasan" },
+    "1405-05-22": { "fa": "شهادت امام رضا علیه السلام", "en": "Martyrdom of Imam Reza" },
+    "1405-05-30": { "fa": "شهادت امام حسن عسکری علیه السلام", "en": "Martyrdom of Imam Hasan al-Askari" },
+    "1405-06-08": { "fa": "ولادت رسول اکرم و امام جعفر صادق علیه السلام", "en": "Birthday of Prophet Muhammad and Imam Ja'far al-Sadiq" },
+    "1405-08-22": { "fa": "شهادت حضرت فاطمه زهرا سلام الله علیها", "en": "Martyrdom of Fatima al-Zahra" },
+    "1405-10-02": { "fa": "ولادت امام علی علیه السلام و روز پدر", "en": "Birthday of Imam Ali and Father's Day" },
+    "1405-10-16": { "fa": "مبعث رسول اکرم صلی الله علیه و آله", "en": "Prophet Muhammad's first revelation" },
+    "1405-11-04": { "fa": "ولادت حضرت قائم عجل الله تعالی فرجه و جشن نیمه شعبان", "en": "Birthday of Imam Mahdi" },
+    "1405-11-22": { "fa": "پیروزی انقلاب اسلامی ایران", "en": "Anniversary of the Islamic Revolution" },
+    "1405-12-09": { "fa": "شهادت امام علی علیه السلام", "en": "Martyrdom of Imam Ali" },
+    "1405-12-19": { "fa": "عید سعید فطر", "en": "Eid al-Fitr" },
+    "1405-12-20": { "fa": "تعطیل به مناسبت عید سعید فطر", "en": "Eid al-Fitr holiday" },
+    "1405-12-29": { "fa": "روز ملی شدن صنعت نفت ایران", "en": "Oil Industry Nationalization Day" }
+  }
+}

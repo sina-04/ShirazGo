@@ -395,6 +395,7 @@
     text-align: center;
     font-variant-numeric: tabular-nums;
   }
+  .clock-input[readonly] { cursor: default; caret-color: transparent; }
   select:focus, input:focus { border-color: var(--forest-500); box-shadow: 0 0 0 4px color-mix(in srgb, var(--forest-500) 16%, transparent); background: var(--surface); }
 
   .swap-button {

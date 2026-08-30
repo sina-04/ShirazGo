@@ -25,6 +25,17 @@ WEEKDAYS_FA = {
 }
 
 
+def load_official_holidays(year: int) -> tuple[dict | None, dict | None]:
+    path = OUTPUT_DIR / f"official-holidays-{year}.json"
+    if not path.exists():
+        return None, None
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("calendarYear") != year:
+        raise ValueError(f"{path.name} does not describe Jalali year {year}")
+    return payload.get("holidays", {}), payload.get("source")
+
+
 def jalali_year_range(year: int) -> tuple[date, date]:
     start = jdatetime.date(year, 1, 1).togregorian()
     end = jdatetime.date(year + 1, 1, 1).togregorian() - timedelta(days=1)
@@ -46,23 +57,33 @@ def generate_year(year: int, generated_at: str) -> dict:
     gregorian_years = range(start.year, end.year + 1)
     holidays_en = holidays.country_holidays("IR", years=gregorian_years, language="en_US")
     holidays_fa = holidays.country_holidays("IR", years=gregorian_years, language="fa_IR")
+    official_holidays, official_source = load_official_holidays(year)
     dates = {}
     day = start
 
     while day <= end:
         jalali = jdatetime.date.fromgregorian(date=day)
-        holiday_name_en = holidays_en.get(day)
-        holiday_name_fa = holidays_fa.get(day)
-        official_holiday = day in holidays_en
+        jalali_key = f"{jalali.year:04d}-{jalali.month:02d}-{jalali.day:02d}"
+        if official_holidays is not None:
+            holiday = official_holidays.get(jalali_key)
+            official_holiday = holiday is not None
+            holiday_name_fa = holiday.get("fa") if holiday else None
+            holiday_name_en = holiday.get("en") if holiday else None
+            estimated_holiday = False
+        else:
+            holiday_name_en = holidays_en.get(day)
+            holiday_name_fa = holidays_fa.get(day)
+            official_holiday = day in holidays_en
+            estimated_holiday = bool(holiday_name_en and "estimated" in holiday_name_en.lower())
         dates[day.isoformat()] = {
-            "jalali": f"{jalali.year:04d}-{jalali.month:02d}-{jalali.day:02d}",
+            "jalali": jalali_key,
             "weekday": day.strftime("%A"),
             "weekdayFa": WEEKDAYS_FA[day.weekday()],
             "isFriday": day.weekday() == 4,
             "isOfficialHoliday": official_holiday,
             "holidayNameFa": holiday_name_fa,
             "holidayNameEn": holiday_name_en,
-            "isEstimatedHoliday": bool(holiday_name_en and "estimated" in holiday_name_en.lower()),
+            "isEstimatedHoliday": estimated_holiday,
             "serviceDayType": service_day_type(day, official_holiday),
         }
         day += timedelta(days=1)
@@ -73,7 +94,7 @@ def generate_year(year: int, generated_at: str) -> dict:
         "generatedAt": generated_at,
         "validFrom": start.isoformat(),
         "validThrough": end.isoformat(),
-        "source": {
+        "source": official_source or {
             "library": "holidays",
             "country": "IR",
             "note": "Islamic-calendar holidays marked as estimated should be reviewed when official dates are announced.",
