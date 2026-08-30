@@ -36,19 +36,20 @@ A responsive, dependency-free Shiraz Metro journey planner for **Lines 1 and 2**
 
 ### Line 2
 
-- Complete planned route: Shokoufeh → Fazilat, 13 stations.
-- Current modeled service section: Ghahremanan ↔ Imam Hossein.
+- Published operating section: Ghahremanan ↔ Imam Hossein, 5 stations.
+- Operating station order: Ghahremanan → Shohada-ye Adelabad → Basij → Esteghlal → Imam Hossein.
 - Working-day first departures:
   - Ghahremanan → Imam Hossein: 06:00
   - Imam Hossein → Ghahremanan: 06:20
-- Approximate scheduled interval: 40 minutes.
-- Modeled final terminal departures: 17:20 and 17:40, allowing service to finish close to 18:00.
-- No regular weekend/holiday service is modeled.
-- Planned stations remain visible in the selectors, matrix, and station directory, but correctly show no timetable.
+- Scheduled interval: 40 minutes.
+- Final terminal departures: 18:00 from Ghahremanan and 17:40 from Imam Hossein.
+- Published end-to-end travel time: 16 minutes.
+- Basij ↔ Esteghlal is supported in both directions as a 3-minute journey.
+- No regular weekend/official-holiday service is published in the supplied timetable.
 
 ## Data limitations
 
-The supplied Shiraz Metro PDF covers Line 1. Line 2 was added from the station list provided for this project and publicly published operating information. The official Line 2 webpage was not consistently reachable during development, so Line 2 departure calculations are explicitly presented as a planning model and should be checked against station notices.
+Line 1 is reconstructed from its supplied station timetable. Line 2 is reconstructed from the supplied 18-page working-day timetable, including its station-specific offsets and 40-minute departure sequence. Operational changes can still supersede these files, so station notices take precedence.
 
 ShirazGo is an independent planning aid, not an official transit publication.
 Schedules can change without notice; confirm critical journeys using current

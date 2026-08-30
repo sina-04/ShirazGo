@@ -35,17 +35,17 @@ const UI = {
     matrixHint: 'Select a cell to load that route in the planner.', matrixRegionLabel: 'Station-to-station travel matrix',
     allStations: 'All stations', stationListToggleLabel: 'Station list timetable type',
     bufferTitle: 'Plan with a small buffer',
-    bufferText: 'Published timetables can change because of maintenance, special events, or operational conditions. Line 2 is partially operational, so planned stations do not show departure times.',
+    bufferText: 'Published timetables can change because of maintenance, special events, or operational conditions. Line 2 follows the supplied working-day timetable and has no published regular weekend or official-holiday service.',
     openReadableTimetable: 'Download PDF timetable', footerTagline: 'Independent journey-planning interface',
     footerText: 'Built for clear access to Shiraz Metro Lines 1 and 2.', backToTop: 'Back to top ↑',
     languageTarget: 'فارسی', languageToggleLabel: 'Change language to Persian',
     lineAtGlance: line => `${line} at a glance`,
     line1StationDescription: 'First and last scheduled train times for today’s automatically selected timetable.',
-    line2StationDescription: 'Operational status and modeled service windows for the current partial-service section.',
+    line2StationDescription: 'First and last trains from the supplied working-day timetable for the five-station operating section.',
     plannedNoService: 'Planned / no service', sameStation: 'Same station',
     chooseDifferent: 'Choose two different stations.', unavailable: 'Unavailable', closed: 'Closed',
     noPassengerTimetable: 'No regular passenger timetable for this selection', noMoreTrains: 'No more scheduled trains today',
-    minutes: n => `${n} min`, stops: n => `${n} ${n === 1 ? 'stop' : 'stops'}`,
+    minutes: n => `${n} min`, stops: n => `${n} ${Number(n) === 1 ? 'stop' : 'stops'}`,
     everyMinutes: n => `Every ${n} minutes`,
     estimatedArrivalAt: time => `Estimated arrival ${time}`,
     planDeparture: (departure, arrival) => `Plan this journey on the ${departure} train, arriving at approximately ${arrival}`,
@@ -59,9 +59,9 @@ const UI = {
     plannedNoTimetableTitle: 'Planned station with no regular timetable',
     endedMessage: (last, label, first) => `Service from this station ended at ${last}. The first ${label.toLowerCase()} train is at ${first}.`,
     noWindow: 'No regular service window is available for this station.',
-    lineNoService: (line, label) => `${line} has no regular ${label.toLowerCase()} service in the published timetable model.`,
+    lineNoService: (line, label) => `${line} has no regular ${label.toLowerCase()} service in the supplied timetable.`,
     plannedUnavailable: names => `${names} ${names.includes(' and ') ? 'are' : 'is'} shown as part of the planned Line 2 network, but no regular departure timetable is available yet.`,
-    notConnected: 'The selected stations are not currently connected by the modeled passenger-service section.',
+    notConnected: 'The selected stations are not currently connected by the published passenger-service section.',
     cannotCalculate: 'No departure could be calculated for this selection.',
     stationPlannedTitle: name => `${name} — planned station`,
     toward: destination => `Toward ${destination}`
@@ -100,12 +100,12 @@ const UI = {
     matrixHint: 'با انتخاب هر خانه، همان مسیر در برنامه‌ریز بارگذاری می‌شود.', matrixRegionLabel: 'ماتریس زمان سفر میان ایستگاه‌ها',
     allStations: 'همه ایستگاه‌ها', stationListToggleLabel: 'نوع جدول زمانی فهرست ایستگاه‌ها',
     bufferTitle: 'زمان احتیاطی کوتاهی در نظر بگیرید',
-    bufferText: 'جدول‌های زمانی ممکن است به‌دلیل تعمیرات، رویدادهای ویژه یا شرایط بهره‌برداری تغییر کنند. خط ۲ به‌صورت بخشی فعال است؛ بنابراین برای ایستگاه‌های برنامه‌ریزی‌شده زمان حرکت نمایش داده نمی‌شود.',
+    bufferText: 'جدول‌های زمانی ممکن است به‌دلیل تعمیرات، رویدادهای ویژه یا شرایط بهره‌برداری تغییر کنند. خط ۲ از جدول روز کاری ارائه‌شده استفاده می‌کند و برای پایان هفته یا تعطیلات رسمی سرویس منظم منتشرشده‌ای ندارد.',
     openReadableTimetable: 'دانلود جدول زمانی PDF', footerTagline: 'رابط مستقل برنامه‌ریزی سفر',
     footerText: 'برای دسترسی روشن به خطوط ۱ و ۲ متروی شیراز ساخته شده است.', backToTop: 'بازگشت به بالا ↑',
     languageTarget: 'English', languageToggleLabel: 'تغییر زبان به انگلیسی',
     lineAtGlance: line => `نمای کلی ${line}`, line1StationDescription: 'زمان نخستین و آخرین قطار برای جدول زمانی انتخاب‌شده خودکار امروز.',
-    line2StationDescription: 'وضعیت بهره‌برداری و بازه‌های زمانی برآوردی بخش فعال خط ۲.',
+    line2StationDescription: 'زمان نخستین و آخرین قطار بر پایه جدول روز کاری ارائه‌شده برای بخش فعال پنج‌ایستگاهی.',
     plannedNoService: 'برنامه‌ریزی‌شده / بدون سرویس', sameStation: 'ایستگاه یکسان',
     chooseDifferent: 'دو ایستگاه متفاوت انتخاب کنید.', unavailable: 'در دسترس نیست', closed: 'پایان سرویس',
     noPassengerTimetable: 'برای این انتخاب جدول زمانی منظم مسافری وجود ندارد', noMoreTrains: 'امروز قطار برنامه‌ریزی‌شده دیگری وجود ندارد',
@@ -121,9 +121,9 @@ const UI = {
     plannedNoTimetableTitle: 'ایستگاه برنامه‌ریزی‌شده بدون جدول زمانی منظم',
     endedMessage: (last, label, first) => `سرویس این ایستگاه در ساعت ${last} پایان یافته است. نخستین قطار ${label} در ساعت ${first} حرکت می‌کند.`,
     noWindow: 'برای این ایستگاه بازه سرویس منظمی در دسترس نیست.',
-    lineNoService: (line, label) => `${line} در مدل جدول زمانی منتشرشده، سرویس منظم ${label} ندارد.`,
+    lineNoService: (line, label) => `${line} در جدول زمانی ارائه‌شده، سرویس منظم ${label} ندارد.`,
     plannedUnavailable: names => `${names} بخشی از شبکه برنامه‌ریزی‌شده خط ۲ است، اما هنوز جدول حرکت منظم برای آن منتشر نشده است.`,
-    notConnected: 'ایستگاه‌های انتخاب‌شده در بخش فعال مدل‌شده به یکدیگر متصل نیستند.',
+    notConnected: 'ایستگاه‌های انتخاب‌شده در بخش فعال دارای جدول منتشرشده به یکدیگر متصل نیستند.',
     cannotCalculate: 'امکان محاسبه زمان حرکت برای این انتخاب وجود ندارد.',
     stationPlannedTitle: name => `${name} — ایستگاه برنامه‌ریزی‌شده`,
     toward: destination => `به‌سمت ${destination}`
@@ -174,38 +174,33 @@ const LINES = {
   },
   line2: {
     id:'line2', number:2,
-    name:text('Line 2','خط ۲'), subtitle:text('Shokoufeh ↔ Fazilat','شکوفه ↔ فضیلت'),
-    status:text('Partial service','سرویس محدود'), statusTone:'limited', averageTravelLabel:text('≈ 2 min','حدود ۲ دقیقه'),
-    defaultFrom:1, defaultTo:7,
+    name:text('Line 2','خط ۲'), subtitle:text('Ghahremanan ↔ Imam Hossein','قهرمانان ↔ امام حسین'),
+    status:text('Operating section','بخش فعال'), statusTone:'limited', averageTravelLabel:text('3–7 min','۳ تا ۷ دقیقه'),
+    defaultFrom:0, defaultTo:4,
     stations:[
-      ['Shokoufeh','شکوفه',false,'Planned','برنامه‌ریزی‌شده'],
-      ['Ghahremanan','قهرمانان',true,'Current service terminus','پایانه فعلی سرویس'],
-      ['Edalat','عدالت',true], ['Dowlat','دولت',true],
-      ['Rahmat','رحمت',true,null,null,'Future Line 6 interchange','تقاطع آینده با خط ۶'],
+      ['Ghahremanan','قهرمانان',true,'Service terminus','پایانه سرویس'],
+      ['Shohada-ye Adelabad','شهدای عادل‌آباد',true],
       ['Basij','بسیج',true],
       ['Esteghlal','استقلال',true,null,null,'Future Line 4 interchange','تقاطع آینده با خط ۴'],
-      ['Imam Hossein','امام حسین',true,'Current service terminus','پایانه فعلی سرویس','Line 1 interchange','تقاطع با خط ۱'],
-      ['Azadi','آزادی',false,'Future phase','فاز آینده'], ['Atlasi','اطلسی',false,'Future phase','فاز آینده'],
-      ['Hafezieh','حافظیه',false,'Future phase','فاز آینده'], ['Saadieh','سعدیه',false,'Future phase','فاز آینده'],
-      ['Fazilat','فضیلت',false,'Future terminus','پایانه آینده']
+      ['Imam Hossein','امام حسین (ع)',true,'Service terminus','پایانه سرویس','Line 1 interchange','تقاطع با خط ۱']
     ].map(([en,fa,active,statusEn,statusFa,interchangeEn,interchangeFa]) => ({ name:text(en,fa),active,status:statusEn?text(statusEn,statusFa):null,note:active&&statusEn?text(statusEn,statusFa):null,interchange:interchangeEn?text(interchangeEn,interchangeFa):null })),
     directions:{
-      forward:{ label:text('Toward Imam Hossein','به‌سمت امام حسین'),shortLabel:text('Imam Hossein','امام حسین'),originIndex:1,terminusIndex:7,offsets:[null,0,2,4,6,8,10,12,null,null,null,null,null] },
-      reverse:{ label:text('Toward Ghahremanan','به‌سمت قهرمانان'),shortLabel:text('Ghahremanan','قهرمانان'),originIndex:7,terminusIndex:1,offsets:[null,12,10,8,6,4,2,0,null,null,null,null,null] }
+      forward:{ label:text('Toward Imam Hossein','به‌سمت امام حسین'),shortLabel:text('Imam Hossein','امام حسین'),originIndex:0,terminusIndex:4,offsets:[0,3,10,13,16] },
+      reverse:{ label:text('Toward Ghahremanan','به‌سمت قهرمانان'),shortLabel:text('Ghahremanan','قهرمانان'),originIndex:4,terminusIndex:0,offsets:[16,13,6,3,0] }
     },
     services:{
-      weekday:{available:true,label:text('Working day','روز کاری'),frequency:40,forward:{first:'06:00',last:'17:20'},reverse:{first:'06:20',last:'17:40'}},
+      weekday:{available:true,label:text('Working day','روز کاری'),frequency:40,forward:{first:'06:00',last:'18:00'},reverse:{first:'06:20',last:'17:40'}},
       weekend:{available:false,label:text('Weekend / holiday','تعطیلات و آخر هفته'),frequency:40,forward:null,reverse:null}
     },
     heroStops:[
-      {index:0,label:text('Planned terminus','پایانه برنامه‌ریزی‌شده'),planned:true},
-      {index:1,label:text('Current service start','آغاز سرویس فعلی')},
-      {index:7,label:text('Line 1 interchange','تقاطع با خط ۱')},
-      {index:12,label:text('Future terminus','پایانه آینده'),planned:true}
+      {index:0,label:text('Service start','آغاز سرویس')},
+      {index:1,label:text('Shohada-ye Adelabad','شهدای عادل‌آباد')},
+      {index:3,label:text('Line 4 interchange','تقاطع با خط ۴')},
+      {index:4,label:text('Line 1 interchange','تقاطع با خط ۱')}
     ],
-    banner:text('Line 2 currently provides partial service. Planned stations remain visible but do not have departure times.','خط ۲ در حال حاضر به‌صورت بخشی فعال است. ایستگاه‌های برنامه‌ریزی‌شده نمایش داده می‌شوند، اما زمان حرکت ندارند.'),
-    formNote:text('Line 2 planning uses a modeled 40-minute headway for the active Ghahremanan–Imam Hossein section. Verify station notices before travel.','برنامه‌ریزی خط ۲ برای بخش فعال قهرمانان تا امام حسین با فاصله حرکت برآوردی ۴۰ دقیقه انجام می‌شود. پیش از سفر اطلاعیه‌های ایستگاه را بررسی کنید.'),
-    dataNote:text('Line 2 times are a planning model for the currently active section.','زمان‌های خط ۲ یک مدل برنامه‌ریزی برای بخش فعال کنونی هستند.')
+    banner:text('Line 2 operates across five published-timetable stations from Ghahremanan to Imam Hossein. No regular weekend or official-holiday service is published.','خط ۲ در پنج ایستگاه دارای جدول زمانی از قهرمانان تا امام حسین فعال است. برای پایان هفته یا تعطیلات رسمی سرویس منظم منتشرشده‌ای وجود ندارد.'),
+    formNote:text('Line 2 uses the supplied working-day timetable: departures every 40 minutes with published station-specific travel offsets.','خط ۲ از جدول روز کاری ارائه‌شده استفاده می‌کند: حرکت‌ها هر ۴۰ دقیقه و زمان سفر بر پایه فاصله‌های زمانی منتشرشده برای هر ایستگاه است.'),
+    dataNote:text('Line 2 times are reconstructed from the supplied 18-page working-day timetable.','زمان‌های خط ۲ از جدول روز کاری ۱۸ صفحه‌ای ارائه‌شده بازسازی شده‌اند.')
   }
 };
 

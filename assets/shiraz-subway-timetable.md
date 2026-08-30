@@ -1,6 +1,6 @@
 # Shiraz Metro — Accessible Timetable for Lines 1 and 2
 
-> A responsive, text-first timetable reference for Shiraz Metro Lines 1 and 2. Line 1 is converted from the supplied 20-page station timetable; Line 2 is based on published operating information and the current partial-service network.
+> A responsive, text-first timetable reference for Shiraz Metro Lines 1 and 2. Line 1 is converted from the supplied 20-page station timetable; Line 2 is reconstructed from the supplied 18-page working-day timetable.
 
 ## Quick navigation
 
@@ -2198,10 +2198,10 @@
 
 - Working-day departure sequences are based on the station pages in the supplied timetable.
 - The source prints first and last weekend/holiday services; the detailed weekend/holiday rows in this document are generated at the same 15-minute interval between those printed endpoints.
-- The website journey planner uses the same station offsets and timetable model as this document.
+- The website journey planner uses the same published station offsets and schedule data as this document.
 - For route-duration estimates, adjacent stations average approximately two minutes, while the published station offsets are used where available.
 
-Last document revision: 29 July 2026.
+Last document revision: 30 August 2026.
 
 ---
 
@@ -2209,71 +2209,61 @@ Last document revision: 29 July 2026.
 
 # Line 2 timetable and station status
 
-> **Partial-service line:** The complete planned route contains 13 stations, but only the Ghahremanan–Imam Hossein section currently has a modeled regular passenger timetable. Planned stations remain listed for network completeness.
+> **Published operating section:** The supplied working-day timetable covers five stations between Ghahremanan and Imam Hossein. The website uses the exact terminal sequence and station-specific offsets shown in that timetable.
 
 ## Line 2 service summary
 
-| Item                                   | Published planning information          |
-| :------------------------------------- | :-------------------------------------- |
-| Complete planned route                 | Shokoufeh ↔ Fazilat                     |
-| Current modeled service section        | Ghahremanan ↔ Imam Hossein              |
-| First departure toward Imam Hossein    | 06:00 from Ghahremanan                  |
-| First departure toward Ghahremanan     | 06:20 from Imam Hossein                 |
-| Approximate headway                    | Every 40 minutes                        |
-| Approximate operating window           | 06:00–18:00 on working days             |
-| Weekend / official-holiday service     | No regular service in the current model |
-| Approximate time between stations      | 2 minutes                               |
-| Approximate active-section travel time | 12 minutes                              |
+| Item                               | Published timetable information         |
+| :--------------------------------- | :-------------------------------------- |
+| Operating section                  | Ghahremanan ↔ Imam Hossein              |
+| Operating stations                 | 5                                       |
+| First departure toward Imam Hossein | 06:00 from Ghahremanan                 |
+| First departure toward Ghahremanan | 06:20 from Imam Hossein                 |
+| Scheduled headway                  | Every 40 minutes                        |
+| Terminal departure window          | 06:00–18:00 on working days             |
+| Weekend / official-holiday service | No regular service published            |
+| Time between adjacent stops        | 3–7 minutes                             |
+| End-to-end travel time             | 16 minutes                              |
 
-The final terminal departures used by the website are **17:20 from Ghahremanan** and **17:40 from Imam Hossein**. Line 2 times are a planning model; local station notices take precedence.
+The final terminal departures are **18:00 from Ghahremanan** and **17:40 from Imam Hossein**. The supplied PDF shows the non-holiday timetable; local operational notices take precedence.
 
 ## Line 2 station order and status
 
-| No. | English name | Current timetable status | Notes                                                |
-| --: | :----------- | :----------------------- | :--------------------------------------------------- |
-|   1 | Shokoufeh    | No regular timetable     | Planned terminus                                     |
-|   2 | Ghahremanan  | Operational              | Current service terminus                             |
-|   3 | Edalat       | Operational              | —                                                    |
-|   4 | Dowlat       | Operational              | —                                                    |
-|   5 | Rahmat       | Operational              | Future interchange with Line 6                       |
-|   6 | Basij        | Operational              | —                                                    |
-|   7 | Esteghlal    | Operational              | Future interchange with Line 4                       |
-|   8 | Imam Hossein | Operational              | Current service terminus and interchange with Line 1 |
-|   9 | Azadi        | No regular timetable     | Future phase                                         |
-|  10 | Atlasi       | No regular timetable     | Future phase                                         |
-|  11 | Hafezieh     | No regular timetable     | Future phase                                         |
-|  12 | Saadieh      | No regular timetable     | Future phase                                         |
-|  13 | Fazilat      | No regular timetable     | Future terminus                                      |
+| No. | English name          | Current timetable status | Notes                                        |
+| --: | :-------------------- | :----------------------- | :------------------------------------------- |
+|   1 | Ghahremanan           | Operational              | Service terminus                             |
+|   2 | Shohada-ye Adelabad   | Operational              | Name shown in the supplied timetable          |
+|   3 | Basij                 | Operational              | 3 minutes from Esteghlal                      |
+|   4 | Esteghlal             | Operational              | Future interchange with Line 4               |
+|   5 | Imam Hossein          | Operational              | Service terminus and interchange with Line 1 |
 
 ## Quick reference — toward Imam Hossein
 
-| Station      | First train | Last modeled train |     Frequency      |
-| :----------- | :---------: | :----------------: | :----------------: |
-| Ghahremanan  |    06:00    |       17:20        |       40 min       |
-| Edalat       |    06:02    |       17:22        |       40 min       |
-| Dowlat       |    06:04    |       17:24        |       40 min       |
-| Rahmat       |    06:06    |       17:26        |       40 min       |
-| Basij        |    06:08    |       17:28        |       40 min       |
-| Esteghlal    |    06:10    |       17:30        |       40 min       |
-| Imam Hossein |    06:12    |       17:32        | Arrival / terminus |
+| Station             | First train | Last train |     Frequency      |
+| :------------------ | :---------: | :--------: | :----------------: |
+| Ghahremanan         |    06:00    |   18:00    |       40 min       |
+| Shohada-ye Adelabad |    06:03    |   18:03    |       40 min       |
+| Basij               |    06:10    |   18:10    |       40 min       |
+| Esteghlal           |    06:13    |   18:13    |       40 min       |
+| Imam Hossein        |    06:16    |   18:16    | Arrival / terminus |
 
 ## Quick reference — toward Ghahremanan
 
-| Station      | First train | Last modeled train |     Frequency      |
-| :----------- | :---------: | :----------------: | :----------------: |
-| Imam Hossein |    06:20    |       17:40        |       40 min       |
-| Esteghlal    |    06:22    |       17:42        |       40 min       |
-| Basij        |    06:24    |       17:44        |       40 min       |
-| Rahmat       |    06:26    |       17:46        |       40 min       |
-| Dowlat       |    06:28    |       17:48        |       40 min       |
-| Edalat       |    06:30    |       17:50        |       40 min       |
-| Ghahremanan  |    06:32    |       17:52        | Arrival / terminus |
+| Station             | First train | Last train |     Frequency      |
+| :------------------ | :---------: | :--------: | :----------------: |
+| Imam Hossein        |    06:20    |   17:40    |       40 min       |
+| Esteghlal           |    06:23    |   17:43    |       40 min       |
+| Basij               |    06:26    |   17:46    |       40 min       |
+| Shohada-ye Adelabad |    06:33    |   17:53    |       40 min       |
+| Ghahremanan         |    06:36    |   17:56    | Arrival / terminus |
+
+The planner also supports the two missing direct combinations from the source captures: **Basij → Esteghlal** and **Esteghlal → Basij**. Each takes 3 minutes and follows the same 40-minute train sequence.
 
 ## Terminal departure sequences
 
 ### Ghahremanan → Imam Hossein
 
-`06:00, 06:40, 07:20, 08:00, 08:40, 09:20, 10:00, 10:40, 11:20, 12:00, 12:40, 13:20, 14:00, 14:40, 15:20, 16:00, 16:40, 17:20`
+`06:00, 06:40, 07:20, 08:00, 08:40, 09:20, 10:00, 10:40, 11:20, 12:00, 12:40, 13:20, 14:00, 14:40, 15:20, 16:00, 16:40, 17:20, 18:00`
 
 ### Imam Hossein → Ghahremanan
 
@@ -2287,6 +2277,6 @@ The final terminal departures used by the website are **17:20 from Ghahremanan**
 
 - Times use the **24-hour clock** and local Shiraz time.
 - Line 1 data is reconstructed from the supplied station timetable.
-- Line 2 data is a practical planning model based on the available start times, headway, operating window, and current active section.
+- Line 2 data is reconstructed from the supplied 18-page working-day timetable, using its exact terminal sequence and station offsets.
 - The website supports English and Persian; Persian mode uses RTL layout and Persian numerals.
 - Maintenance, events, fleet availability, and station openings can change service. Arrive early and check station notices.
