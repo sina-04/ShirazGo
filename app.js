@@ -600,6 +600,13 @@ function getMatrixCellDisplay(line,fromIndex,toIndex,mode,lookupTime,serviceType
 }
 function renderMatrix() {
   const line=lineData(), mode=dom.matrixMode.value||'duration', lookupTime=minutesFromTime(dom.matrixTime.value||dom.time.value||'08:00'), serviceType=getSelectedServiceType();
+  const names=line.stations.map(station=>local(station.name));
+  const longestNameLength=Math.max(...names.map(name=>[...name].length));
+  const labelWidth=Math.min(220,Math.max(currentLanguage==='fa'?175:190,Math.round(longestNameLength*(currentLanguage==='fa'?7:7.5)+48)));
+  const stationWidth=currentLanguage==='fa'?68:72;
+  const headerHeight=Math.min(190,Math.max(currentLanguage==='fa'?145:150,Math.round(longestNameLength*(currentLanguage==='fa'?6.5:7)+28)));
+  const matrixWidth=labelWidth+(line.stations.length*stationWidth);
+  const columns=`<colgroup><col class="matrix-label-column">${line.stations.map(()=>'<col class="matrix-station-column">').join('')}</colgroup>`;
   const header=`<thead><tr><th scope="col">${t('matrixCorner')}</th>${line.stations.map(station=>`<th scope="col" title="${local(station.name)}">${local(station.name)}</th>`).join('')}</tr></thead>`;
   const rows=line.stations.map((fromStation,fromIndex)=>{
     const cells=line.stations.map((_,toIndex)=>{
@@ -610,8 +617,11 @@ function renderMatrix() {
     const rowStatus=fromStation.active?'':`<span class="row-status">${t('planned')}</span>`;
     return `<tr><th scope="row">${formatNumber(fromIndex+1,2)} · ${local(fromStation.name)}${rowStatus}</th>${cells}</tr>`;
   }).join('');
-  dom.matrixTable.innerHTML=`${header}<tbody>${rows}</tbody>`;
-  dom.matrixTable.style.minWidth=`${Math.max(900,175+(line.stations.length*66))}px`;
+  dom.matrixTable.innerHTML=`${columns}${header}<tbody>${rows}</tbody>`;
+  dom.matrixTable.style.setProperty('--matrix-label-width',`${labelWidth}px`);
+  dom.matrixTable.style.setProperty('--matrix-station-width',`${stationWidth}px`);
+  dom.matrixTable.style.setProperty('--matrix-header-height',`${headerHeight}px`);
+  dom.matrixTable.style.setProperty('--matrix-width',`${matrixWidth}px`);
 }
 function renderStationList() {
   const line=lineData(), service=line.services[activeServiceType];
