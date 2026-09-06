@@ -9,7 +9,11 @@ const UI = {
     primaryNavLabel: 'Primary navigation',
     navPlan: 'Plan a trip', navMatrix: 'From–To matrix', navStations: 'Stations',
     readableTimetable: 'PDF timetable', themeToggleLabel: 'Switch color theme',
-    heroTitle: '<span class="hero-title-line hero-title-move">Move through</span><br><span class="hero-title-line hero-title-main">Shiraz</span><br><em class="hero-title-line hero-title-confidence">with</em><br><em class="hero-title-line hero-title-confidence">confidence.</em>',
+    heroEyebrow: 'Your city. Your next stop.', exploreStations: 'Explore stations',
+    networkPreview: 'SHIRAZ METRO / NETWORK PREVIEW', swapAction: 'Swap stations',
+    fromPlaceholder: 'Choose starting station', toPlaceholder: 'Choose destination', viewRoute: 'View your journey',
+    lightThemeLabel: 'Switch to light mode', darkThemeLabel: 'Switch to dark mode',
+    heroTitle: '<span class="hero-title-line hero-title-move">Move through</span><br><span class="hero-title-line hero-title-main">Shiraz.</span><br><em class="hero-title-line hero-title-confidence">With confidence.</em>',
     heroLead: 'Choose a metro line and two stations to see the next scheduled train and a clear station-by-station journey estimate.',
     chooseLineLabel: 'Choose metro line', serviceOverviewLabel: 'Service overview',
     stationsFact: 'stations', betweenStationsFact: 'between stations', frequencyFact: 'scheduled frequency',
@@ -74,6 +78,10 @@ const UI = {
     primaryNavLabel: 'پیمایش اصلی',
     navPlan: 'برنامه‌ریزی سفر', navMatrix: 'ماتریس مبدأ–مقصد', navStations: 'ایستگاه‌ها',
     readableTimetable: 'جدول زمانی PDF', themeToggleLabel: 'تغییر حالت رنگی',
+    heroEyebrow: 'شهر شما، ایستگاه بعدی شما', exploreStations: 'کاوش ایستگاه‌ها',
+    networkPreview: 'متروی شیراز / نمای شبکه', swapAction: 'جابجایی ایستگاه‌ها',
+    fromPlaceholder: 'انتخاب ایستگاه مبدأ', toPlaceholder: 'انتخاب ایستگاه مقصد', viewRoute: 'مشاهده مسیر سفر',
+    lightThemeLabel: 'تغییر به حالت روشن', darkThemeLabel: 'تغییر به حالت تاریک',
     heroTitle: '<span class="hero-title-line hero-title-main">در شیراز حرکت کنید؛</span><br><em class="hero-title-confidence">با اطمینان.</em>',
     heroLead: 'خط مترو، ایستگاه مبدأ و مقصد را انتخاب کنید تا نزدیک‌ترین قطار و برآورد مرحله‌به‌مرحله سفر را ببینید.',
     chooseLineLabel: 'انتخاب خط مترو', serviceOverviewLabel: 'نمای کلی خدمات',
@@ -401,8 +409,8 @@ function populateStationSelects({ preserve = false } = {}) {
   const line = lineData();
   const currentFrom = dom.from.value, currentTo = dom.to.value;
   const options = line.stations.map(stationOption).join('');
-  const placeholder = '<option value="">−</option>';
-  dom.from.innerHTML = placeholder + options; dom.to.innerHTML = placeholder + options;
+  dom.from.innerHTML = `<option value="" disabled>${t('fromPlaceholder')}</option>` + options;
+  dom.to.innerHTML = `<option value="" disabled>${t('toPlaceholder')}</option>` + options;
   dom.from.value = preserve && currentFrom !== '' && line.stations[Number(currentFrom)] ? currentFrom : '';
   dom.to.value = preserve && currentTo !== '' && line.stations[Number(currentTo)] ? currentTo : '';
 }
@@ -470,7 +478,10 @@ function setActiveLine(lineId,{preserveStations=false,updateResult=true}={}) {
   activeLineId=lineId; selectedMatrixCell=null;
   renderLineOptions(); populateStationSelects({preserve:preserveStations}); renderLineControls(); renderHero(); renderMatrix(); renderStationList();
   storage.set('shirazgo-active-line',activeLineId);
-  if (updateResult) { stopDepartureCountdown(); dom.resultContent.hidden=true; dom.resultEmpty.hidden=false; }
+  if (updateResult) {
+    stopDepartureCountdown(); dom.resultContent.hidden=true; dom.resultEmpty.hidden=false;
+    document.querySelector('#viewRoute').hidden=true;
+  }
 }
 
 function syncDateAndTimeToNow(now=new Date()) {
@@ -546,15 +557,21 @@ function showUnavailableResult(line,fromIndex,toIndex,serviceType) {
   } else if (!isOperationalRoute(line,fromIndex,toIndex)) dom.serviceMessage.textContent=t('notConnected');
   else dom.serviceMessage.textContent=t('cannotCalculate');
 }
-function showRouteResult({scroll=false}={}) {
+function showRouteResult({scroll=false,animate=false}={}) {
   if (!hasCompleteRoute()) return false;
   const line=lineData(), fromIndex=Number(dom.from.value), toIndex=Number(dom.to.value);
-  if (fromIndex===toIndex) { showToast(t('chooseDifferent')); dom.to.focus(); return false; }
+  if (fromIndex===toIndex) {
+    stopDepartureCountdown(); dom.resultContent.hidden=true; dom.resultEmpty.hidden=false;
+    document.querySelector('#viewRoute').hidden=true;
+    showToast(t('chooseDifferent')); dom.to.focus(); return false;
+  }
+  dom.to.setCustomValidity('');
   const serviceType=getSelectedServiceType(), service=line.services[serviceType], directionKey=getDirection(fromIndex,toIndex), direction=line.directions[directionKey];
   const duration=getTripDuration(line,fromIndex,toIndex), stopCount=Math.abs(toIndex-fromIndex), lookupMinutes=minutesFromTime(dom.time.value||'08:00');
   const routeOperational=service.available&&isOperationalRoute(line,fromIndex,toIndex);
 
   dom.resultEmpty.hidden=true; dom.resultContent.hidden=false;
+  document.querySelector('#viewRoute').hidden=false;
   dom.resultDirection.textContent=local(direction.label);
   dom.resultFrom.textContent=stationName(line,fromIndex); dom.resultTo.textContent=stationName(line,toIndex);
   dom.resultServiceBadge.textContent=`${local(line.name)} · ${local(service.label)}`;
@@ -584,7 +601,8 @@ function showRouteResult({scroll=false}={}) {
     }
   }
   renderRouteProgress(line,fromIndex,toIndex); renderMatrix();
-  if (scroll) document.querySelector('#resultCard').scrollIntoView({behavior:'smooth',block:'center'});
+  if (animate) animateIn(dom.resultContent);
+  if (scroll) document.querySelector('#resultCard').scrollIntoView({behavior:motionBehavior(),block:'start'});
   return true;
 }
 function matrixCellClass(duration) { return duration<=12?'short':duration<=26?'medium':'long'; }
@@ -645,39 +663,97 @@ function showToast(message) {
   window.clearTimeout(showToast.timeoutId);
   showToast.timeoutId=window.setTimeout(()=>dom.to.setCustomValidity(''),2500);
 }
-function enableMobileDoubleTapZoomReset() {
-  const mobileTouch=window.matchMedia('(max-width: 780px) and (pointer: coarse)');
-  const viewport=document.querySelector('meta[name="viewport"]');
-  if (!viewport) return;
-  const normalViewport=viewport.getAttribute('content');
-  let previousTapTime=0, previousTapX=0, previousTapY=0, restoreTimer=null;
-
-  document.addEventListener('touchend',event=>{
-    if (!mobileTouch.matches || event.changedTouches.length!==1) return;
-    if (event.target.closest('a, button, input, select, textarea, label')) {
-      previousTapTime=0;
-      return;
-    }
-    const touch=event.changedTouches[0], now=Date.now();
-    const interval=now-previousTapTime;
-    const distance=Math.hypot(touch.clientX-previousTapX,touch.clientY-previousTapY);
-    if (interval>40 && interval<325 && distance<48) {
-      event.preventDefault();
-      window.clearTimeout(restoreTimer);
-      viewport.setAttribute('content','width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no');
-      restoreTimer=window.setTimeout(()=>viewport.setAttribute('content',normalViewport),140);
-      previousTapTime=0;
-      return;
-    }
-    previousTapTime=now; previousTapX=touch.clientX; previousTapY=touch.clientY;
-  },{passive:false});
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+const motionBehavior=()=>reducedMotion.matches?'auto':'smooth';
+function animateIn(element) {
+  if (reducedMotion.matches || !element.animate) return;
+  element.getAnimations().forEach(animation=>animation.cancel());
+  element.animate([{opacity:.35,transform:'translateY(12px)'},{opacity:1,transform:'translateY(0)'}],
+    {duration:380,easing:'cubic-bezier(.2,.8,.2,1)'});
+}
+function updateThemeLabel() {
+  const label=t(dom.html.dataset.theme==='dark'?'lightThemeLabel':'darkThemeLabel');
+  dom.themeToggle.setAttribute('aria-label',label);
+  dom.themeToggle.title=label;
 }
 function applyTheme(theme) {
   dom.html.dataset.theme=theme; dom.themeToggle.setAttribute('aria-pressed',String(theme==='dark')); storage.set('shirazgo-theme',theme);
+  document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#0b211c':'#f3f8f5';
+  updateThemeLabel();
 }
 function initializeTheme() {
   const saved=storage.get('shirazgo-theme'), preferred=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
-  applyTheme(saved||preferred);
+  applyTheme(saved==='dark'||saved==='light'?saved:preferred);
+}
+let themeTransitionRunning=false;
+async function toggleTheme() {
+  if (themeTransitionRunning) return;
+  const nextTheme=dom.html.dataset.theme==='dark'?'light':'dark';
+  if (reducedMotion.matches) { applyTheme(nextTheme); return; }
+  themeTransitionRunning=true;
+  const bounds=dom.themeToggle.getBoundingClientRect();
+  const x=bounds.left+bounds.width/2, y=bounds.top+bounds.height/2;
+  const radius=Math.ceil(Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y)));
+  let transition,veil;
+  try {
+    if (document.startViewTransition) {
+      dom.html.style.setProperty('--theme-origin',`${x}px ${y}px`);
+      dom.html.style.setProperty('--theme-radius',`${radius}px`);
+      dom.html.classList.add('theme-transition');
+      transition=document.startViewTransition(()=>applyTheme(nextTheme));
+      await transition.ready;
+      await transition.finished;
+    } else {
+      // Older browsers get a lightweight expanding veil; no duplicate interactive DOM.
+      veil=document.createElement('div');
+      veil.className='theme-veil'; veil.setAttribute('aria-hidden','true');
+      veil.style.background=nextTheme==='dark'?'#0b211c':'#f3f8f5';
+      document.body.append(veil);
+      await veil.animate({clipPath:[`circle(0px at ${x}px ${y}px)`,`circle(${radius}px at ${x}px ${y}px)`]},
+        {duration:420,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'}).finished;
+      applyTheme(nextTheme);
+      await veil.animate({opacity:[1,0]},{duration:180,fill:'forwards'}).finished;
+    }
+  } catch (_) {
+    // A hidden tab, interrupted capture, or unsupported animation must never block the toggle.
+    if (transition) {
+      transition.skipTransition();
+      await transition.finished.catch(()=>{});
+    }
+    applyTheme(nextTheme);
+  } finally {
+    veil?.remove();
+    dom.html.classList.remove('theme-transition');
+    themeTransitionRunning=false;
+  }
+}
+function initializeMotion() {
+  if (!('IntersectionObserver' in window)) return;
+  const revealObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if (!entry.isIntersecting) return;
+      animateIn(entry.target);
+      revealObserver.unobserve(entry.target);
+    });
+  },{threshold:.08});
+  document.querySelectorAll('.section-heading, .planner-card, .result-card, .matrix-shell, .service-note-card')
+    .forEach(element=>revealObserver.observe(element));
+
+  const links=[...document.querySelectorAll('.desktop-nav a')];
+  const sections=links.map(link=>document.querySelector(link.hash));
+  let scheduled=false;
+  function updateNavigation() {
+    scheduled=false;
+    const active=sections.filter(section=>section.getBoundingClientRect().top<=180).at(-1);
+    links.forEach(link=>{
+      if (active && link.hash===`#${active.id}`) link.setAttribute('aria-current','location');
+      else link.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('scroll',()=>{
+    if (!scheduled) { scheduled=true; requestAnimationFrame(updateNavigation); }
+  },{passive:true});
+  updateNavigation();
 }
 function translateStaticContent() {
   document.querySelectorAll('[data-i18n]').forEach(element=>{ const key=element.dataset.i18n; if (key) element.textContent=t(key); });
@@ -691,6 +767,7 @@ function translateStaticContent() {
   dom.languageToggleLabel.lang=targetLanguage;
   dom.languageToggleLabel.dir=targetLanguage==='fa'?'rtl':'ltr';
   dom.languageToggle.setAttribute('aria-label',t('languageToggleLabel'));
+  updateThemeLabel();
 }
 function applyLanguage(language,{persist=true}={}) {
   currentLanguage=language==='fa'?'fa':'en';
@@ -703,19 +780,28 @@ function applyLanguage(language,{persist=true}={}) {
   if (persist) storage.set('shirazgo-language',currentLanguage);
 }
 function bindEvents() {
-  dom.form.addEventListener('submit',event=>{event.preventDefault();showRouteResult({scroll:window.innerWidth<700});});
+  dom.form.addEventListener('submit',event=>{event.preventDefault();showRouteResult({scroll:window.innerWidth<700,animate:true});});
   dom.line.addEventListener('change',()=>setActiveLine(dom.line.value));
   dom.matrixLine.addEventListener('change',()=>setActiveLine(dom.matrixLine.value));
   document.querySelectorAll('[data-line-switch]').forEach(button=>button.addEventListener('click',()=>setActiveLine(button.dataset.lineSwitch)));
-  dom.swap.addEventListener('click',()=>{const currentFrom=dom.from.value;dom.from.value=dom.to.value;dom.to.value=currentFrom;if(hasCompleteRoute())showRouteResult();});
+  dom.swap.addEventListener('click',()=>{
+    const currentFrom=dom.from.value; dom.from.value=dom.to.value; dom.to.value=currentFrom;
+    if (!reducedMotion.matches) {
+      const icon=dom.swap.querySelector('svg');
+      icon.getAnimations().forEach(animation=>animation.cancel());
+      icon.animate({transform:['rotate(90deg)','rotate(270deg)']},{duration:350,easing:'ease-out'});
+      animateIn(dom.from); animateIn(dom.to);
+    }
+    if(hasCompleteRoute())showRouteResult({animate:true});
+  });
   dom.matrixMode.addEventListener('change',renderMatrix);
   dom.matrixTable.addEventListener('click',event=>{
     const button=event.target.closest('.matrix-cell:not(.same)'); if(!button)return;
     const from=Number(button.dataset.from),to=Number(button.dataset.to); selectedMatrixCell={from,to};
-    dom.from.value=String(from);dom.to.value=String(to);showRouteResult();
-    document.querySelector('#planner').scrollIntoView({behavior:'smooth',block:'start'});
+    dom.from.value=String(from);dom.to.value=String(to);showRouteResult({animate:true});
+    document.querySelector('#planner').scrollIntoView({behavior:motionBehavior(),block:'start'});
   });
-  dom.themeToggle.addEventListener('click',()=>applyTheme(dom.html.dataset.theme==='dark'?'light':'dark'));
+  dom.themeToggle.addEventListener('click',toggleTheme);
   dom.languageToggle.addEventListener('click',()=>applyLanguage(currentLanguage==='en'?'fa':'en'));
   dom.backToTop.addEventListener('click',event=>{
     event.preventDefault();
@@ -723,9 +809,8 @@ function bindEvents() {
     window.scrollTo({top:0,left:0,behavior});
   });
   window.addEventListener('resize',()=>window.requestAnimationFrame(drawRouteWave));
-  enableMobileDoubleTapZoomReset();
-  dom.to.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:window.innerWidth<700});});
-  dom.from.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:window.innerWidth<700});});
+  dom.to.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({animate:true});});
+  dom.from.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({animate:true});});
 }
 async function init() {
   initializeTheme();
@@ -735,6 +820,7 @@ async function init() {
   syncDateAndTimeToNow();
   await loadServiceDay(new Date());
   applyLanguage(currentLanguage,{persist:false}); renderLineControls(); renderHero(); renderServiceDayStatus(); renderMatrix(); renderStationList(); bindEvents(); startDeviceClock();
+  initializeMotion();
 }
 
 init();

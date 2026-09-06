@@ -6,11 +6,21 @@
   <meta name="description" content="ShirazGo — plan journeys on Shiraz Metro Lines 1 and 2, check upcoming trains, and compare station-to-station travel times.">
   <meta name="theme-color" content="#123f35">
   <title>ShirazGo — Shiraz Metro Journey Planner</title>
+  <script>
+    // Set the theme before the first paint, including when storage is unavailable.
+    try {
+      const saved = localStorage.getItem('shirazgo-theme');
+      document.documentElement.dataset.theme = saved === 'dark' || saved === 'light'
+        ? saved : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch (_) {
+      document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+  </script>
   <link rel="icon" href="logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260902-1">
-  <script src="app.js?v=20260902-1" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260906-1">
+  <script src="app.js?v=20260906-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#planner" data-i18n="skipLink">Skip to journey planner</a>
@@ -56,8 +66,14 @@
       <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <h1 id="hero-title" data-i18n-html="heroTitle"><span class="hero-title-line hero-title-move">Move through</span><br><span class="hero-title-line hero-title-main">Shiraz</span><br><em class="hero-title-line hero-title-confidence">with</em><br><em class="hero-title-line hero-title-confidence">confidence.</em></h1>
+          <p class="eyebrow hero-eyebrow"><span></span><b data-i18n="heroEyebrow">Your city. Your next stop.</b></p>
+          <h1 id="hero-title" data-i18n-html="heroTitle"><span class="hero-title-line hero-title-move">Move through</span><br><span class="hero-title-line hero-title-main">Shiraz.</span><br><em class="hero-title-line hero-title-confidence">With confidence.</em></h1>
           <p class="hero-lead" data-i18n="heroLead">Choose a metro line and two stations to see the next scheduled train and a clear station-by-station journey estimate.</p>
+
+          <div class="hero-actions">
+            <a class="primary-link" href="#planner"><span data-i18n="navPlan">Plan a trip</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></a>
+            <a class="secondary-link" href="#stations" data-i18n="exploreStations">Explore stations</a>
+          </div>
 
           <div class="network-switch" role="group" aria-label="Choose metro line" data-i18n-aria-label="chooseLineLabel">
             <button type="button" class="active" data-line-switch="line1"><i class="line-swatch line-one"></i><span data-line-label="line1">Line 1</span></button>
@@ -72,6 +88,7 @@
         </div>
 
         <div class="line-preview" id="linePreview" aria-label="Metro line preview" data-i18n-aria-label="linePreviewLabel">
+          <p class="preview-kicker" data-i18n="networkPreview">SHIRAZ METRO / NETWORK PREVIEW</p>
           <div class="line-preview-head">
             <span id="previewLineName">Line 1</span>
             <span class="status-pill" id="previewStatus"><i></i> Full service</span>
@@ -104,9 +121,6 @@
             <div class="line-service-banner" id="lineServiceBanner"></div>
 
             <div class="station-fields">
-              <div class="route-rail" aria-hidden="true">
-                <span></span><i></i><span></span>
-              </div>
               <label class="field-group">
                 <span data-i18n="startingStationLabel">Starting station</span>
                 <span class="select-wrap">
@@ -116,6 +130,7 @@
               </label>
               <button class="swap-button" id="swapStations" type="button" aria-label="Swap starting point and destination" data-i18n-aria-label="swapStationsLabel">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3M18 7l-3 3M6 17l3-3"/></svg>
+                <span data-i18n="swapAction">Swap stations</span>
               </button>
               <label class="field-group">
                 <span data-i18n="destinationLabel">Destination</span>
@@ -140,12 +155,13 @@
             </div>
 
             <p class="form-note" id="formNote">Line 1 uses the supplied station timetable. Travel duration follows published station offsets.</p>
+            <a class="view-route-link primary-link" id="viewRoute" href="#resultCard" hidden><span data-i18n="viewRoute">View your journey</span><span aria-hidden="true">↓</span></a>
           </form>
 
-          <aside class="result-card" id="resultCard" aria-live="polite">
+          <aside class="result-card" id="resultCard" aria-live="polite" tabindex="-1">
             <div class="result-empty" id="resultEmpty">
               <div class="result-empty-icon">
-                <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M13 35c8-1 14-8 16-23 8 6 10 14 6 23-7 3-15 3-22 0Z"/><path d="M16 34c7-5 12-11 16-18"/></svg>
+                <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="12" y="6" width="24" height="30" rx="8"/><path d="M13 21h22M24 7v14M16 42l5-6m11 6-5-6M18 29h2m8 0h2"/></svg>
               </div>
               <h3 data-i18n="emptyResultTitle">Your route will appear here</h3>
               <p data-i18n="emptyResultText">Select a line, starting station, and destination to view departures, arrival time, and every stop on the way.</p>

@@ -1,0 +1,13 @@
+{
+  "name": "shirazgo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bilingual Shiraz Metro journey planner. No runtime dependencies.",
+  "scripts": {
+    "check": "node --check app.js",
+    "test": "node tests/ui.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

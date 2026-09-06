@@ -14,11 +14,19 @@ A responsive, dependency-free Shiraz Metro journey planner for **Lines 1 and 2**
 
 1. **Bilingual interface** — persistent English/Persian switching, RTL support, Persian numerals, and Vazirmatn/Sahel typography.
 2. **Line-aware hero** — network summary, current line status, and route preview.
-3. **Journey planner** — metro line, origin, destination, date, time, and service type.
+3. **Journey planner** — metro line, origin, destination, device time, and an automatically selected calendar-based service type.
 4. **Journey result** — next departure, estimated arrival, duration, route stops, and upcoming trains.
 5. **From–To matrix** — travel-time and next-arrival modes for the selected line.
 6. **Station directory** — service windows, operational status, planned stations, and interchange notes.
-7. **Readable timetable** — a Markdown reference optimized for phones, tablets, and desktop screens.
+7. **Readable timetable** — English and Persian PDF downloads, with Markdown references in the repository.
+
+## Interface and accessibility
+
+- Responsive navigation, clear station placeholders, full-width station fields, and a dedicated 44px-minimum swap-button row in both LTR and RTL layouts.
+- Mobile route selections stay in place; **View your journey** takes you to the updated result when you are ready.
+- Light/dark mode reveals outward from the theme button using CSS View Transitions. Older browsers use an expanding veil, and reduced-motion users get an instant change. The saved theme is applied before first paint.
+- Short entrance and route-update animations, visible keyboard focus, active section links, native select controls, and support for pinch zoom.
+- No application framework or build step. Playwright is a development-only dependency for browser regression checks.
 
 ## Timetable model
 
@@ -57,13 +65,26 @@ station announcements or official operator channels.
 
 ## Run locally
 
-Open `index.html` directly, or serve the folder:
+Serve the folder so that local calendar JSON files can load:
 
 ```bash
 python -m http.server 8080
 ```
 
 Then visit `http://localhost:8080`.
+
+## Validate changes
+
+With Node.js 20 or newer:
+
+```bash
+npm ci
+npx playwright install chromium
+npm run check
+npm test
+```
+
+The browser suite starts its own temporary local server. It checks 40 viewport/language/line combinations from 320px to 1440px, swap-button geometry and behavior, route durations, matrix navigation, same-station validation, keyboard theme switching, reduced motion, circular reveals, fallback cleanup, preference persistence, and the Persian PDF download. To use an existing Chromium installation, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its executable.
 
 ## Files
 

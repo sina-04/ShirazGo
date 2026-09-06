@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: node --check app.js
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
       - run: python -m compileall -q scripts
       - name: Validate calendar JSON
         shell: python
