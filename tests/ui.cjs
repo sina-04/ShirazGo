@@ -25,6 +25,13 @@ async function ready(page) {
 async function themeSettled(page, theme) {
   await page.waitForFunction(value => document.documentElement.dataset.theme === value && !document.documentElement.classList.contains('theme-transition') && !document.querySelector('.theme-veil'), theme);
 }
+async function journeyInView(page) {
+  await page.waitForFunction(() => {
+    const result = document.querySelector('#resultCard').getBoundingClientRect();
+    const header = document.querySelector('.site-header').getBoundingClientRect();
+    return result.top >= header.bottom && result.top <= 160;
+  });
+}
 
 (async () => {
   let browser;
@@ -46,6 +53,7 @@ async function themeSettled(page, theme) {
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(url);
     await ready(page);
+    assert.equal(await page.locator('#viewRoute').count(), 0);
 
     let layouts = 0;
     for (const width of [320, 360, 390, 430, 620, 768, 820, 980, 1024, 1440]) {
@@ -56,16 +64,21 @@ async function themeSettled(page, theme) {
           await page.locator('#metroLine').selectOption(line);
           await page.locator('#fromStation').selectOption('0');
           await page.locator('#toStation').selectOption(line === 'line1' ? '19' : '4');
+          await journeyInView(page);
           const before = [await page.locator('#fromStation').inputValue(), await page.locator('#toStation').inputValue()];
           // Center explicitly: browser visibility checks do not account for the sticky header.
           await page.locator('#swapStations').evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
           const geometry = await page.evaluate(() => {
             const swap = document.querySelector('#swapStations');
             const rect = swap.getBoundingClientRect();
-            const fields = [...document.querySelectorAll('.station-fields .field-group')].map(el => el.getBoundingClientRect());
+            const fields = [...document.querySelectorAll('.station-fields .field-group, .destination-label, .destination-select')].map(el => el.getBoundingClientRect());
+            const from = document.querySelector('#fromStation').getBoundingClientRect();
+            const to = document.querySelector('#toStation').getBoundingClientRect();
             return {
               overlap: fields.some(field => rect.left < field.right && rect.right > field.left && rect.top < field.bottom && rect.bottom > field.top),
               height: rect.height,
+              gapAbove: rect.top - from.bottom,
+              gapBelow: to.top - rect.bottom,
               hit: swap.contains(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2)),
               overflow: document.documentElement.scrollWidth > innerWidth + 1
             };
@@ -73,8 +86,10 @@ async function themeSettled(page, theme) {
           assert.equal(geometry.overlap, false, `Swap overlaps a field: ${width}/${language}/${line}`);
           assert.equal(geometry.hit, true, `Swap hit target obstructed: ${width}/${language}/${line}`);
           assert.ok(geometry.height >= 44, 'Swap touch target is too small');
+          assert.ok(geometry.gapAbove > 0 && Math.abs(geometry.gapAbove - geometry.gapBelow) < 1, `Unequal swap spacing: ${width}/${language}/${line}`);
           assert.equal(geometry.overflow, false, `Page overflow: ${width}/${language}/${line}`);
           await page.locator('#swapStations').click();
+          await journeyInView(page);
           assert.equal(await page.locator('#fromStation').inputValue(), before[1]);
           assert.equal(await page.locator('#toStation').inputValue(), before[0]);
           assert.equal(await page.locator('#resultContent').isVisible(), true);
@@ -85,7 +100,7 @@ async function themeSettled(page, theme) {
         }
       }
     }
-    console.log(`PASS ${layouts} responsive layouts: no page overflow, no swap overlap, correct route reversal and invalid-route clearing`);
+    console.log(`PASS ${layouts} responsive layouts: equal swap spacing, no overlap or overflow, automatic result scrolling, correct reversal and invalid-route clearing`);
 
     await page.locator('#languageToggle').click(); // Last layout is Persian.
     await page.locator('#metroLine').selectOption('line2');
@@ -95,6 +110,7 @@ async function themeSettled(page, theme) {
     await page.locator('#swapStations').click();
     assert.equal(await page.locator('#journeyDuration').innerText(), '3 min');
     await page.locator('.matrix-cell[data-from="0"][data-to="4"]').click();
+    await journeyInView(page);
     assert.equal(await page.locator('#fromStation').inputValue(), '0');
     assert.equal(await page.locator('#toStation').inputValue(), '4');
     assert.equal(await page.locator('#journeyDuration').innerText(), '16 min');
@@ -112,6 +128,10 @@ async function themeSettled(page, theme) {
     console.log('PASS keyboard theme toggle, reduced motion, accessible label and persistence');
 
     await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.locator('#fromStation').selectOption('0');
+    await page.locator('#toStation').selectOption('4');
+    await journeyInView(page);
+    console.log('PASS smooth automatic scrolling to the result');
     for (const theme of ['light', 'dark']) {
       await page.locator('#themeToggle').click();
       await page.waitForFunction(() => document.getAnimations().some(a => a.animationName === 'theme-expand'));

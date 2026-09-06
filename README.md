@@ -22,8 +22,8 @@ A responsive, dependency-free Shiraz Metro journey planner for **Lines 1 and 2**
 
 ## Interface and accessibility
 
-- Responsive navigation, clear station placeholders, full-width station fields, and a dedicated 44px-minimum swap-button row in both LTR and RTL layouts.
-- Mobile route selections stay in place; **View your journey** takes you to the updated result when you are ready.
+- Responsive navigation, clear station placeholders, full-width station fields, and a 44px-minimum swap button with equal spacing above and below in both LTR and RTL layouts.
+- Selecting or reversing a valid route automatically scrolls to the journey result, with smooth scrolling unless reduced motion is preferred.
 - Light/dark mode reveals outward from the theme button using CSS View Transitions. Older browsers use an expanding veil, and reduced-motion users get an instant change. The saved theme is applied before first paint.
 - Short entrance and route-update animations, visible keyboard focus, active section links, native select controls, and support for pinch zoom.
 - No application framework or build step. Playwright is a development-only dependency for browser regression checks.

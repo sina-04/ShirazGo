@@ -19,8 +19,8 @@
   <link rel="icon" href="logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260906-1">
-  <script src="app.js?v=20260906-1" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260906-2">
+  <script src="app.js?v=20260906-2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#planner" data-i18n="skipLink">Skip to journey planner</a>
@@ -132,13 +132,11 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3M18 7l-3 3M6 17l3-3"/></svg>
                 <span data-i18n="swapAction">Swap stations</span>
               </button>
-              <label class="field-group">
-                <span data-i18n="destinationLabel">Destination</span>
-                <span class="select-wrap">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11Z"/><circle cx="12" cy="10" r="2"/></svg>
-                  <select id="toStation" name="toStation" required></select>
-                </span>
-              </label>
+              <label class="destination-label" for="toStation" data-i18n="destinationLabel">Destination</label>
+              <span class="select-wrap destination-select">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11Z"/><circle cx="12" cy="10" r="2"/></svg>
+                <select id="toStation" name="toStation" required></select>
+              </span>
             </div>
 
             <div class="planner-options">
@@ -155,7 +153,6 @@
             </div>
 
             <p class="form-note" id="formNote">Line 1 uses the supplied station timetable. Travel duration follows published station offsets.</p>
-            <a class="view-route-link primary-link" id="viewRoute" href="#resultCard" hidden><span data-i18n="viewRoute">View your journey</span><span aria-hidden="true">↓</span></a>
           </form>
 
           <aside class="result-card" id="resultCard" aria-live="polite" tabindex="-1">

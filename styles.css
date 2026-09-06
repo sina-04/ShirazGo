@@ -367,10 +367,13 @@
   }
   .planner-card { padding: clamp(22px, 4vw, 38px); }
 
-  /* The swap control owns a grid row, so neither field can overlap its hit area. */
-  .station-fields { display: grid; grid-template-columns: minmax(0,1fr); gap: 8px; }
+  /* Share the destination label row, keeping equal space between the button and both selects. */
+  .station-fields { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; }
+  .station-fields > .field-group, .destination-select { grid-column: 1 / -1; }
+  .destination-label { grid-column: 1; grid-row: 2; align-self: center; }
+  .station-fields > .swap-button { grid-column: 2; grid-row: 2; }
   .field-group { display: grid; min-width: 0; gap: 8px; }
-  .field-group > span:first-child, .field-group > legend { color: var(--muted); font-size: .75rem; font-weight: 750; letter-spacing: .02em; }
+  .field-group > span:first-child, .field-group > legend, .destination-label { color: var(--muted); font-size: .75rem; font-weight: 750; letter-spacing: .02em; }
   .select-wrap { position: relative; display: block; }
   .select-wrap::after {
     content: "";
@@ -1073,7 +1076,6 @@
   .planner-card, .result-card { border-radius: 24px; box-shadow: 0 12px 40px -16px rgb(8 40 33 / .14); }
   .planner-card { padding: 28px; }
   .result-card { scroll-margin-top: 140px; }
-  .view-route-link { display: none; }
   .result-empty { min-height: 100%; padding-block: 64px; }
   .result-empty-icon { position: relative; border-radius: 24px; outline: 1px solid var(--line); outline-offset: 10px; margin-bottom: 32px; }
   .result-empty-icon svg { width: 42px; fill: none; }
@@ -1119,7 +1121,6 @@
   }
   @media (max-width: 980px) {
     .header-inner { flex-wrap: wrap; gap: 0 16px; padding-top: 10px; }
-    .view-route-link { display: flex; margin-top: 20px; }
     .desktop-nav { display: flex; order: 3; width: 100%; justify-content: center; gap: 36px; margin-top: 8px; border-top: 1px solid var(--line); }
     .desktop-nav a { font-size: .78rem; }
     .planner-section, .matrix-section, .stations-section { scroll-margin-top: 132px; }

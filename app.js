@@ -11,7 +11,7 @@ const UI = {
     readableTimetable: 'PDF timetable', themeToggleLabel: 'Switch color theme',
     heroEyebrow: 'Your city. Your next stop.', exploreStations: 'Explore stations',
     networkPreview: 'SHIRAZ METRO / NETWORK PREVIEW', swapAction: 'Swap stations',
-    fromPlaceholder: 'Choose starting station', toPlaceholder: 'Choose destination', viewRoute: 'View your journey',
+    fromPlaceholder: 'Choose starting station', toPlaceholder: 'Choose destination',
     lightThemeLabel: 'Switch to light mode', darkThemeLabel: 'Switch to dark mode',
     heroTitle: '<span class="hero-title-line hero-title-move">Move through</span><br><span class="hero-title-line hero-title-main">Shiraz.</span><br><em class="hero-title-line hero-title-confidence">With confidence.</em>',
     heroLead: 'Choose a metro line and two stations to see the next scheduled train and a clear station-by-station journey estimate.',
@@ -80,7 +80,7 @@ const UI = {
     readableTimetable: 'جدول زمانی PDF', themeToggleLabel: 'تغییر حالت رنگی',
     heroEyebrow: 'شهر شما، ایستگاه بعدی شما', exploreStations: 'کاوش ایستگاه‌ها',
     networkPreview: 'متروی شیراز / نمای شبکه', swapAction: 'جابجایی ایستگاه‌ها',
-    fromPlaceholder: 'انتخاب ایستگاه مبدأ', toPlaceholder: 'انتخاب ایستگاه مقصد', viewRoute: 'مشاهده مسیر سفر',
+    fromPlaceholder: 'انتخاب ایستگاه مبدأ', toPlaceholder: 'انتخاب ایستگاه مقصد',
     lightThemeLabel: 'تغییر به حالت روشن', darkThemeLabel: 'تغییر به حالت تاریک',
     heroTitle: '<span class="hero-title-line hero-title-main">در شیراز حرکت کنید؛</span><br><em class="hero-title-confidence">با اطمینان.</em>',
     heroLead: 'خط مترو، ایستگاه مبدأ و مقصد را انتخاب کنید تا نزدیک‌ترین قطار و برآورد مرحله‌به‌مرحله سفر را ببینید.',
@@ -480,7 +480,6 @@ function setActiveLine(lineId,{preserveStations=false,updateResult=true}={}) {
   storage.set('shirazgo-active-line',activeLineId);
   if (updateResult) {
     stopDepartureCountdown(); dom.resultContent.hidden=true; dom.resultEmpty.hidden=false;
-    document.querySelector('#viewRoute').hidden=true;
   }
 }
 
@@ -562,7 +561,6 @@ function showRouteResult({scroll=false,animate=false}={}) {
   const line=lineData(), fromIndex=Number(dom.from.value), toIndex=Number(dom.to.value);
   if (fromIndex===toIndex) {
     stopDepartureCountdown(); dom.resultContent.hidden=true; dom.resultEmpty.hidden=false;
-    document.querySelector('#viewRoute').hidden=true;
     showToast(t('chooseDifferent')); dom.to.focus(); return false;
   }
   dom.to.setCustomValidity('');
@@ -571,7 +569,6 @@ function showRouteResult({scroll=false,animate=false}={}) {
   const routeOperational=service.available&&isOperationalRoute(line,fromIndex,toIndex);
 
   dom.resultEmpty.hidden=true; dom.resultContent.hidden=false;
-  document.querySelector('#viewRoute').hidden=false;
   dom.resultDirection.textContent=local(direction.label);
   dom.resultFrom.textContent=stationName(line,fromIndex); dom.resultTo.textContent=stationName(line,toIndex);
   dom.resultServiceBadge.textContent=`${local(line.name)} · ${local(service.label)}`;
@@ -780,7 +777,7 @@ function applyLanguage(language,{persist=true}={}) {
   if (persist) storage.set('shirazgo-language',currentLanguage);
 }
 function bindEvents() {
-  dom.form.addEventListener('submit',event=>{event.preventDefault();showRouteResult({scroll:window.innerWidth<700,animate:true});});
+  dom.form.addEventListener('submit',event=>{event.preventDefault();showRouteResult({scroll:true,animate:true});});
   dom.line.addEventListener('change',()=>setActiveLine(dom.line.value));
   dom.matrixLine.addEventListener('change',()=>setActiveLine(dom.matrixLine.value));
   document.querySelectorAll('[data-line-switch]').forEach(button=>button.addEventListener('click',()=>setActiveLine(button.dataset.lineSwitch)));
@@ -792,14 +789,13 @@ function bindEvents() {
       icon.animate({transform:['rotate(90deg)','rotate(270deg)']},{duration:350,easing:'ease-out'});
       animateIn(dom.from); animateIn(dom.to);
     }
-    if(hasCompleteRoute())showRouteResult({animate:true});
+    if(hasCompleteRoute())showRouteResult({scroll:true,animate:true});
   });
   dom.matrixMode.addEventListener('change',renderMatrix);
   dom.matrixTable.addEventListener('click',event=>{
     const button=event.target.closest('.matrix-cell:not(.same)'); if(!button)return;
     const from=Number(button.dataset.from),to=Number(button.dataset.to); selectedMatrixCell={from,to};
-    dom.from.value=String(from);dom.to.value=String(to);showRouteResult({animate:true});
-    document.querySelector('#planner').scrollIntoView({behavior:motionBehavior(),block:'start'});
+    dom.from.value=String(from);dom.to.value=String(to);showRouteResult({scroll:true,animate:true});
   });
   dom.themeToggle.addEventListener('click',toggleTheme);
   dom.languageToggle.addEventListener('click',()=>applyLanguage(currentLanguage==='en'?'fa':'en'));
@@ -809,8 +805,8 @@ function bindEvents() {
     window.scrollTo({top:0,left:0,behavior});
   });
   window.addEventListener('resize',()=>window.requestAnimationFrame(drawRouteWave));
-  dom.to.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({animate:true});});
-  dom.from.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({animate:true});});
+  dom.to.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:true,animate:true});});
+  dom.from.addEventListener('change',()=>{if(hasCompleteRoute())showRouteResult({scroll:true,animate:true});});
 }
 async function init() {
   initializeTheme();
