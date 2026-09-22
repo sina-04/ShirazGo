@@ -11,15 +11,10 @@ It does not grant rights to:
 - station, operator, city, or government names, marks, or publications;
 - third-party fonts, libraries, or source materials.
 
-The interactive map includes Leaflet 1.9.4, distributed under the BSD
-2-Clause license. Its complete license text is included at
-`vendor/leaflet/LICENSE`.
-
-Map tiles are provided by OpenStreetMap contributors under the terms shown in
-the map attribution. Station coordinates and addresses are derived from Balad
-listings retrieved on 2026-09-22; Balad's underlying content remains subject to
-its own terms. The Nearby and map feature concepts were independently
-implemented after reviewing the AGPL-3.0-licensed Metto project by Ali
+Station coordinates and addresses are derived from Balad listings retrieved on
+2026-09-22; Balad's underlying content remains subject to its own terms. The
+Nearby and map feature concepts were independently implemented after reviewing
+the AGPL-3.0-licensed Metto project by Ali
 Hasanpour; no Metto source files are distributed in this repository.
 
 ShirazGo is not affiliated with or endorsed by the Shiraz Urban Railway

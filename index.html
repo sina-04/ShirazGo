@@ -19,10 +19,8 @@
   <link rel="icon" href="logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=20260922-1">
-  <script src="vendor/leaflet/leaflet.js" defer></script>
-  <script src="app.js?v=20260922-1" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260922-2">
+  <script src="app.js?v=20260922-2" defer></script>
 </head>
 <body>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -189,7 +187,7 @@
                     <div><span data-i18n="nextDepartureLabel">Next departure</span><strong id="nextDeparture">—</strong></div>
                     <div><span data-i18n="estimatedArrivalLabel">Estimated arrival</span><strong id="estimatedArrival">—</strong></div>
                   </div>
-                  <div class="countdown-metric" aria-live="off"><span data-i18n="departureCountdownLabel">Time to departure</span><strong id="departureCountdown">—</strong></div>
+                  <div class="countdown-metric" aria-live="off"><span id="journeyStatusLabel" data-i18n="departureCountdownLabel">Time to departure</span><strong id="departureCountdown">—</strong></div>
                 </div>
               </div>
 
@@ -264,7 +262,7 @@
           </div>
         </div>
         <div class="map-shell">
-          <div id="metroMap" class="metro-map" role="application" aria-label="Interactive map of Shiraz Metro stations" data-i18n-aria-label="mapRegionLabel"></div>
+          <div id="metroMap" class="metro-map" role="group" aria-label="Interactive SVG map of Shiraz Metro stations" data-i18n-aria-label="mapRegionLabel"></div>
           <div class="map-loading" id="mapLoading" role="status" data-i18n="mapLoading">Loading station map…</div>
           <aside class="map-station-card" id="mapStationCard" aria-live="polite">
             <span class="map-card-kicker" data-i18n="selectedStation">Selected station</span>

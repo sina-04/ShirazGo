@@ -32,6 +32,8 @@ const UI = {
     emptyResultText: 'Select a line, starting station, and destination to view the next departure, live countdown, and every stop on the way.',
     estimatedJourneyLabel: 'Estimated journey', nextDepartureLabel: 'Next departure', estimatedArrivalLabel: 'Estimated arrival', departureCountdownLabel: 'Time to departure',
     departureCountdown: (minutes, seconds) => `${minutes} min ${seconds} sec`,
+    journeyProgressLabel: 'Next station', nextStationCountdown: (station,minutes,seconds) => `${station} · ${minutes}:${seconds}`,
+    arrivedLabel: 'Journey status', arrivedStatus: station => `Arrived at ${station}`, waitingAtStation: station => `Waiting at ${station}`,
     upcomingTrains: 'Upcoming trains', networkExplorer: 'Network explorer', matrixTitle: 'From–To matrix',
     matrixDescription: 'Compare estimated travel duration or the next scheduled arrival for every station pair.',
     displayLabel: 'Display', travelTimeOption: 'Travel time', nextArrivalOption: 'Next arrival', lookupTimeLabel: 'Device time',
@@ -80,8 +82,8 @@ const UI = {
     setDestination: 'Use as destination', showOnMap: 'Show on map',
     mapEyebrow: 'Network map', mapTitle: 'See Shiraz at a glance',
     mapDescription: 'A focused map of Lines 1 and 2, based on station locations listed by Balad.',
-    mapLegendLabel: 'Map legend', line1Label: 'Line 1', line2Label: 'Line 2', mapRegionLabel: 'Interactive map of Shiraz Metro stations',
-    mapLoading: 'Loading station map…', mapUnavailable: 'The interactive map could not load. Station locations remain available in Nearby.',
+    mapLegendLabel: 'Map legend', line1Label: 'Line 1', line2Label: 'Line 2', mapRegionLabel: 'Interactive SVG map of Shiraz Metro stations',
+    mapLoading: 'Drawing station map…',
     selectedStation: 'Selected station', chooseMapStation: 'Choose a station on the map', chooseMapStationHint: 'Select a marker to view its lines and plan a journey.',
     startHere: 'Start here', endHere: 'End here', mapSourcePrefix: 'Station locations:', mapSourceLink: 'Balad map listings'
   },
@@ -116,6 +118,8 @@ const UI = {
     emptyResultText: 'خط، مبدأ و مقصد را انتخاب کنید تا حرکت بعدی، شمارش معکوس زنده و تمام ایستگاه‌های مسیر نمایش داده شوند.',
     estimatedJourneyLabel: 'زمان تقریبی سفر', nextDepartureLabel: 'حرکت بعدی', estimatedArrivalLabel: 'زمان تقریبی رسیدن', departureCountdownLabel: 'زمان باقی‌مانده تا حرکت',
     departureCountdown: (minutes, seconds) => `${minutes} دقیقه و ${seconds} ثانیه`,
+    journeyProgressLabel: 'ایستگاه بعدی', nextStationCountdown: (station,minutes,seconds) => `${station} · ${minutes}:${seconds}`,
+    arrivedLabel: 'وضعیت سفر', arrivedStatus: station => `رسیدن به ${station}`, waitingAtStation: station => `در انتظار حرکت از ${station}`,
     upcomingTrains: 'قطارهای بعدی', networkExplorer: 'کاوش شبکه', matrixTitle: 'ماتریس مبدأ–مقصد',
     matrixDescription: 'زمان تقریبی سفر یا نزدیک‌ترین زمان رسیدن را برای همه جفت‌های ایستگاهی مقایسه کنید.',
     displayLabel: 'نوع نمایش', travelTimeOption: 'زمان سفر', nextArrivalOption: 'نزدیک‌ترین رسیدن', lookupTimeLabel: 'زمان دستگاه',
@@ -161,8 +165,8 @@ const UI = {
     setDestination: 'انتخاب به‌عنوان مقصد', showOnMap: 'نمایش روی نقشه',
     mapEyebrow: 'نقشه شبکه', mapTitle: 'شیراز را یک‌جا ببینید',
     mapDescription: 'نقشه‌ای خلوت از خطوط ۱ و ۲، بر پایه موقعیت ایستگاه‌های ثبت‌شده در بلد.',
-    mapLegendLabel: 'راهنمای نقشه', line1Label: 'خط ۱', line2Label: 'خط ۲', mapRegionLabel: 'نقشه تعاملی ایستگاه‌های متروی شیراز',
-    mapLoading: 'در حال بارگذاری نقشه ایستگاه‌ها…', mapUnavailable: 'نقشه تعاملی بارگذاری نشد؛ موقعیت ایستگاه‌ها همچنان در بخش نزدیک من در دسترس است.',
+    mapLegendLabel: 'راهنمای نقشه', line1Label: 'خط ۱', line2Label: 'خط ۲', mapRegionLabel: 'نقشه تعاملی SVG ایستگاه‌های متروی شیراز',
+    mapLoading: 'در حال رسم نقشه ایستگاه‌ها…',
     selectedStation: 'ایستگاه انتخاب‌شده', chooseMapStation: 'یک ایستگاه را روی نقشه انتخاب کنید', chooseMapStationHint: 'برای دیدن خطوط و برنامه‌ریزی سفر، یک نشانگر را انتخاب کنید.',
     startHere: 'شروع از اینجا', endHere: 'پایان در اینجا', mapSourcePrefix: 'موقعیت ایستگاه‌ها:', mapSourceLink: 'فهرست‌های نقشه بلد'
   }
@@ -250,7 +254,7 @@ const dom = {
   resultEmpty: document.querySelector('#resultEmpty'), resultContent: document.querySelector('#resultContent'), resultDirection: document.querySelector('#resultDirection'),
   resultFrom: document.querySelector('#resultFrom'), resultTo: document.querySelector('#resultTo'), resultServiceBadge: document.querySelector('#resultServiceBadge'),
   journeyDuration: document.querySelector('#journeyDuration'), journeyStops: document.querySelector('#journeyStops'), nextDeparture: document.querySelector('#nextDeparture'), estimatedArrival: document.querySelector('#estimatedArrival'),
-  departureCountdown: document.querySelector('#departureCountdown'), routeProgress: document.querySelector('#routeProgress'), departureList: document.querySelector('#departureList'),
+  departureCountdown: document.querySelector('#departureCountdown'), journeyStatusLabel: document.querySelector('#journeyStatusLabel'), routeProgress: document.querySelector('#routeProgress'), departureList: document.querySelector('#departureList'),
   serviceMessage: document.querySelector('#serviceMessage'), frequencyLabel: document.querySelector('#frequencyLabel'), matrixTable: document.querySelector('#matrixTable'),
   matrixMode: document.querySelector('#matrixMode'), matrixTime: document.querySelector('#matrixTime'), stationList: document.querySelector('#stationList'),
   stationsTitle: document.querySelector('#stations-title'), stationsDescription: document.querySelector('#stationsDescription'), themeToggle: document.querySelector('#themeToggle'),
@@ -273,13 +277,12 @@ let activeServiceType = 'weekday';
 let currentServiceDay = null;
 let departureCountdownTimer = null;
 let departureCountdownTarget = null;
+let activeJourney = null;
 let deviceClockTimer = null;
 let metroLocations = [];
 let nearbyOrigin = null;
 let nearbyOriginStationId = null;
 let metroMap = null;
-let mapTileLayer = null;
-let mapMarkers = [];
 let selectedMapStation = null;
 
 const storage = {
@@ -458,29 +461,94 @@ function populateStationSelects({ preserve = false } = {}) {
 function hasCompleteRoute() { return dom.from.value !== '' && dom.to.value !== ''; }
 function stopDepartureCountdown({reset=true}={}) {
   if (departureCountdownTimer !== null) window.clearInterval(departureCountdownTimer);
-  departureCountdownTimer=null; departureCountdownTarget=null;
-  if (reset && dom.departureCountdown) dom.departureCountdown.textContent='—';
+  departureCountdownTimer=null; departureCountdownTarget=null; activeJourney=null;
+  if (reset && dom.departureCountdown) {
+    dom.departureCountdown.textContent='—';
+    dom.journeyStatusLabel.textContent=t('departureCountdownLabel');
+  }
 }
-function updateDepartureCountdown() {
-  if (departureCountdownTarget === null) return;
-  const remainingMilliseconds=departureCountdownTarget-Date.now();
-  if (remainingMilliseconds<=0) {
-    dom.departureCountdown.textContent=t('departureCountdown',formatNumber(0),formatNumber(0,2));
-    if (departureCountdownTimer !== null) window.clearInterval(departureCountdownTimer);
+function journeySegmentMinutes(line,directionKey,fromIndex,toIndex) {
+  if (line.id==='line1') return 2;
+  const offsets=line.directions[directionKey].offsets;
+  return Math.min(7,Math.max(3,Math.abs(offsets[toIndex]-offsets[fromIndex])));
+}
+function updateJourneyProgress(now=Date.now()) {
+  if (!activeJourney) return false;
+  const track=dom.routeProgress.querySelector('.route-wave-track');
+  if (!track) return false;
+  const stops=[...track.querySelectorAll('.progress-stop')],pulse=track.querySelector('.journey-pulse');
+  const elapsed=now-activeJourney.departureTimestamp;
+  stops.forEach(stop=>stop.classList.remove('is-passed','is-current','is-next','is-arrived'));
+  if (elapsed<0) {
+    stops[0]?.classList.add('is-current');
+    if (pulse) pulse.hidden=true;
+    return false;
+  }
+  const durations=activeJourney.segmentMinutes.map(minutes=>minutes*60000);
+  const totalDuration=durations.reduce((sum,duration)=>sum+duration,0);
+  if (elapsed>=totalDuration) {
+    stops.forEach(stop=>stop.classList.add('is-passed'));
+    stops.at(-1)?.classList.add('is-arrived');
+    if (pulse) {
+      pulse.hidden=false;
+      pulse.style.setProperty('--journey-x','96%');
+      pulse.style.setProperty('--journey-y','0px');
+      pulse.classList.add('is-arrived');
+    }
+    dom.journeyStatusLabel.textContent=t('arrivedLabel');
+    dom.departureCountdown.textContent=t('arrivedStatus',stationName(lineData(activeJourney.lineId),activeJourney.indices.at(-1)));
+    if (departureCountdownTimer!==null) window.clearInterval(departureCountdownTimer);
     departureCountdownTimer=null;
+    return true;
+  }
+  let segmentIndex=0,segmentStart=0;
+  while (segmentIndex<durations.length-1 && elapsed>=segmentStart+durations[segmentIndex]) {
+    segmentStart+=durations[segmentIndex]; segmentIndex+=1;
+  }
+  const segmentProgress=Math.min(1,Math.max(0,(elapsed-segmentStart)/durations[segmentIndex]));
+  stops.forEach((stop,index)=>{
+    if (index<=segmentIndex) stop.classList.add('is-passed');
+    if (index===segmentIndex) stop.classList.add('is-current');
+    if (index===segmentIndex+1) stop.classList.add('is-next');
+  });
+  const visualProgress=(segmentIndex+segmentProgress)/(activeJourney.indices.length-1);
+  const waveY=Math.sin(visualProgress*Math.PI*2*activeJourney.cycles)*46;
+  if (pulse) {
+    pulse.hidden=false; pulse.classList.remove('is-arrived');
+    pulse.style.setProperty('--journey-x',`${(4+visualProgress*92).toFixed(3)}%`);
+    pulse.style.setProperty('--journey-y',`${waveY.toFixed(2)}px`);
+  }
+  const remainingSeconds=Math.max(0,Math.ceil((durations[segmentIndex]-(elapsed-segmentStart))/1000));
+  const nextStation=stationName(lineData(activeJourney.lineId),activeJourney.indices[segmentIndex+1]);
+  dom.journeyStatusLabel.textContent=t('journeyProgressLabel');
+  dom.departureCountdown.textContent=t('nextStationCountdown',nextStation,formatNumber(Math.floor(remainingSeconds/60)),formatNumber(remainingSeconds%60,2));
+  return false;
+}
+function updateDepartureCountdown(now=Date.now()) {
+  if (departureCountdownTarget === null) return;
+  const remainingMilliseconds=departureCountdownTarget-now;
+  if (remainingMilliseconds<=0) {
+    updateJourneyProgress(now);
     return;
   }
+  dom.journeyStatusLabel.textContent=t('departureCountdownLabel');
   const totalSeconds=Math.ceil(remainingMilliseconds/1000);
   const minutes=Math.floor(totalSeconds/60), seconds=totalSeconds%60;
   dom.departureCountdown.textContent=t('departureCountdown',formatNumber(minutes),formatNumber(seconds,2));
 }
-function startDepartureCountdown(departureMinutes) {
+function startDepartureCountdown(departureMinutes,{line,fromIndex,toIndex,directionKey}) {
   stopDepartureCountdown({reset:false});
   const [year,month,day]=(dom.date.value||formatDateInput(new Date())).split('-').map(Number);
   const departure=new Date(year,month-1,day,Math.floor(departureMinutes/60),departureMinutes%60,0,0);
   departureCountdownTarget=departure.getTime();
+  const step=fromIndex<toIndex?1:-1,indices=[];
+  for (let index=fromIndex;index!==toIndex+step;index+=step) indices.push(index);
+  activeJourney={lineId:line.id,fromIndex,toIndex,directionKey,indices,cycles:indices.length>12?2:1.5,
+    segmentMinutes:indices.slice(0,-1).map((stationIndex,index)=>journeySegmentMinutes(line,directionKey,stationIndex,indices[index+1])),
+    departureTimestamp:departureCountdownTarget};
   updateDepartureCountdown();
-  if (departureCountdownTarget>Date.now()) departureCountdownTimer=window.setInterval(updateDepartureCountdown,1000);
+  const arrivalTimestamp=departureCountdownTarget+activeJourney.segmentMinutes.reduce((sum,minutes)=>sum+minutes,0)*60000;
+  if (arrivalTimestamp>Date.now()) departureCountdownTimer=window.setInterval(updateDepartureCountdown,1000);
 }
 function renderHero() {
   const line = lineData();
@@ -538,7 +606,10 @@ async function refreshDeviceClock() {
     renderStationList();
   }
   renderMatrix();
-  if (!dom.resultContent.hidden && hasCompleteRoute() && dom.from.value!==dom.to.value) showRouteResult();
+  if (!dom.resultContent.hidden && hasCompleteRoute() && dom.from.value!==dom.to.value) {
+    if (activeJourney) updateDepartureCountdown();
+    else showRouteResult();
+  }
 }
 function startDeviceClock() {
   if (deviceClockTimer !== null) window.clearTimeout(deviceClockTimer);
@@ -558,14 +629,14 @@ function renderRouteProgress(line,fromIndex,toIndex) {
     const waveY=Math.sin(progress*Math.PI*2*cycles)*46;
     const name=escapeHtml(local(station.name));
     const title=escapeHtml(station.active?local(station.name):t('stationPlannedTitle',local(station.name)));
-    return `<div class="progress-stop ${waveY>8?'label-above':''} ${terminal?'terminal':''} ${station.active?'':'planned'}" style="--wave-x:${(4+progress*92).toFixed(3)}%;--wave-y:${waveY.toFixed(2)}px" title="${title}" aria-label="${title}" tabindex="0" role="group">
+    return `<div class="progress-stop ${waveY>8?'label-above':''} ${terminal?'terminal':''} ${station.active?'':'planned'}" data-visual-index="${visualIndex}" data-station-index="${stationIndex}" style="--wave-x:${(4+progress*92).toFixed(3)}%;--wave-y:${waveY.toFixed(2)}px" title="${title}" aria-label="${title}" tabindex="0" role="group">
       <i aria-hidden="true"></i><span>${name}</span>
     </div>`;
   }).join('');
   dom.routeProgress.innerHTML=`<div class="route-wave-track" data-stop-count="${indices.length}" data-wave-cycles="${cycles}" style="--stop-count:${indices.length}">
-    <canvas class="route-wave-canvas" aria-hidden="true"></canvas>${stops}
+    <canvas class="route-wave-canvas" aria-hidden="true"></canvas><div class="journey-pulse" hidden aria-hidden="true"><i></i></div>${stops}
   </div>`;
-  window.requestAnimationFrame(drawRouteWave);
+  window.requestAnimationFrame(()=>{drawRouteWave();updateJourneyProgress();});
 }
 function drawRouteWave() {
   const track=dom.routeProgress.querySelector('.route-wave-track'),canvas=dom.routeProgress.querySelector('.route-wave-canvas');
@@ -597,9 +668,11 @@ function showUnavailableResult(line,fromIndex,toIndex,serviceType) {
   } else if (!isOperationalRoute(line,fromIndex,toIndex)) dom.serviceMessage.textContent=t('notConnected');
   else dom.serviceMessage.textContent=t('cannotCalculate');
 }
-function showRouteResult({scroll=false,animate=false}={}) {
+function showRouteResult({scroll=false,animate=false,preserveJourney=false}={}) {
   if (!hasCompleteRoute()) return false;
   const line=lineData(), fromIndex=Number(dom.from.value), toIndex=Number(dom.to.value);
+  const preservedJourney=preserveJourney&&activeJourney?.lineId===line.id&&activeJourney.fromIndex===fromIndex&&activeJourney.toIndex===toIndex
+    ? {...activeJourney,indices:[...activeJourney.indices],segmentMinutes:[...activeJourney.segmentMinutes]}:null;
   if (fromIndex===toIndex) {
     stopDepartureCountdown(); dom.resultContent.hidden=true; dom.resultEmpty.hidden=false;
     showToast(t('chooseDifferent')); dom.to.focus(); return false;
@@ -608,6 +681,7 @@ function showRouteResult({scroll=false,animate=false}={}) {
   const serviceType=getSelectedServiceType(), service=line.services[serviceType], directionKey=getDirection(fromIndex,toIndex), direction=line.directions[directionKey];
   const duration=getTripDuration(line,fromIndex,toIndex), stopCount=Math.abs(toIndex-fromIndex), lookupMinutes=minutesFromTime(dom.time.value||'08:00');
   const routeOperational=service.available&&isOperationalRoute(line,fromIndex,toIndex);
+  let journeyDeparture=null;
 
   dom.resultEmpty.hidden=true; dom.resultContent.hidden=false;
   dom.resultDirection.textContent=local(direction.label);
@@ -623,7 +697,7 @@ function showRouteResult({scroll=false,animate=false}={}) {
     if (departures.length) {
       dom.nextDeparture.textContent=timeFromMinutes(departures[0]);
       dom.estimatedArrival.textContent=timeFromMinutes(departures[0]+duration);
-      startDepartureCountdown(departures[0]);
+      journeyDeparture=departures[0];
       dom.departureList.innerHTML=departures.map((departure,index)=>{
         const departureTime=timeFromMinutes(departure),arrivalTime=timeFromMinutes(departure+duration);
         const label=escapeHtml(t('planDeparture',departureTime,arrivalTime));
@@ -639,6 +713,14 @@ function showRouteResult({scroll=false,animate=false}={}) {
     }
   }
   renderRouteProgress(line,fromIndex,toIndex); renderMatrix();
+  if (journeyDeparture!==null) startDepartureCountdown(journeyDeparture,{line,fromIndex,toIndex,directionKey});
+  if (preservedJourney) {
+    if (departureCountdownTimer!==null) window.clearInterval(departureCountdownTimer);
+    activeJourney=preservedJourney; departureCountdownTarget=preservedJourney.departureTimestamp;
+    updateDepartureCountdown();
+    const preservedArrival=preservedJourney.departureTimestamp+preservedJourney.segmentMinutes.reduce((sum,minutes)=>sum+minutes,0)*60000;
+    if (preservedArrival>Date.now()) departureCountdownTimer=window.setInterval(updateDepartureCountdown,1000);
+  }
   if (animate) animateIn(dom.resultContent);
   if (scroll) document.querySelector('#resultCard').scrollIntoView({behavior:motionBehavior(),block:'start'});
   return true;
@@ -747,60 +829,85 @@ function choosePlannerStation(station,field='to') {
   else document.querySelector('#planner').scrollIntoView({behavior:motionBehavior(),block:'start'});
   dom[field].focus({preventScroll:true});
 }
-function mapTilesForTheme() {
-  return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+function updateMapTheme() { /* SVG colors follow the document theme through CSS variables. */ }
+function projectMetroStations() {
+  const width=1200,height=760,padding={x:150,y:86};
+  const latitudes=metroLocations.map(station=>station.lat),longitudes=metroLocations.map(station=>station.lng);
+  const minLat=Math.min(...latitudes),maxLat=Math.max(...latitudes),minLng=Math.min(...longitudes),maxLng=Math.max(...longitudes);
+  const innerWidth=width-padding.x*2,innerHeight=height-padding.y*2;
+  return new Map(metroLocations.map(station=>[station.id,{
+    x:padding.x+((station.lng-minLng)/(maxLng-minLng))*innerWidth,
+    y:padding.y+((maxLat-station.lat)/(maxLat-minLat))*innerHeight
+  }]));
 }
-function updateMapTheme() { metroMap?.invalidateSize({pan:false}); }
-function mapMarkerHtml(station) {
-  const classes=station.lines.length>1?'interchange':station.lines[0];
-  return `<span class="metro-map-marker ${classes}"><i></i></span>`;
+function renderMetroSvg() {
+  if (!dom.metroMap || !metroLocations.length) return;
+  const points=projectMetroStations();
+  const linePoints=lineId=>metroLocations.filter(station=>station.lines.includes(lineId))
+    .sort((a,b)=>a.indices[lineId]-b.indices[lineId]).map(station=>`${points.get(station.id).x.toFixed(1)},${points.get(station.id).y.toFixed(1)}`).join(' ');
+  const stations=metroLocations.map(station=>{
+    const point=points.get(station.id),primaryLine=station.lines[0],lineIndex=station.indices[primaryLine];
+    const placeRight=primaryLine==='line2'?false:lineIndex%2===0;
+    const labelX=point.x+(placeRight?18:-18),labelY=point.y+(lineIndex%3===1?5:-7);
+    const classes=`svg-station ${primaryLine} ${station.lines.length>1?'interchange':''} ${selectedMapStation?.id===station.id?'is-selected':''}`;
+    return `<g class="${classes}" data-station-id="${station.id}" role="button" tabindex="0" aria-label="${escapeHtml(locationName(station))}">
+      <circle class="station-hit" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="18"></circle>
+      <circle class="station-ring" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="8"></circle>
+      <circle class="station-core" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="3"></circle>
+      <text x="${labelX.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="${placeRight?'start':'end'}">${escapeHtml(locationName(station))}</text>
+    </g>`;
+  }).join('');
+  dom.metroMap.innerHTML=`<svg class="metro-network-svg" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="metro-svg-title metro-svg-description">
+    <title id="metro-svg-title">${escapeHtml(t('mapTitle'))}</title><desc id="metro-svg-description">${escapeHtml(t('mapDescription'))}</desc>
+    <defs>
+      <pattern id="map-grid" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" class="map-grid-line"/></pattern>
+      <filter id="map-shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity=".18"/></filter>
+    </defs>
+    <rect class="map-svg-background" width="1200" height="760" rx="28"></rect>
+    <rect class="map-svg-grid" width="1200" height="760" rx="28" fill="url(#map-grid)"></rect>
+    <path class="map-contour" d="M-40 155C145 65 255 205 430 134S742 18 930 98s250 42 330-15M-65 615c190-96 340-12 470-84s270-96 410-12 288 32 438-58"></path>
+    <text class="map-city-label" x="600" y="390" text-anchor="middle">شیراز · SHIRAZ</text>
+    <polyline class="svg-metro-line line1" points="${linePoints('line1')}"></polyline>
+    <polyline class="svg-metro-line line2" points="${linePoints('line2')}"></polyline>
+    ${stations}
+  </svg>`;
 }
 function updateMapLanguage() {
-  mapMarkers.forEach(({marker,station})=>{
-    marker.options.alt=locationName(station);
-    marker.setTooltipContent(locationName(station));
-  });
+  if (!metroMap) return;
+  renderMetroSvg();
+  window.requestAnimationFrame(()=>{ dom.metroMap.scrollLeft=Math.max(0,(dom.metroMap.scrollWidth-dom.metroMap.clientWidth)/2); });
   if (selectedMapStation) showMapStation(selectedMapStation,false);
 }
-function showMapStation(station,move=true) {
+function showMapStation(station) {
   selectedMapStation=station;
   dom.mapStationName.textContent=locationName(station);
   dom.mapStationAddress.textContent=locationAddress(station);
   dom.mapStationLines.innerHTML=station.lines.map(lineBadge).join('');
   dom.mapStationActions.hidden=false;
   dom.mapStationActions.dataset.stationId=station.id;
-  mapMarkers.forEach(({marker,station:entry})=>marker.getElement()?.classList.toggle('is-selected',entry.id===station.id));
-  if (move && metroMap) metroMap.flyTo([station.lat,station.lng],Math.max(metroMap.getZoom(),14),{duration:reducedMotion.matches?0:.65});
+  dom.metroMap.querySelectorAll('.svg-station').forEach(marker=>marker.classList.toggle('is-selected',marker.dataset.stationId===station.id));
 }
 function showStationOnMap(station) {
   if (!station) return;
   document.querySelector('#map').scrollIntoView({behavior:motionBehavior(),block:'start'});
-  window.setTimeout(()=>{ metroMap?.invalidateSize(); showMapStation(station); },reducedMotion.matches?0:450);
+  window.setTimeout(()=>showMapStation(station),reducedMotion.matches?0:450);
 }
 function initializeMap() {
   if (!dom.metroMap) return;
-  if (!window.L || !metroLocations.length) {
-    dom.mapLoading.textContent=t('mapUnavailable'); dom.mapLoading.classList.add('map-error'); return;
-  }
-  metroMap=L.map(dom.metroMap,{zoomControl:true,scrollWheelZoom:false,minZoom:10,maxZoom:18}).setView([29.618,52.53],12);
-  mapTileLayer=L.tileLayer(mapTilesForTheme(),{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(metroMap);
-  ['line1','line2'].forEach(lineId=>{
-    const points=metroLocations.filter(station=>station.lines.includes(lineId)).sort((a,b)=>a.indices[lineId]-b.indices[lineId]).map(station=>[station.lat,station.lng]);
-    L.polyline(points,{color:lineId==='line1'?'#d49a37':'#4b9bb8',weight:5,opacity:.9,lineCap:'round',lineJoin:'round'}).addTo(metroMap);
+  if (!metroLocations.length) return;
+  metroMap=dom.metroMap; renderMetroSvg();
+  window.requestAnimationFrame(()=>{ dom.metroMap.scrollLeft=Math.max(0,(dom.metroMap.scrollWidth-dom.metroMap.clientWidth)/2); });
+  dom.metroMap.addEventListener('click',event=>{
+    const marker=event.target.closest('.svg-station');
+    if (marker) showMapStation(metroLocations.find(station=>station.id===marker.dataset.stationId));
   });
-  mapMarkers=metroLocations.map(station=>{
-    const marker=L.marker([station.lat,station.lng],{title:locationName(station),alt:locationName(station),keyboard:true,riseOnHover:true,
-      icon:L.divIcon({className:'metro-marker-shell',html:mapMarkerHtml(station),iconSize:[28,28],iconAnchor:[14,14]})}).addTo(metroMap);
-    marker.bindTooltip(locationName(station),{direction:'top',offset:[0,-10],opacity:.96});
-    marker.on('click',()=>showMapStation(station,false));
-    return {marker,station};
+  dom.metroMap.addEventListener('keydown',event=>{
+    const marker=event.target.closest('.svg-station');
+    if (marker && (event.key==='Enter'||event.key===' ')) {
+      event.preventDefault(); showMapStation(metroLocations.find(station=>station.id===marker.dataset.stationId));
+    }
   });
-  const bounds=L.latLngBounds(metroLocations.map(station=>[station.lat,station.lng]));
-  metroMap.fitBounds(bounds,{padding:[32,32]});
   dom.mapLoading.hidden=true;
-  const enableWheel=()=>metroMap.scrollWheelZoom.enable();
-  const disableWheel=()=>metroMap.scrollWheelZoom.disable();
-  dom.metroMap.addEventListener('focusin',enableWheel); dom.metroMap.addEventListener('focusout',disableWheel);
 }
 function renderStationList() {
   const line=lineData(), service=line.services[activeServiceType];
@@ -942,7 +1049,7 @@ function applyLanguage(language,{persist=true}={}) {
   dom.timetableDownloads.forEach(link=>{link.href=`assets/${timetableFile}`;link.download=downloadName;});
   translateStaticContent(); renderLineOptions(); populateStationSelects({preserve:true}); renderLineControls(); renderHero(); renderServiceDayStatus(); renderMatrix(); renderStationList(); renderNearbySelect();
   if (nearbyOrigin) renderNearbyResults(); updateMapLanguage();
-  if (!dom.resultContent.hidden && hasCompleteRoute() && dom.from.value!==dom.to.value) showRouteResult();
+  if (!dom.resultContent.hidden && hasCompleteRoute() && dom.from.value!==dom.to.value) showRouteResult({preserveJourney:true});
   if (persist) storage.set('shirazgo-language',currentLanguage);
 }
 function bindEvents() {

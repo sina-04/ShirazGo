@@ -4,7 +4,7 @@
 [![Live site](https://img.shields.io/badge/live-GitHub%20Pages-222)](https://sina-04.github.io/ShirazGo/)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-yellow.svg)](LICENSE)
 
-A responsive Shiraz Metro journey planner for **Lines 1 and 2**, built with semantic HTML, modern CSS, vanilla JavaScript, and a locally vendored Leaflet map. The interface supports persistent English and Persian modes, complete RTL layout mirroring, and Persian numerals.
+A responsive Shiraz Metro journey planner for **Lines 1 and 2**, built with semantic HTML, modern CSS, vanilla JavaScript, and an inline SVG network map. The interface supports persistent English and Persian modes, complete RTL layout mirroring, and Persian numerals.
 
 **[Open the journey planner](https://sina-04.github.io/ShirazGo/)**
 
@@ -16,7 +16,7 @@ A responsive Shiraz Metro journey planner for **Lines 1 and 2**, built with sema
 2. **Line-aware hero** — network summary, current line status, and route preview.
 3. **Journey planner** — metro line, origin, destination, device time, and an automatically selected calendar-based service type.
 4. **Nearby stations** — browser geolocation or a station-reference fallback, Haversine distance, walking estimates, and planner/map shortcuts.
-5. **Minimalist map** — interactive Line 1 and Line 2 geometry, selectable markers, bilingual station details, and route shortcuts.
+5. **Minimalist SVG map** — resolution-independent Line 1 and Line 2 geometry, selectable markers, Sahel labels, bilingual station details, and route shortcuts.
 6. **Journey result** — next departure, estimated arrival, duration, route stops, and upcoming trains.
 7. **From–To matrix** — travel-time and next-arrival modes for the selected line.
 8. **Station directory** — service windows, operational status, planned stations, and interchange notes.
@@ -28,7 +28,8 @@ A responsive Shiraz Metro journey planner for **Lines 1 and 2**, built with sema
 - Selecting or reversing a valid route automatically scrolls to the journey result, with smooth scrolling unless reduced motion is preferred.
 - Light/dark mode reveals outward from the theme button using CSS View Transitions. Older browsers use an expanding veil, and reduced-motion users get an instant change. The saved theme is applied before first paint.
 - Scroll-linked section reveals and a reading-progress indicator, visible keyboard focus, active section links, styled native select controls, and support for pinch zoom.
-- The map uses a muted OpenStreetMap base, color-coded line geometry, keyboard-selectable station markers, and a local Leaflet 1.9.4 runtime so UI layout does not depend on a CDN.
+- The map is rendered as inline SVG with color-coded line geometry, Sahel labels, and keyboard-selectable station markers.
+- After a scheduled train departs, the journey card advances a live pulse toward each next stop. Line 1 uses two-minute station steps; Line 2 uses its published three-to-seven-minute station offsets.
 - No application framework or build step. Playwright is a development-only dependency for browser regression checks.
 
 ## Timetable model
@@ -97,7 +98,6 @@ The browser suite starts its own temporary local server. It checks the 24-statio
 - `styles.css` — responsive design system, Persian font stack, and RTL component rules
 - `app.js` — multi-line timetable engine, bilingual content, localization, and interaction logic
 - `data/shiraz-metro-stations.json` — Balad-sourced station coordinates, addresses, line membership, and stable IDs
-- `vendor/leaflet/` — pinned Leaflet 1.9.4 browser runtime and license
 - `assets/shiraz-subway-timetable.md` — accessible timetable reference for Lines 1 and 2
 
 ## License and data terms

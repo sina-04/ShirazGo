@@ -65,13 +65,14 @@ async function journeyInView(page) {
     }));
     assert.equal(styledSelect.appearance, 'none');
     assert.notEqual(styledSelect.background, 'none');
-    await page.waitForSelector('.leaflet-marker-icon');
-    assert.equal(await page.locator('.leaflet-marker-icon').count(), 24);
+    await page.waitForSelector('.metro-network-svg');
+    assert.equal(await page.locator('.svg-station').count(), 24);
+    assert.match(await page.locator('.svg-station text').first().evaluate(element => getComputedStyle(element).fontFamily), /Sahel/i);
     await page.locator('[data-nearby-map]').first().click();
     await page.waitForTimeout(500);
     assert.notEqual(await page.locator('#mapStationName').innerText(), 'Choose a station on the map');
     assert.ok(Number(await page.locator('#scrollProgress').evaluate(element => getComputedStyle(element).getPropertyValue('--scroll-progress'))) > 0);
-    console.log('PASS Balad station data, five-station Nearby results, styled selects, interactive map and scroll progress');
+    console.log('PASS Balad station data, five-station Nearby results, styled selects, interactive Sahel SVG map and scroll progress');
 
     let layouts = 0;
     for (const width of [320, 360, 390, 430, 620, 768, 820, 980, 1024, 1440]) {
@@ -134,6 +135,18 @@ async function journeyInView(page) {
     assert.equal(await page.locator('#journeyDuration').innerText(), '16 min');
     assert.equal(await page.locator('#matrixTable tbody tr').count(), 5);
     console.log('PASS Line 2 durations in both directions and matrix-to-planner navigation');
+
+    await page.evaluate(() => updateDepartureCountdown(new Date(2026, 8, 6, 10, 4, 0).getTime()));
+    assert.equal(await page.locator('.progress-stop[data-visual-index="2"]').getAttribute('class').then(value => value.includes('is-next')), true);
+    assert.equal(await page.locator('.journey-pulse').isVisible(), true);
+    assert.match(await page.locator('#departureCountdown').innerText(), /Basij/);
+    await page.locator('#metroLine').selectOption('line1');
+    await page.locator('#fromStation').selectOption('0');
+    await page.locator('#toStation').selectOption('4');
+    await page.evaluate(() => updateDepartureCountdown(new Date(2026, 8, 6, 10, 12, 1).getTime()));
+    assert.equal(await page.locator('.progress-stop[data-visual-index="2"]').getAttribute('class').then(value => value.includes('is-next')), true);
+    assert.match(await page.locator('#departureCountdown').innerText(), /Forsat-e Shirazi/);
+    console.log('PASS live journey pulse advances at two-minute Line 1 and published Line 2 station intervals');
 
     await page.locator('#themeToggle').focus();
     await page.keyboard.press('Enter');
