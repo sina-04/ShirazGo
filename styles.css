@@ -1285,9 +1285,9 @@ html[dir="rtl"] .scroll-progress { transform-origin: right center; }
 .map-legend i { width: 22px; height: 4px; border-radius: 99px; background: var(--gold-500); }
 .map-legend i.line-two { background: #4b9bb8; }
 .map-shell { position: relative; min-height: 650px; overflow: hidden; border: 1px solid var(--line); border-radius: 28px; background: var(--surface); box-shadow: var(--shadow-lg); }
-.metro-map { width: 100%; height: 650px; display: grid; place-items: center; overflow: hidden; background: var(--sage-100); }
+.metro-map { width: 100%; height: 650px; overflow: hidden; background: var(--sage-100); font-family: "Sahel FD",Vazirmatn,Tahoma,Arial,sans-serif; }
 .map-loading { position: absolute; inset: 0; z-index: 500; display: grid; place-items: center; padding: 30px; color: var(--muted); background: var(--surface); font-size: .82rem; text-align: center; }
-.map-station-card { position: absolute; z-index: 600; inset: 22px 22px auto auto; width: min(330px,calc(100% - 44px)); padding: 22px; border: 1px solid color-mix(in srgb,var(--line) 70%,transparent); border-radius: 20px; background: color-mix(in srgb,var(--surface) 92%,transparent); box-shadow: 0 18px 50px rgb(8 40 33 / .2); backdrop-filter: blur(14px); }
+.map-station-card { position: absolute; z-index: 600; inset: auto 22px 22px auto; width: min(330px,calc(100% - 44px)); padding: 22px; border: 1px solid color-mix(in srgb,var(--line) 70%,transparent); border-radius: 20px; background: color-mix(in srgb,var(--surface) 92%,transparent); box-shadow: 0 18px 50px rgb(8 40 33 / .2); backdrop-filter: blur(14px); }
 .map-card-kicker { color: var(--gold-500); font-size: .62rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .map-station-card h3 { margin-top: 7px; font-size: 1.3rem; }
 .map-station-card p { margin-top: 7px; color: var(--muted); font-size: .72rem; line-height: 1.6; }
@@ -1295,26 +1295,25 @@ html[dir="rtl"] .scroll-progress { transform-origin: right center; }
 .map-card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
 .map-source { margin-top: 13px; color: var(--muted); font-size: .68rem; text-align: end; }
 .map-source a { color: var(--forest-700); font-weight: 750; text-underline-offset: 3px; }
-.metro-network-svg { width: 100%; height: 100%; font-family: "Sahel FD",Vazirmatn,Tahoma,Arial,sans-serif; }
-.map-svg-background { fill: var(--surface-soft); }
-.map-svg-grid { opacity: .5; }
-.map-grid-line { fill: none; stroke: var(--line); stroke-width: 1; }
-.map-contour { fill: none; stroke: var(--sage-300); stroke-width: 2; stroke-dasharray: 9 12; opacity: .38; }
-.map-city-label { fill: var(--muted); font-family: "Sahel FD",Vazirmatn,Tahoma,Arial,sans-serif; font-size: 38px; font-weight: 700; letter-spacing: .08em; opacity: .12; }
-.svg-metro-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 9; filter: url(#map-shadow); }
-.svg-metro-line.line1 { stroke: var(--gold-500); }
-.svg-metro-line.line2 { stroke: #4b9bb8; }
-.svg-station { cursor: pointer; outline: none; }
-.svg-station .station-hit { fill: transparent; }
-.svg-station .station-ring { fill: var(--surface); stroke: var(--gold-500); stroke-width: 5; transition: r .2s var(--ease-out),stroke-width .2s; }
-.svg-station.line2 .station-ring { stroke: #4b9bb8; }
-.svg-station.interchange .station-ring { stroke: var(--forest-700); stroke-width: 6; }
-.svg-station .station-core { fill: var(--ink); pointer-events: none; }
-.svg-station text { fill: var(--ink); stroke: var(--surface-soft); stroke-width: 5px; paint-order: stroke fill; font-family: "Sahel FD",Vazirmatn,Tahoma,Arial,sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0; pointer-events: none; transition: font-size .2s,font-weight .2s,fill .2s; }
-.svg-station:hover .station-ring,.svg-station:focus-visible .station-ring,.svg-station.is-selected .station-ring { r: 12; stroke-width: 6; }
-.svg-station:hover text,.svg-station:focus-visible text,.svg-station.is-selected text { fill: var(--forest-700); font-size: 18px; font-weight: 900; }
-.svg-station:focus-visible .station-hit { fill: color-mix(in srgb,var(--gold-500) 18%,transparent); }
-html[dir="rtl"] .map-station-card { inset: 22px auto auto 22px; }
+.metro-marker-shell { background: none !important; border: 0 !important; }
+.metro-map-marker { display: grid; width: 30px; height: 30px; place-items: center; border: 3px solid var(--surface); border-radius: 50%; background: var(--gold-500); box-shadow: 0 3px 12px rgb(8 40 33 / .3); transition: transform .2s var(--ease-out),box-shadow .2s; }
+.metro-map-marker.line2 { background: #4b9bb8; }
+.metro-map-marker.interchange { background: conic-gradient(var(--gold-500) 0 50%,#4b9bb8 50%); }
+.metro-map-marker i { width: 8px; height: 8px; border-radius: 50%; background: var(--surface); }
+.leaflet-marker-icon:hover .metro-map-marker,.leaflet-marker-icon:focus-visible .metro-map-marker,.leaflet-marker-icon.is-selected .metro-map-marker { transform: scale(1.2); box-shadow: 0 0 0 7px color-mix(in srgb,var(--gold-500) 24%,transparent),0 6px 18px rgb(8 40 33 / .32); }
+.leaflet-container { font-family: "Sahel FD",Vazirmatn,Tahoma,Arial,sans-serif; }
+.leaflet-tile-pane { filter: grayscale(.92) saturate(.32) contrast(.84) brightness(1.08); opacity: .78; transition: filter .35s,opacity .35s; }
+html[data-theme="dark"] .leaflet-tile-pane { filter: grayscale(.92) invert(.88) hue-rotate(148deg) saturate(.42) contrast(.9) brightness(.68); opacity: .68; }
+.leaflet-control-zoom { border: 1px solid var(--line) !important; border-radius: 13px !important; overflow: hidden; box-shadow: var(--shadow-md) !important; }
+.leaflet-control-zoom a { width: 40px !important; height: 40px !important; line-height: 38px !important; color: var(--ink) !important; background: var(--surface) !important; border-color: var(--line) !important; font-family: inherit !important; }
+.leaflet-control-zoom a:hover,.leaflet-control-zoom a:focus-visible { color: var(--forest-700) !important; background: var(--sage-100) !important; }
+.leaflet-control-attribution,.leaflet-control-scale-line { color: var(--muted) !important; background: color-mix(in srgb,var(--surface) 86%,transparent) !important; font-family: inherit !important; }
+.leaflet-control-attribution a { color: var(--forest-700); }
+.leaflet-control-scale-line { border-color: var(--muted) !important; border-top: 0 !important; }
+.leaflet-tooltip { padding: 7px 10px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--surface); box-shadow: var(--shadow-sm); font-family: "Sahel FD",Vazirmatn,Tahoma,Arial,sans-serif; font-size: .72rem; font-weight: 750; }
+.leaflet-tooltip-top::before { border-top-color: var(--surface); }
+.metro-route-overlay { filter: drop-shadow(0 2px 3px rgb(8 40 33 / .34)); }
+html[dir="rtl"] .map-station-card { inset: auto auto 22px 22px; }
 
 .scroll-reveal { opacity: 0; transform: translateY(26px) scale(.992); transition: opacity .65s var(--ease-out),transform .65s var(--ease-out); }
 .scroll-reveal.is-visible { opacity: 1; transform: none; }
@@ -1345,10 +1344,8 @@ html[dir="rtl"] .map-station-card { inset: 22px auto auto 22px; }
   .nearby-actions { grid-column: 2; grid-template-columns: 1fr 1fr; }
   .map-heading { align-items: flex-start; }
   .map-legend { border-radius: 14px; }
-  .map-shell { min-height: 0; height: auto; }
-  .metro-map { height: 430px; min-height: 430px; place-items: center start; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; scrollbar-color: var(--sage-300) transparent; }
-  .metro-network-svg { width: auto; min-width: 680px; max-width: none; height: 430px; }
-  .map-station-card { position: relative; inset: auto !important; width: auto; margin: 12px; }
+  .map-shell,.metro-map { min-height: 600px; height: 600px; }
+  .map-station-card { inset: auto 12px 12px !important; width: calc(100% - 24px); }
 }
 @media (max-width: 430px) {
   .nearby-card, .nearby-results { border-radius: 20px; }
@@ -1356,9 +1353,7 @@ html[dir="rtl"] .map-station-card { inset: 22px auto auto 22px; }
   .nearby-results { padding: 16px 12px; }
   .nearby-station-card { gap: 8px; padding: 12px 10px; }
   .nearby-actions button { padding-inline: 7px; }
-  .map-shell, .metro-map { border-radius: 20px; }
-  .metro-map { min-height: 400px; height: 400px; }
-  .metro-network-svg { min-width: 632px; height: 400px; }
+  .map-shell,.metro-map { min-height: 560px; height: 560px; border-radius: 20px; }
   .map-station-card { padding: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {

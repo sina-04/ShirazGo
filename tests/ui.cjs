@@ -65,14 +65,18 @@ async function journeyInView(page) {
     }));
     assert.equal(styledSelect.appearance, 'none');
     assert.notEqual(styledSelect.background, 'none');
-    await page.waitForSelector('.metro-network-svg');
-    assert.equal(await page.locator('.svg-station').count(), 24);
-    assert.match(await page.locator('.svg-station text').first().evaluate(element => getComputedStyle(element).fontFamily), /Sahel/i);
+    await page.waitForSelector('.leaflet-container');
+    assert.equal(await page.locator('.leaflet-marker-icon').count(), 24);
+    assert.match(await page.locator('.metro-map').evaluate(element => getComputedStyle(element).fontFamily), /Sahel/i);
+    const zoomBefore=await page.evaluate(()=>metroMap.getZoom());
+    await page.locator('.leaflet-control-zoom-in').click();
+    await page.waitForFunction(zoom=>metroMap.getZoom()>zoom,zoomBefore);
+    assert.ok(await page.evaluate(()=>metroMap.getZoom())>zoomBefore);
     await page.locator('[data-nearby-map]').first().click();
     await page.waitForTimeout(500);
     assert.notEqual(await page.locator('#mapStationName').innerText(), 'Choose a station on the map');
     assert.ok(Number(await page.locator('#scrollProgress').evaluate(element => getComputedStyle(element).getPropertyValue('--scroll-progress'))) > 0);
-    console.log('PASS Balad station data, five-station Nearby results, styled selects, interactive Sahel SVG map and scroll progress');
+    console.log('PASS Balad station data, five-station Nearby results, styled selects, zoomable city map with Sahel overlays and scroll progress');
 
     let layouts = 0;
     for (const width of [320, 360, 390, 430, 620, 768, 820, 980, 1024, 1440]) {

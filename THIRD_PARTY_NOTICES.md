@@ -17,6 +17,11 @@ Nearby and map feature concepts were independently implemented after reviewing
 the AGPL-3.0-licensed Metto project by Ali
 Hasanpour; no Metto source files are distributed in this repository.
 
+The interactive map uses Leaflet 1.9.4, distributed under the BSD 2-Clause
+License; its license is included at `vendor/leaflet/LICENSE`. Base map tiles and
+geographic data are provided by OpenStreetMap contributors under OpenStreetMap's
+published tile usage policy and Open Database License terms.
+
 ShirazGo is not affiliated with or endorsed by the Shiraz Urban Railway
 Organization. Schedule information is provided as a planning aid and must be
 verified against current official notices before travel.

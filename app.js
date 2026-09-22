@@ -80,10 +80,10 @@ const UI = {
     nearbyEmptyText: 'Allow location access or select a reference station to see walking estimates and quick route actions.',
     closestStations: 'Closest stations', away: distance => `${distance} away`, walkEstimate: minutes => `≈ ${minutes} min walk`,
     setDestination: 'Use as destination', showOnMap: 'Show on map',
-    mapEyebrow: 'Network map', mapTitle: 'See Shiraz at a glance',
-    mapDescription: 'A focused map of Lines 1 and 2, based on station locations listed by Balad.',
-    mapLegendLabel: 'Map legend', line1Label: 'Line 1', line2Label: 'Line 2', mapRegionLabel: 'Interactive SVG map of Shiraz Metro stations',
-    mapLoading: 'Drawing station map…',
+    mapEyebrow: 'Network map', mapTitle: 'Explore Shiraz on the map',
+    mapDescription: 'Drag, pinch, or zoom through a detailed city map with Shiraz Metro Lines 1 and 2 overlaid.',
+    mapLegendLabel: 'Map legend', line1Label: 'Line 1', line2Label: 'Line 2', mapRegionLabel: 'Interactive street map of Shiraz Metro stations',
+    mapLoading: 'Loading the city map…', mapUnavailable: 'The city map could not be loaded. Please refresh and try again.',
     selectedStation: 'Selected station', chooseMapStation: 'Choose a station on the map', chooseMapStationHint: 'Select a marker to view its lines and plan a journey.',
     startHere: 'Start here', endHere: 'End here', mapSourcePrefix: 'Station locations:', mapSourceLink: 'Balad map listings'
   },
@@ -163,10 +163,10 @@ const UI = {
     nearbyEmptyText: 'دسترسی موقعیت را بدهید یا یک ایستگاه مرجع انتخاب کنید تا زمان تقریبی پیاده‌روی و میانبرهای سفر را ببینید.',
     closestStations: 'نزدیک‌ترین ایستگاه‌ها', away: distance => `${distance} فاصله`, walkEstimate: minutes => `حدود ${minutes} دقیقه پیاده`,
     setDestination: 'انتخاب به‌عنوان مقصد', showOnMap: 'نمایش روی نقشه',
-    mapEyebrow: 'نقشه شبکه', mapTitle: 'شیراز را یک‌جا ببینید',
-    mapDescription: 'نقشه‌ای خلوت از خطوط ۱ و ۲، بر پایه موقعیت ایستگاه‌های ثبت‌شده در بلد.',
-    mapLegendLabel: 'راهنمای نقشه', line1Label: 'خط ۱', line2Label: 'خط ۲', mapRegionLabel: 'نقشه تعاملی SVG ایستگاه‌های متروی شیراز',
-    mapLoading: 'در حال رسم نقشه ایستگاه‌ها…',
+    mapEyebrow: 'نقشه شبکه', mapTitle: 'شیراز را روی نقشه کاوش کنید',
+    mapDescription: 'با کشیدن، بزرگ‌نمایی یا حرکت دو انگشتی، نقشه دقیق شهر و خطوط ۱ و ۲ متروی شیراز را ببینید.',
+    mapLegendLabel: 'راهنمای نقشه', line1Label: 'خط ۱', line2Label: 'خط ۲', mapRegionLabel: 'نقشه تعاملی شهری ایستگاه‌های متروی شیراز',
+    mapLoading: 'در حال بارگذاری نقشه شهر…', mapUnavailable: 'نقشه شهر بارگذاری نشد؛ صفحه را تازه‌سازی و دوباره تلاش کنید.',
     selectedStation: 'ایستگاه انتخاب‌شده', chooseMapStation: 'یک ایستگاه را روی نقشه انتخاب کنید', chooseMapStationHint: 'برای دیدن خطوط و برنامه‌ریزی سفر، یک نشانگر را انتخاب کنید.',
     startHere: 'شروع از اینجا', endHere: 'پایان در اینجا', mapSourcePrefix: 'موقعیت ایستگاه‌ها:', mapSourceLink: 'فهرست‌های نقشه بلد'
   }
@@ -283,6 +283,8 @@ let metroLocations = [];
 let nearbyOrigin = null;
 let nearbyOriginStationId = null;
 let metroMap = null;
+let mapTileLayer = null;
+let mapMarkers = [];
 let selectedMapStation = null;
 
 const storage = {
@@ -829,85 +831,65 @@ function choosePlannerStation(station,field='to') {
   else document.querySelector('#planner').scrollIntoView({behavior:motionBehavior(),block:'start'});
   dom[field].focus({preventScroll:true});
 }
-function updateMapTheme() { /* SVG colors follow the document theme through CSS variables. */ }
-function projectMetroStations() {
-  const width=1200,height=760,padding={x:150,y:86};
-  const latitudes=metroLocations.map(station=>station.lat),longitudes=metroLocations.map(station=>station.lng);
-  const minLat=Math.min(...latitudes),maxLat=Math.max(...latitudes),minLng=Math.min(...longitudes),maxLng=Math.max(...longitudes);
-  const innerWidth=width-padding.x*2,innerHeight=height-padding.y*2;
-  return new Map(metroLocations.map(station=>[station.id,{
-    x:padding.x+((station.lng-minLng)/(maxLng-minLng))*innerWidth,
-    y:padding.y+((maxLat-station.lat)/(maxLat-minLat))*innerHeight
-  }]));
-}
-function renderMetroSvg() {
-  if (!dom.metroMap || !metroLocations.length) return;
-  const points=projectMetroStations();
-  const linePoints=lineId=>metroLocations.filter(station=>station.lines.includes(lineId))
-    .sort((a,b)=>a.indices[lineId]-b.indices[lineId]).map(station=>`${points.get(station.id).x.toFixed(1)},${points.get(station.id).y.toFixed(1)}`).join(' ');
-  const stations=metroLocations.map(station=>{
-    const point=points.get(station.id),primaryLine=station.lines[0],lineIndex=station.indices[primaryLine];
-    const placeRight=primaryLine==='line2'?false:lineIndex%2===0;
-    const labelX=point.x+(placeRight?18:-18),labelY=point.y+(lineIndex%3===1?5:-7);
-    const classes=`svg-station ${primaryLine} ${station.lines.length>1?'interchange':''} ${selectedMapStation?.id===station.id?'is-selected':''}`;
-    return `<g class="${classes}" data-station-id="${station.id}" role="button" tabindex="0" aria-label="${escapeHtml(locationName(station))}">
-      <circle class="station-hit" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="18"></circle>
-      <circle class="station-ring" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="8"></circle>
-      <circle class="station-core" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="3"></circle>
-      <text x="${labelX.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="${placeRight?'start':'end'}">${escapeHtml(locationName(station))}</text>
-    </g>`;
-  }).join('');
-  dom.metroMap.innerHTML=`<svg class="metro-network-svg" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="metro-svg-title metro-svg-description">
-    <title id="metro-svg-title">${escapeHtml(t('mapTitle'))}</title><desc id="metro-svg-description">${escapeHtml(t('mapDescription'))}</desc>
-    <defs>
-      <pattern id="map-grid" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" class="map-grid-line"/></pattern>
-      <filter id="map-shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity=".18"/></filter>
-    </defs>
-    <rect class="map-svg-background" width="1200" height="760" rx="28"></rect>
-    <rect class="map-svg-grid" width="1200" height="760" rx="28" fill="url(#map-grid)"></rect>
-    <path class="map-contour" d="M-40 155C145 65 255 205 430 134S742 18 930 98s250 42 330-15M-65 615c190-96 340-12 470-84s270-96 410-12 288 32 438-58"></path>
-    <text class="map-city-label" x="600" y="390" text-anchor="middle">شیراز · SHIRAZ</text>
-    <polyline class="svg-metro-line line1" points="${linePoints('line1')}"></polyline>
-    <polyline class="svg-metro-line line2" points="${linePoints('line2')}"></polyline>
-    ${stations}
-  </svg>`;
+function updateMapTheme() { metroMap?.invalidateSize({pan:false}); }
+function mapMarkerHtml(station) {
+  const classes=station.lines.length>1?'interchange':station.lines[0];
+  return `<span class="metro-map-marker ${classes}"><i></i></span>`;
 }
 function updateMapLanguage() {
   if (!metroMap) return;
-  renderMetroSvg();
-  window.requestAnimationFrame(()=>{ dom.metroMap.scrollLeft=Math.max(0,(dom.metroMap.scrollWidth-dom.metroMap.clientWidth)/2); });
+  mapMarkers.forEach(({marker,station})=>{
+    marker.options.alt=locationName(station);
+    marker.options.title=locationName(station);
+    marker.setTooltipContent(locationName(station));
+    marker.getElement()?.setAttribute('aria-label',locationName(station));
+  });
   if (selectedMapStation) showMapStation(selectedMapStation,false);
 }
-function showMapStation(station) {
+function showMapStation(station,move=true) {
   selectedMapStation=station;
   dom.mapStationName.textContent=locationName(station);
   dom.mapStationAddress.textContent=locationAddress(station);
   dom.mapStationLines.innerHTML=station.lines.map(lineBadge).join('');
   dom.mapStationActions.hidden=false;
   dom.mapStationActions.dataset.stationId=station.id;
-  dom.metroMap.querySelectorAll('.svg-station').forEach(marker=>marker.classList.toggle('is-selected',marker.dataset.stationId===station.id));
+  mapMarkers.forEach(({marker,station:entry})=>marker.getElement()?.classList.toggle('is-selected',entry.id===station.id));
+  if (move && metroMap) metroMap.flyTo([station.lat,station.lng],Math.max(metroMap.getZoom(),15),{duration:reducedMotion.matches?0:.65});
 }
 function showStationOnMap(station) {
   if (!station) return;
   document.querySelector('#map').scrollIntoView({behavior:motionBehavior(),block:'start'});
-  window.setTimeout(()=>showMapStation(station),reducedMotion.matches?0:450);
+  window.setTimeout(()=>{ metroMap?.invalidateSize(); showMapStation(station); },reducedMotion.matches?0:450);
 }
 function initializeMap() {
   if (!dom.metroMap) return;
-  if (!metroLocations.length) return;
-  metroMap=dom.metroMap; renderMetroSvg();
-  window.requestAnimationFrame(()=>{ dom.metroMap.scrollLeft=Math.max(0,(dom.metroMap.scrollWidth-dom.metroMap.clientWidth)/2); });
-  dom.metroMap.addEventListener('click',event=>{
-    const marker=event.target.closest('.svg-station');
-    if (marker) showMapStation(metroLocations.find(station=>station.id===marker.dataset.stationId));
+  if (!window.L || !metroLocations.length) {
+    dom.mapLoading.textContent=t('mapUnavailable'); dom.mapLoading.classList.add('map-error'); return;
+  }
+  metroMap=L.map(dom.metroMap,{zoomControl:false,scrollWheelZoom:true,minZoom:10,maxZoom:19,preferCanvas:false})
+    .setView([29.618,52.53],12);
+  mapTileLayer=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    minZoom:0,maxZoom:19,maxNativeZoom:19,detectRetina:true,crossOrigin:true,
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+  }).addTo(metroMap);
+  L.control.zoom({position:'bottomright'}).addTo(metroMap);
+  L.control.scale({position:'bottomleft',imperial:false,maxWidth:120}).addTo(metroMap);
+  ['line1','line2'].forEach(lineId=>{
+    const points=metroLocations.filter(station=>station.lines.includes(lineId))
+      .sort((a,b)=>a.indices[lineId]-b.indices[lineId]).map(station=>[station.lat,station.lng]);
+    L.polyline(points,{className:`metro-route-overlay ${lineId}`,color:lineId==='line1'?'#d49a37':'#4b9bb8',weight:6,opacity:.94,lineCap:'round',lineJoin:'round'}).addTo(metroMap);
   });
-  dom.metroMap.addEventListener('keydown',event=>{
-    const marker=event.target.closest('.svg-station');
-    if (marker && (event.key==='Enter'||event.key===' ')) {
-      event.preventDefault(); showMapStation(metroLocations.find(station=>station.id===marker.dataset.stationId));
-    }
+  mapMarkers=metroLocations.map(station=>{
+    const marker=L.marker([station.lat,station.lng],{
+      title:locationName(station),alt:locationName(station),keyboard:true,riseOnHover:true,
+      icon:L.divIcon({className:'metro-marker-shell',html:mapMarkerHtml(station),iconSize:[30,30],iconAnchor:[15,15]})
+    }).addTo(metroMap);
+    marker.bindTooltip(locationName(station),{direction:'top',offset:[0,-11],opacity:.97});
+    marker.on('click',()=>showMapStation(station,false));
+    return {marker,station};
   });
-  dom.mapLoading.hidden=true;
+  metroMap.fitBounds(L.latLngBounds(metroLocations.map(station=>[station.lat,station.lng])),{padding:[44,44]});
+  metroMap.whenReady(()=>{ dom.mapLoading.hidden=true; window.setTimeout(()=>metroMap.invalidateSize(),0); });
 }
 function renderStationList() {
   const line=lineData(), service=line.services[activeServiceType];
