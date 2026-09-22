@@ -136,14 +136,14 @@ async function journeyInView(page) {
     assert.equal(await page.locator('#matrixTable tbody tr').count(), 5);
     console.log('PASS Line 2 durations in both directions and matrix-to-planner navigation');
 
-    await page.evaluate(() => updateDepartureCountdown(new Date(2026, 8, 6, 10, 4, 0).getTime()));
+    await page.evaluate(() => updateDepartureCountdown(departureCountdownTarget + (4 * 60 * 1000)));
     assert.equal(await page.locator('.progress-stop[data-visual-index="2"]').getAttribute('class').then(value => value.includes('is-next')), true);
     assert.equal(await page.locator('.journey-pulse').isVisible(), true);
     assert.match(await page.locator('#departureCountdown').innerText(), /Basij/);
     await page.locator('#metroLine').selectOption('line1');
     await page.locator('#fromStation').selectOption('0');
     await page.locator('#toStation').selectOption('4');
-    await page.evaluate(() => updateDepartureCountdown(new Date(2026, 8, 6, 10, 12, 1).getTime()));
+    await page.evaluate(() => updateDepartureCountdown(departureCountdownTarget + 121000));
     assert.equal(await page.locator('.progress-stop[data-visual-index="2"]').getAttribute('class').then(value => value.includes('is-next')), true);
     assert.match(await page.locator('#departureCountdown').innerText(), /Forsat-e Shirazi/);
     console.log('PASS live journey pulse advances at two-minute Line 1 and published Line 2 station intervals');
