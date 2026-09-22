@@ -2,7 +2,7 @@
   "name": "shirazgo",
   "version": "1.0.0",
   "private": true,
-  "description": "Bilingual Shiraz Metro journey planner. No runtime dependencies.",
+  "description": "Bilingual Shiraz Metro journey planner with Nearby search and a minimalist station map.",
   "scripts": {
     "check": "node --check app.js",
     "test": "node tests/ui.cjs"

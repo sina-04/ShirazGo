@@ -55,6 +55,24 @@ async function journeyInView(page) {
     await ready(page);
     assert.equal(await page.locator('#viewRoute').count(), 0);
 
+    assert.equal(await page.locator('#nearbyReference option').count(), 25);
+    await page.locator('#nearbyReference').selectOption('zandiyeh');
+    assert.equal(await page.locator('.nearby-station-card').count(), 5);
+    assert.equal(await page.locator('.nearby-station-card').filter({ hasText: 'Zandiyeh' }).count(), 0);
+    const styledSelect = await page.locator('#nearbyReference').evaluate(element => ({
+      appearance: getComputedStyle(element).appearance,
+      background: getComputedStyle(element).backgroundImage
+    }));
+    assert.equal(styledSelect.appearance, 'none');
+    assert.notEqual(styledSelect.background, 'none');
+    await page.waitForSelector('.leaflet-marker-icon');
+    assert.equal(await page.locator('.leaflet-marker-icon').count(), 24);
+    await page.locator('[data-nearby-map]').first().click();
+    await page.waitForTimeout(500);
+    assert.notEqual(await page.locator('#mapStationName').innerText(), 'Choose a station on the map');
+    assert.ok(Number(await page.locator('#scrollProgress').evaluate(element => getComputedStyle(element).getPropertyValue('--scroll-progress'))) > 0);
+    console.log('PASS Balad station data, five-station Nearby results, styled selects, interactive map and scroll progress');
+
     let layouts = 0;
     for (const width of [320, 360, 390, 430, 620, 768, 820, 980, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });

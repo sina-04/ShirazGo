@@ -6,3 +6,4 @@ node_modules/
 tmp/
 test-results/
 playwright-report/
+.firecrawl/

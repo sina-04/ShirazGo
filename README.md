@@ -4,7 +4,7 @@
 [![Live site](https://img.shields.io/badge/live-GitHub%20Pages-222)](https://sina-04.github.io/ShirazGo/)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-yellow.svg)](LICENSE)
 
-A responsive, dependency-free Shiraz Metro journey planner for **Lines 1 and 2**, built with semantic HTML, modern CSS, and vanilla JavaScript. The interface supports persistent English and Persian modes, complete RTL layout mirroring, and Persian numerals.
+A responsive Shiraz Metro journey planner for **Lines 1 and 2**, built with semantic HTML, modern CSS, vanilla JavaScript, and a locally vendored Leaflet map. The interface supports persistent English and Persian modes, complete RTL layout mirroring, and Persian numerals.
 
 **[Open the journey planner](https://sina-04.github.io/ShirazGo/)**
 
@@ -15,17 +15,20 @@ A responsive, dependency-free Shiraz Metro journey planner for **Lines 1 and 2**
 1. **Bilingual interface** — persistent English/Persian switching, RTL support, Persian numerals, and Vazirmatn/Sahel typography.
 2. **Line-aware hero** — network summary, current line status, and route preview.
 3. **Journey planner** — metro line, origin, destination, device time, and an automatically selected calendar-based service type.
-4. **Journey result** — next departure, estimated arrival, duration, route stops, and upcoming trains.
-5. **From–To matrix** — travel-time and next-arrival modes for the selected line.
-6. **Station directory** — service windows, operational status, planned stations, and interchange notes.
-7. **Readable timetable** — English and Persian PDF downloads, with Markdown references in the repository.
+4. **Nearby stations** — browser geolocation or a station-reference fallback, Haversine distance, walking estimates, and planner/map shortcuts.
+5. **Minimalist map** — interactive Line 1 and Line 2 geometry, selectable markers, bilingual station details, and route shortcuts.
+6. **Journey result** — next departure, estimated arrival, duration, route stops, and upcoming trains.
+7. **From–To matrix** — travel-time and next-arrival modes for the selected line.
+8. **Station directory** — service windows, operational status, planned stations, and interchange notes.
+9. **Readable timetable** — English and Persian PDF downloads, with Markdown references in the repository.
 
 ## Interface and accessibility
 
 - Responsive navigation, clear station placeholders, full-width station fields, and a 44px-minimum swap button with equal spacing above and below in both LTR and RTL layouts.
 - Selecting or reversing a valid route automatically scrolls to the journey result, with smooth scrolling unless reduced motion is preferred.
 - Light/dark mode reveals outward from the theme button using CSS View Transitions. Older browsers use an expanding veil, and reduced-motion users get an instant change. The saved theme is applied before first paint.
-- Short entrance and route-update animations, visible keyboard focus, active section links, native select controls, and support for pinch zoom.
+- Scroll-linked section reveals and a reading-progress indicator, visible keyboard focus, active section links, styled native select controls, and support for pinch zoom.
+- The map uses a muted OpenStreetMap base, color-coded line geometry, keyboard-selectable station markers, and a local Leaflet 1.9.4 runtime so UI layout does not depend on a CDN.
 - No application framework or build step. Playwright is a development-only dependency for browser regression checks.
 
 ## Timetable model
@@ -59,6 +62,8 @@ A responsive, dependency-free Shiraz Metro journey planner for **Lines 1 and 2**
 
 Line 1 is reconstructed from its supplied station timetable. Line 2 is reconstructed from the supplied 18-page working-day timetable, including its station-specific offsets and 40-minute departure sequence. Operational changes can still supersede these files, so station notices take precedence.
 
+Station coordinates and map addresses were transcribed from [Balad's Shiraz subway-station listings](https://balad.ir/search/list/subway-station#11.82/29.60825/52.54604) on 2026-09-22. They identify station points for proximity and map display; they do not represent live entrance accessibility or service status.
+
 ShirazGo is an independent planning aid, not an official transit publication.
 Schedules can change without notice; confirm critical journeys using current
 station announcements or official operator channels.
@@ -84,13 +89,15 @@ npm run check
 npm test
 ```
 
-The browser suite starts its own temporary local server. It checks 40 viewport/language/line combinations from 320px to 1440px, swap-button geometry and behavior, route durations, matrix navigation, same-station validation, keyboard theme switching, reduced motion, circular reveals, fallback cleanup, preference persistence, and the Persian PDF download. To use an existing Chromium installation, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its executable.
+The browser suite starts its own temporary local server. It checks the 24-station map dataset, Nearby ranking, styled selects, map markers, scroll progress, 40 viewport/language/line combinations from 320px to 1440px, swap-button geometry and behavior, route durations, matrix navigation, same-station validation, keyboard theme switching, reduced motion, circular reveals, fallback cleanup, preference persistence, and the Persian PDF download. To use an existing Chromium installation, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its executable.
 
 ## Files
 
 - `index.html` — semantic page structure
 - `styles.css` — responsive design system, Persian font stack, and RTL component rules
 - `app.js` — multi-line timetable engine, bilingual content, localization, and interaction logic
+- `data/shiraz-metro-stations.json` — Balad-sourced station coordinates, addresses, line membership, and stable IDs
+- `vendor/leaflet/` — pinned Leaflet 1.9.4 browser runtime and license
 - `assets/shiraz-subway-timetable.md` — accessible timetable reference for Lines 1 and 2
 
 ## License and data terms
