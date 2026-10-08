@@ -15,9 +15,9 @@ A responsive Shiraz Metro journey planner for **Lines 1 and 2**, built with sema
 1. **Bilingual interface** — persistent English/Persian switching, RTL support, Persian numerals, and Vazirmatn/Sahel typography.
 2. **Line-aware hero** — network summary, current line status, and route preview.
 3. **Journey planner** — metro line, origin, destination, device time, and an automatically selected calendar-based service type.
-4. **Nearby stations** — browser geolocation or a station-reference fallback, Haversine distance, walking estimates, and planner/map shortcuts.
+4. **Nearby stations** — browser geolocation or a station-reference fallback, Haversine distance, walking estimates, and shortcuts to choose a starting station or show it on the map.
 5. **Interactive city map** — draggable OpenStreetMap geography, retina tiles, pinch/scroll zoom, SVG Line 1 and Line 2 overlays, selectable markers, bilingual station details, and route shortcuts.
-6. **Journey result** — next departure, estimated arrival, duration, route stops, and upcoming trains.
+6. **Journey result** — selectable upcoming departures, estimated arrival, duration, route stops, and a countdown tied to the selected train. Departure selections survive language changes and device clock refreshes.
 7. **From–To matrix** — travel-time and next-arrival modes for the selected line.
 8. **Station directory** — service windows, operational status, planned stations, and interchange notes.
 9. **Readable timetable** — English and Persian PDF downloads, with Markdown references in the repository.

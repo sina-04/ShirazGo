@@ -78,6 +78,49 @@ async function journeyInView(page) {
     assert.ok(Number(await page.locator('#scrollProgress').evaluate(element => getComputedStyle(element).getPropertyValue('--scroll-progress'))) > 0);
     console.log('PASS Balad station data, five-station Nearby results, styled selects, zoomable city map with Sahel overlays and scroll progress');
 
+    await page.locator('#metroLine').selectOption('line1');
+    await page.locator('#toStation').selectOption('19');
+    const nearbyId=await page.locator('[data-nearby-route]').first().getAttribute('data-nearby-route');
+    const nearbyIndex=await page.evaluate(id=>metroLocations.find(station=>station.id===id).indices.line1,nearbyId);
+    await page.locator('[data-nearby-route]').first().click();
+    assert.equal(await page.locator('#fromStation').inputValue(),String(nearbyIndex));
+    assert.equal(await page.locator('#toStation').inputValue(),'19');
+    await context.grantPermissions(['geolocation']);
+    const location=await page.evaluate(()=>{const station=metroLocations.find(station=>station.id==='zandiyeh');return {latitude:station.lat,longitude:station.lng};});
+    await context.setGeolocation(location);
+    await page.locator('#useLocation').click();
+    await page.waitForSelector('[data-nearby-route="zandiyeh"]');
+    await page.locator('[data-nearby-route="zandiyeh"]').click();
+    assert.equal(await page.locator('#fromStation').inputValue(),'10');
+    assert.equal(await page.locator('#toStation').inputValue(),'19');
+    console.log('PASS Nearby reference and geolocation actions choose the origin and preserve the destination');
+
+    for (const line of ['line1','line2']) {
+      await page.locator('#metroLine').selectOption(line);
+      await page.locator('#fromStation').selectOption('0');
+      await page.locator('#toStation').selectOption('4');
+      const later=page.locator('button[data-departure]').nth(2);
+      const departure=Number(await later.getAttribute('data-departure'));
+      await later.focus();
+      await page.keyboard.press('Enter');
+      const target=await page.evaluate(()=>departureCountdownTarget);
+      assert.equal(await page.evaluate(()=>new Date(departureCountdownTarget).getHours()*60+new Date(departureCountdownTarget).getMinutes()),departure);
+      assert.equal(await page.locator('button[data-departure][aria-pressed="true"]').getAttribute('data-departure'),String(departure));
+      assert.equal(await page.locator('#nextDeparture').innerText(),await page.evaluate(minutes=>timeFromMinutes(minutes),departure));
+      assert.equal(await page.locator('#estimatedArrival').innerText(),await page.evaluate(minutes=>timeFromMinutes(minutes+getTripDuration(lineData(),0,4)),departure));
+      await page.locator('#languageToggle').click();
+      assert.equal(await page.evaluate(()=>departureCountdownTarget),target);
+      assert.equal(await page.locator('button[data-departure][aria-pressed="true"]').getAttribute('data-departure'),String(departure));
+      await page.evaluate(()=>refreshDeviceClock());
+      assert.equal(await page.evaluate(()=>departureCountdownTarget),target);
+      await page.locator('#languageToggle').click();
+      await page.locator('button[data-departure]').first().click();
+      assert.ok(await page.evaluate(()=>departureCountdownTarget)<target);
+      await page.locator('#toStation').selectOption('3');
+      assert.equal(await page.locator('button[data-departure][aria-pressed="true"]').getAttribute('data-departure'),await page.locator('button[data-departure]').first().getAttribute('data-departure'));
+    }
+    console.log('PASS future trains on both lines: keyboard selection, arrival and countdown updates, language/clock preservation, and route reset');
+
     let layouts = 0;
     for (const width of [320, 360, 390, 430, 620, 768, 820, 980, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });

@@ -79,7 +79,7 @@ const UI = {
     referenceStation: 'Reference station', chooseReference: 'Choose a reference station', nearbyEmptyTitle: 'Nearest stations will appear here',
     nearbyEmptyText: 'Allow location access or select a reference station to see walking estimates and quick route actions.',
     closestStations: 'Closest stations', away: distance => `${distance} away`, walkEstimate: minutes => `≈ ${minutes} min walk`,
-    setDestination: 'Use as destination', showOnMap: 'Show on map',
+    setStartingStation: 'Use as starting station', showOnMap: 'Show on map',
     mapEyebrow: 'Network map', mapTitle: 'Explore Shiraz on the map',
     mapDescription: 'Drag, pinch, or zoom through a detailed city map with Shiraz Metro Lines 1 and 2 overlaid.',
     mapLegendLabel: 'Map legend', line1Label: 'Line 1', line2Label: 'Line 2', mapRegionLabel: 'Interactive street map of Shiraz Metro stations',
@@ -162,7 +162,7 @@ const UI = {
     referenceStation: 'ایستگاه مرجع', chooseReference: 'انتخاب ایستگاه مرجع', nearbyEmptyTitle: 'نزدیک‌ترین ایستگاه‌ها اینجا نمایش داده می‌شوند',
     nearbyEmptyText: 'دسترسی موقعیت را بدهید یا یک ایستگاه مرجع انتخاب کنید تا زمان تقریبی پیاده‌روی و میانبرهای سفر را ببینید.',
     closestStations: 'نزدیک‌ترین ایستگاه‌ها', away: distance => `${distance} فاصله`, walkEstimate: minutes => `حدود ${minutes} دقیقه پیاده`,
-    setDestination: 'انتخاب به‌عنوان مقصد', showOnMap: 'نمایش روی نقشه',
+    setStartingStation: 'انتخاب به‌عنوان مبدأ', showOnMap: 'نمایش روی نقشه',
     mapEyebrow: 'نقشه شبکه', mapTitle: 'شیراز را روی نقشه کاوش کنید',
     mapDescription: 'با کشیدن، بزرگ‌نمایی یا حرکت دو انگشتی، نقشه دقیق شهر و خطوط ۱ و ۲ متروی شیراز را ببینید.',
     mapLegendLabel: 'راهنمای نقشه', line1Label: 'خط ۱', line2Label: 'خط ۲', mapRegionLabel: 'نقشه تعاملی شهری ایستگاه‌های متروی شیراز',
@@ -670,7 +670,7 @@ function showUnavailableResult(line,fromIndex,toIndex,serviceType) {
   } else if (!isOperationalRoute(line,fromIndex,toIndex)) dom.serviceMessage.textContent=t('notConnected');
   else dom.serviceMessage.textContent=t('cannotCalculate');
 }
-function showRouteResult({scroll=false,animate=false,preserveJourney=false}={}) {
+function showRouteResult({scroll=false,animate=false,preserveJourney=false,selectedDeparture=null}={}) {
   if (!hasCompleteRoute()) return false;
   const line=lineData(), fromIndex=Number(dom.from.value), toIndex=Number(dom.to.value);
   const preservedJourney=preserveJourney&&activeJourney?.lineId===line.id&&activeJourney.fromIndex===fromIndex&&activeJourney.toIndex===toIndex
@@ -697,13 +697,16 @@ function showRouteResult({scroll=false,animate=false,preserveJourney=false}={}) 
   else {
     const departures=getUpcomingDepartures(line,fromIndex,directionKey,serviceType,lookupMinutes,5);
     if (departures.length) {
-      dom.nextDeparture.textContent=timeFromMinutes(departures[0]);
-      dom.estimatedArrival.textContent=timeFromMinutes(departures[0]+duration);
-      journeyDeparture=departures[0];
-      dom.departureList.innerHTML=departures.map((departure,index)=>{
+      const preservedDate=preservedJourney?new Date(preservedJourney.departureTimestamp):null;
+      journeyDeparture=preservedDate?preservedDate.getHours()*60+preservedDate.getMinutes()
+        :departures.includes(selectedDeparture)?selectedDeparture:departures[0];
+      dom.nextDeparture.textContent=timeFromMinutes(journeyDeparture);
+      dom.estimatedArrival.textContent=timeFromMinutes(journeyDeparture+duration);
+      dom.departureList.innerHTML=departures.map(departure=>{
         const departureTime=timeFromMinutes(departure),arrivalTime=timeFromMinutes(departure+duration);
         const label=escapeHtml(t('planDeparture',departureTime,arrivalTime));
-        return `<div class="departure-time ${index===0?'next':''}" title="${label}" aria-label="${label}">${departureTime}</div>`;
+        const selected=departure===journeyDeparture;
+        return `<button type="button" class="departure-time ${selected?'next':''}" data-departure="${departure}" aria-pressed="${selected}" title="${label}" aria-label="${label}">${departureTime}</button>`;
       }).join('');
       dom.serviceMessage.hidden=true;
     } else {
@@ -803,7 +806,7 @@ function renderNearbyResults() {
     <div class="nearby-list">${nearest.map((station,index)=>`<article class="nearby-station-card" style="--item-index:${index}">
       <div class="nearby-rank">${formatNumber(index+1,2)}</div>
       <div class="nearby-station-copy"><h4>${escapeHtml(locationName(station))}</h4><p>${escapeHtml(locationAddress(station))}</p><div class="nearby-meta">${station.lines.map(lineBadge).join('')}<span>${escapeHtml(t('away',formatDistance(station.distance)))}</span><span>${escapeHtml(t('walkEstimate',formatNumber(Math.max(1,Math.ceil(station.distance/75)))))}</span></div></div>
-      <div class="nearby-actions"><button type="button" data-nearby-route="${station.id}">${escapeHtml(t('setDestination'))}</button><button type="button" data-nearby-map="${station.id}">${escapeHtml(t('showOnMap'))}</button></div>
+      <div class="nearby-actions"><button type="button" data-nearby-route="${station.id}">${escapeHtml(t('setStartingStation'))}</button><button type="button" data-nearby-map="${station.id}">${escapeHtml(t('showOnMap'))}</button></div>
     </article>`).join('')}</div>`;
 }
 function useLocation() {
@@ -822,10 +825,10 @@ function useLocation() {
     dom.useLocation.querySelector('span').textContent=t(error.code===1?'locationDenied':'locationUnavailable');
   },{enableHighAccuracy:true,timeout:10000,maximumAge:300000});
 }
-function choosePlannerStation(station,field='to') {
+function choosePlannerStation(station,field='from') {
   if (!station) return;
   const preferredLine=station.lines.includes(activeLineId)?activeLineId:station.lines[0];
-  setActiveLine(preferredLine,{updateResult:false});
+  setActiveLine(preferredLine,{preserveStations:preferredLine===activeLineId});
   dom[field].value=String(station.indices[preferredLine]);
   if (hasCompleteRoute() && dom.from.value!==dom.to.value) showRouteResult({scroll:true,animate:true});
   else document.querySelector('#planner').scrollIntoView({behavior:motionBehavior(),block:'start'});
@@ -1035,6 +1038,12 @@ function applyLanguage(language,{persist=true}={}) {
   if (persist) storage.set('shirazgo-language',currentLanguage);
 }
 function bindEvents() {
+  dom.departureList.addEventListener('click',event=>{
+    const button=event.target.closest('button[data-departure]');
+    if (!button) return;
+    showRouteResult({selectedDeparture:Number(button.dataset.departure)});
+    dom.departureList.querySelector(`[data-departure="${button.dataset.departure}"]`)?.focus({preventScroll:true});
+  });
   dom.form.addEventListener('submit',event=>{event.preventDefault();showRouteResult({scroll:true,animate:true});});
   dom.line.addEventListener('change',()=>setActiveLine(dom.line.value));
   dom.matrixLine.addEventListener('change',()=>setActiveLine(dom.matrixLine.value));
@@ -1065,7 +1074,7 @@ function bindEvents() {
   });
   dom.nearbyResults.addEventListener('click',event=>{
     const routeButton=event.target.closest('[data-nearby-route]'),mapButton=event.target.closest('[data-nearby-map]');
-    if (routeButton) choosePlannerStation(metroLocations.find(station=>station.id===routeButton.dataset.nearbyRoute),'to');
+    if (routeButton) choosePlannerStation(metroLocations.find(station=>station.id===routeButton.dataset.nearbyRoute),'from');
     if (mapButton) showStationOnMap(metroLocations.find(station=>station.id===mapButton.dataset.nearbyMap));
   });
   dom.mapStationActions.addEventListener('click',event=>{
